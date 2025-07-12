@@ -1,0 +1,8 @@
+[site]
+bucket = "./"
+entry-point = "workers-site"
+
+[site.static]
+directory = "./"
+include = ["*.html", "*.css", "*.js", "*.jpg", "*.png", "*.svg", "*.xml"]
+exclude = [".git/*", "node_modules/*", ".gitignore"] 
