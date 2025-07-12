@@ -1,0 +1,11 @@
+{
+  "name": "vibesimulation-site",
+  "compatibility_date": "2025-07-12",
+  "assets": {
+    "directory": "./"
+  },
+  "site": {
+    "bucket": "./",
+    "include": ["*.html", "*.css", "*.js", "*.jpg", "*.png", "*.svg", "*.xml"]
+  }
+} 
