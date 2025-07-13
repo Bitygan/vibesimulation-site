@@ -1,9 +1,0 @@
-{
-  "buildCommand": "",
-  "outputDirectory": ".",
-  "nodeVersion": "20",
-  "routes": [
-    { "src": "/", "dest": "/index.html" },
-    { "src": "/*", "dest": "/:splat" }
-  ]
-} 
