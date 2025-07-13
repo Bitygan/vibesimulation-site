@@ -1,0 +1,12 @@
+# Ignore node modules
+node_modules/
+
+# Ignore Webflow exports or builds
+.webflow/
+build/
+dist/
+
+# Ignore logs and temp files
+*.log
+*.tmp
+.DS_Store 
