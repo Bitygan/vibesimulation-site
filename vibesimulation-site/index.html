@@ -5,57 +5,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VibeSimulation.com - Visualize Physics with Manim Animations</title>
-    <meta name="description" content="Short animations to make complex physics concepts crystal clear.">
+    <meta name="description" content="Explore physics from basic to advanced levels through high-quality Manim animations. VibeSimulation.com makes complex concepts crystal clear.">
+    <meta name="keywords" content="physics, manim, animation, education, science, mechanics, electromagnetism, quantum physics">
     <link rel="stylesheet" href="css/styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS_HTML"></script>
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXX-X"></script>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXX"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'UA-XXXXX-X');
+
+      gtag('config', 'G-XXXXXX');
     </script>
 </head>
 <body>
     <header>
         <nav>
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="basics.html">Basics</a></li>
-                <li><a href="intermediate.html">Intermediate</a></li>
-                <li><a href="advanced.html">Advanced</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="contact.html">Contact</a></li>
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/basics.html">Basics</a></li>
+                <li><a href="/intermediate.html">Intermediate</a></li>
+                <li><a href="/advanced.html">Advanced</a></li>
+                <li><a href="/about.html">About</a></li>
+                <li><a href="/contact.html">Contact</a></li>
             </ul>
         </nav>
     </header>
     <main>
         <section class="hero">
-            <h1>Visualize Physics: From Basics to Advanced with Manim Animations.</h1>
+            <h1>Visualize Physics: From Basics to Advanced with Manim Animations</h1>
             <p>Short animations to make complex concepts crystal clear.</p>
-            <button>Explore Videos</button>
+            <a href="/basics.html" class="button">Explore Videos</a>
         </section>
         <section class="carousel">
-            <div class="slide"><img src="placeholder.jpg" alt="Featured video thumbnail" loading="lazy"><h2>Newton's Laws</h2><p>2:30 - Basic mechanics.</p></div>
-            // ... existing code ...
+            <div class="slide"><a href="/videos/sample.html"><img src="https://via.placeholder.com/400x225.png/007BFF/FFFFFF?text=Newton%27s+Laws" alt="Animation of Newton's Laws" loading="lazy"></a><h2>Newton's Laws</h2><p>A 2-minute introduction to classical mechanics.</p></div>
+            <div class="slide"><a href="/videos/sample.html"><img src="https://via.placeholder.com/400x225.png/28A745/FFFFFF?text=Electromagnetism" alt="Animation of Electromagnetism" loading="lazy"></a><h2>Electromagnetism</h2><p>Understanding Maxwell's equations visually.</p></div>
+            <div class="slide"><a href="/videos/sample.html"><img src="https://via.placeholder.com/400x225.png/FFC107/000000?text=Quantum+Tunneling" alt="Animation of Quantum Tunneling" loading="lazy"></a><h2>Quantum Tunneling</h2><p>The weirdness of quantum mechanics explained.</p></div>
         </section>
         <section class="search-filters">
-            <input type="text" placeholder="Search videos...">
-            <select>
+            <input type="text" placeholder="Search videos..." aria-label="Search">
+            <select aria-label="Filter by category">
                 <option>Mechanics</option>
-                // ... existing code ...
+                <option>Electromagnetism</option>
+                <option>Quantum</option>
             </select>
         </section>
         <section class="tracks">
-            <div class="card"><h3>Basics</h3><p>Foundational concepts.</p><button>Start</button></div>
-            // ... existing code ...
+            <div class="card"><a href="/basics.html"><h3>Basics</h3><p>Foundational concepts for everyone.</p><span class="button">Start Learning</span></a></div>
+            <div class="card"><a href="/intermediate.html"><h3>Intermediate</h3><p>Dive deeper into core topics.</p><span class="button">Continue Learning</span></a></div>
+            <div class="card"><a href="/advanced.html"><h3>Advanced</h3><p>Explore complex, modern physics.</p><span class="button">Challenge Yourself</span></a></div>
         </section>
     </main>
     <footer>
-        <p>&copy; VibeSimulation.com</p>
-        <a href="https://youtube.com">YouTube</a>
-        <a href="privacy.html">Privacy Policy</a>
+        <p>&copy; 2025 VibeSimulation.com. All Rights Reserved.</p>
+        <a href="https://www.youtube.com/@VibeSimulation" target="_blank" rel="noopener noreferrer">YouTube</a>
+        <a href="/about.html">About</a>
+        <a href="/contact.html">Contact</a>
     </footer>
 </body>
 </html> 
