@@ -1,0 +1,13 @@
+Physics Basics: Position, Displacement, and the Power of Vectors
+
+To understand motion, we must first understand where things are. Let's begin by defining our world: a simple, straight line.
+Every journey needs a starting point, a reference from which all measurements are made. We call this the Origin.
+Now, imagine a particle in this world. Its location at any moment is its position. Here, its position is x₁, which is -4 units.
+If our particle moves, its position changes. Let's say it travels from its initial position, x₁, to a final position, x₂... at +5.
+This change in position is what physicists call displacement. It's not just a number; it's a vector—an arrow that points from the start to the finish, capturing both the distance and the direction of the change.
+We calculate displacement, delta x, by subtracting the initial position from the final position. In this case, 5 minus -4 gives us a displacement of +9 units.
+But what if the journey wasn't a straight line? What if our particle took a more scenic route, yet ended up at the exact same final position?
+Notice that even though the path was different, the displacement—the net change from start to finish—remains exactly the same. This is the power of a vector.
+And because it's a vector, direction is crucial. A journey from +6 to -2 results in a displacement arrow pointing to the left...
+...and a negative value, -8, perfectly capturing that the overall change was in the negative direction.
+
