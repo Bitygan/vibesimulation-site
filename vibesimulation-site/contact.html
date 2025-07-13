@@ -1,56 +1,102 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us - VibeSimulation.com</title>
-    <meta name="description" content="Get in touch with VibeSimulation.com for questions, feedback, or collaboration inquiries.">
-    <link rel="stylesheet" href="css/styles.css">
-    <!-- Google Analytics (GA4) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXX"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Contact Us - VibeSimulation</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<meta name="description" content="Get in touch with VibeSimulation.com for questions, feedback, or collaboration inquiries.">
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<!-- Google Analytics (GA4) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXX"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+		  gtag('config', 'G-XXXXXX');
+		</script>
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
 
-      gtag('config', 'G-XXXXXX');
-    </script>
-</head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="/index.html">Home</a></li>
-                <li><a href="/basics.html">Basics</a></li>
-                <li><a href="/intermediate.html">Intermediate</a></li>
-                <li><a href="/advanced.html">Advanced</a></li>
-                <li><a href="/about.html">About</a></li>
-                <li><a href="/contact.html">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <h1>Contact Us</h1>
-        <p>Have a question, feedback, or a collaboration idea? We'd love to hear from you. Please fill out the form below or email us directly.</p>
-        <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="contact-form">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
-            
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            
-            <label for="message">Message:</label>
-            <textarea id="message" name="message" required></textarea>
-            
-            <button type="submit">Send Message</button>
-        </form>
-        <p>You can also reach us at: <a href="mailto:contact@vibesimulation.com">contact@vibesimulation.com</a></p>
-    </main>
-    <footer>
-        <p>&copy; 2025 VibeSimulation.com. All Rights Reserved.</p>
-        <a href="https://www.youtube.com/@VibeSimulationhd" target="_blank" rel="noopener noreferrer">YouTube</a>
-        <a href="/about.html">About</a>
-        <a href="/contact.html">Contact</a>
-    </footer>
-</body>
+			<!-- Header -->
+				<header id="header">
+					<h1 id="logo"><a href="index.html">VibeSimulation</a></h1>
+					<nav id="nav">
+						<ul>
+							<li><a href="index.html">Home</a></li>
+							<li>
+								<a href="#">Learning Tracks</a>
+								<ul>
+									<li><a href="basics.html">Basics</a></li>
+									<li><a href="intermediate.html">Intermediate</a></li>
+									<li><a href="advanced.html">Advanced</a></li>
+								</ul>
+							</li>
+							<li><a href="about.html">About</a></li>
+							<li><a href="contact.html" class="button primary">Contact Us</a></li>
+						</ul>
+					</nav>
+				</header>
+
+			<!-- Main -->
+				<div id="main" class="wrapper style1">
+					<div class="container">
+						<header class="major">
+							<h2>Contact Us</h2>
+							<p>Have a question, feedback, or a collaboration idea? We'd love to hear from you.</p>
+						</header>
+
+						<!-- Form -->
+						<section>
+							<form method="post" action="https://formspree.io/f/YOUR_FORM_ID">
+								<div class="row gtr-uniform gtr-50">
+									<div class="col-6 col-12-xsmall">
+										<input type="text" name="name" id="name" value="" placeholder="Name" />
+									</div>
+									<div class="col-6 col-12-xsmall">
+										<input type="email" name="email" id="email" value="" placeholder="Email" />
+									</div>
+									<div class="col-12">
+										<textarea name="message" id="message" placeholder="Enter your message" rows="6"></textarea>
+									</div>
+									<div class="col-12">
+										<ul class="actions">
+											<li><input type="submit" value="Send Message" class="primary" /></li>
+											<li><input type="reset" value="Reset" /></li>
+										</ul>
+									</div>
+								</div>
+							</form>
+						</section>
+					</div>
+				</div>
+
+			<!-- Footer -->
+				<footer id="footer">
+					<ul class="icons">
+						<li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
+						<li><a href="#" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
+						<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
+						<li><a href="https://www.youtube.com/@VibeSimulationhd" class="icon brands alt fa-youtube"><span class="label">YouTube</span></a></li>
+					</ul>
+					<ul class="copyright">
+						<li>&copy; VibeSimulation. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					</ul>
+				</footer>
+
+		</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/jquery.dropotron.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
 </html> 

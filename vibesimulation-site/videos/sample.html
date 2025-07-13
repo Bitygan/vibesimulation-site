@@ -1,85 +1,132 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manim Animation: Understanding Newton's Laws - VibeSimulation.com</title>
-    <meta name="description" content="A 2-minute Manim animation explaining Newton's Three Laws of Motion with clear, visual examples.">
-    <meta name="keywords" content="newton's laws, classical mechanics, physics animation, manim">
-    <link rel="stylesheet" href="../css/styles.css">
-    <!-- Google Analytics (GA4) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXX"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Newton's Laws - VibeSimulation</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<meta name="description" content="A 2-minute Manim animation explaining Newton's Three Laws of Motion with clear, visual examples.">
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+		<!-- Google Analytics (GA4) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXX"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+		  gtag('config', 'G-XXXXXX');
+		</script>
+	</head>
+	<body class="is-preload">
+		<div id="page-wrapper">
 
-      gtag('config', 'G-XXXXXX');
-    </script>
-</head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="/index.html">Home</a></li>
-                <li><a href="/basics.html">Basics</a></li>
-                <li><a href="/intermediate.html">Intermediate</a></li>
-                <li><a href="/advanced.html">Advanced</a></li>
-                <li><a href="/about.html">About</a></li>
-                <li><a href="/contact.html">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main class="video-page">
-        <h1>Manim Animation: Understanding Newton's Laws</h1>
-        <div class="video-container">
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/9yY-Ij24zMU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
-        </div>
-        <article class="video-description">
-            <h2>Description</h2>
-            <p>This animation provides a visual walkthrough of Newton's Three Laws of Motion, the foundation of classical mechanics. We explore inertia (First Law), the relationship between force, mass, and acceleration (Second Law), and the principle of action and reaction (Third Law).</p>
-            <h3>Key Takeaways:</h3>
-            <ul>
-                <li><strong>Inertia:</strong> An object at rest stays at rest, and an object in motion stays in motion unless acted upon by a net external force.</li>
-                <li><strong>F=ma:</strong> The acceleration of an object is directly proportional to the net force acting on it and inversely proportional to its mass.</li>
-                <li><strong>Action-Reaction:</strong> For every action, there is an equal and opposite reaction.</li>
-            </ul>
-        </article>
-        <aside class="related-videos">
-            <h2>Related Videos</h2>
-            <ul>
-                <li><a href="#"><img src="https://via.placeholder.com/120x90.png/007BFF/FFFFFF?text=Work+and+Energy" alt="Thumbnail for Work and Energy video"><span>Work and Energy</span></a></li>
-                <li><a href="#"><img src="https://via.placeholder.com/120x90.png/007BFF/FFFFFF?text=Momentum" alt="Thumbnail for Momentum video"><span>Momentum</span></a></li>
-                <li><a href="#"><img src="https://via.placeholder.com/120x90.png/007BFF/FFFFFF?text=Gravity" alt="Thumbnail for Gravity video"><span>Gravity</span></a></li>
-            </ul>
-        </aside>
-        <section id="comments">
-            <h2>Comments</h2>
-            <div id="disqus_thread"></div>
-            <script>
-                /**
-                *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-                *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
-                */
-                var disqus_config = function () {
-                    this.page.url = 'https://vibesimulation.com/videos/newtons-laws';  // Replace PAGE_URL with your page's canonical URL variable
-                    this.page.identifier = 'newtons-laws-1'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-                };
-                (function() { // DON'T EDIT BELOW THIS LINE
-                var d = document, s = d.createElement('script');
-                s.src = 'https://vibesimulation.disqus.com/embed.js';
-                s.setAttribute('data-timestamp', +new Date());
-                (d.head || d.body).appendChild(s);
-                })();
-            </script>
-            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2025 VibeSimulation.com. All Rights Reserved.</p>
-        <a href="https://www.youtube.com/@VibeSimulationhd" target="_blank" rel="noopener noreferrer">YouTube</a>
-        <a href="/about.html">About</a>
-        <a href="/contact.html">Contact</a>
-    </footer>
-</body>
+			<!-- Header -->
+				<header id="header">
+					<h1 id="logo"><a href="../index.html">VibeSimulation</a></h1>
+					<nav id="nav">
+						<ul>
+							<li><a href="../index.html">Home</a></li>
+							<li>
+								<a href="#">Learning Tracks</a>
+								<ul>
+									<li><a href="../basics.html">Basics</a></li>
+									<li><a href="../intermediate.html">Intermediate</a></li>
+									<li><a href="../advanced.html">Advanced</a></li>
+								</ul>
+							</li>
+							<li><a href="../about.html">About</a></li>
+							<li><a href="../contact.html" class="button primary">Contact Us</a></li>
+						</ul>
+					</nav>
+				</header>
+
+			<!-- Main -->
+				<div id="main" class="wrapper style1">
+					<div class="container">
+						<header class="major">
+							<h2>Manim Animation: Understanding Newton's Laws</h2>
+							<p>A deep dive into the foundational principles of classical mechanics.</p>
+						</header>
+						<div class="row gtr-150">
+							<div class="col-8 col-12-medium">
+								<!-- Content -->
+								<section id="content">
+									<div class="video-container">
+										<iframe width="100%" height="450" src="https://www.youtube.com/embed/9yY-Ij24zMU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+									</div>
+									<h3>Description</h3>
+									<p>This animation provides a visual walkthrough of Newton's Three Laws of Motion, the foundation of classical mechanics. We explore inertia (First Law), the relationship between force, mass, and acceleration (Second Law), and the principle of action and reaction (Third Law).</p>
+									<h3>Key Takeaways:</h3>
+									<ul>
+										<li><strong>Inertia:</strong> An object at rest stays at rest, and an object in motion stays in motion unless acted upon by a net external force.</li>
+										<li><strong>F=ma:</strong> The acceleration of an object is directly proportional to the net force acting on it and inversely proportional to its mass.</li>
+										<li><strong>Action-Reaction:</strong> For every action, there is an equal and opposite reaction.</li>
+									</ul>
+									<section id="comments">
+										<h3>Comments</h3>
+										<div id="disqus_thread"></div>
+										<script>
+											var disqus_config = function () {
+												this.page.url = 'https://vibesimulation.com/videos/newtons-laws';
+												this.page.identifier = 'newtons-laws-1';
+											};
+											(function() {
+											var d = document, s = d.createElement('script');
+											s.src = 'https://vibesimulation.disqus.com/embed.js';
+											s.setAttribute('data-timestamp', +new Date());
+											(d.head || d.body).appendChild(s);
+											})();
+										</script>
+										<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+									</section>
+								</section>
+							</div>
+							<div class="col-4 col-12-medium">
+								<!-- Sidebar -->
+								<section id="sidebar">
+									<section>
+										<h3>Related Videos</h3>
+										<ul>
+											<li><a href="#">Work and Energy</a></li>
+											<li><a href="#">Momentum</a></li>
+											<li><a href="#">Gravity</a></li>
+										</ul>
+										<footer>
+											<ul class="actions">
+												<li><a href="../basics.html" class="button">Back to Basics Track</a></li>
+											</ul>
+										</footer>
+									</section>
+								</section>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			<!-- Footer -->
+				<footer id="footer">
+					<ul class="icons">
+						<li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
+						<li><a href="#" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
+						<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
+						<li><a href="https://www.youtube.com/@VibeSimulationhd" class="icon brands alt fa-youtube"><span class="label">YouTube</span></a></li>
+					</ul>
+					<ul class="copyright">
+						<li>&copy; VibeSimulation. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					</ul>
+				</footer>
+
+		</div>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/jquery.scrolly.min.js"></script>
+			<script src="../assets/js/jquery.dropotron.min.js"></script>
+			<script src="../assets/js/jquery.scrollex.min.js"></script>
+			<script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	</body>
 </html> 
