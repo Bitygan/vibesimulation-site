@@ -30,3 +30,8 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Vibe Simulation specific
+/vibesimulation-site/.cloudflare/
+/vibesimulation-site/images/
+/videos/
