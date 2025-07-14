@@ -33,5 +33,4 @@ yarn-error.log*
 
 # Vibe Simulation specific
 /vibesimulation-site/.cloudflare/
-/vibesimulation-site/images/
 /videos/
