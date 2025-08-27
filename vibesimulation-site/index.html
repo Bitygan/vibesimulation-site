@@ -1870,8 +1870,8 @@
 					constructor() {
 						this.W = 1120;
 						this.H = 630;
-						this.NX = 280;
-						this.NY = 160;
+						this.NX = 180; // Optimized for performance
+						this.NY = 100; // Optimized for performance
 						this.canvas = document.getElementById('waveforge-canvas');
 						this.ctx = this.canvas.getContext('2d');
 
@@ -2027,88 +2027,47 @@
 						return a + (b - a) * t;
 					}
 
-					// Enhanced liquid interaction with more punch and responsiveness
+					// Fast, fluid interaction - optimized for performance
 					applyInteraction(px, py) {
 						const now = performance.now();
-						if (now - this.lastInteractionTime < 12) return; // More responsive interaction rate
+						if (now - this.lastInteractionTime < 16) return; // Balanced responsiveness
 						this.lastInteractionTime = now;
 
-						const R = Math.max(12, this.brushR);
-						const amp = this.interactionStrength * 2.5; // Much stronger interaction
+						const R = Math.max(8, this.brushR);
+						const amp = this.interactionStrength * 1.5;
 
-						// Create a more dramatic liquid response
+						// Simple, fast liquid interaction
 						for (let j = -R; j <= R; j++) {
 							for (let i = -R; i <= R; i++) {
 								const x = Math.floor(px) + i;
 								const y = Math.floor(py) + j;
-								if (x < 3 || x >= this.NX - 3 || y < 3 || y >= this.NY - 3) continue;
+								if (x < 2 || x >= this.NX - 2 || y < 2 || y >= this.NY - 2) continue;
 
 								const r2 = i * i + j * j;
 								if (r2 > R * R) continue;
 
 								const idx = this.idx(x, y);
-								const dist = Math.sqrt(r2) + 1e-6;
-
-								// More aggressive falloff for sharper interaction
-								const falloff = Math.exp(-r2 / (0.15 * R * R));
+								const falloff = Math.exp(-r2 / (R * R * 0.3));
 
 								if (this.mode === "Walls") {
-									// Paint walls with more definition
-									if (falloff > 0.4) {
+									if (falloff > 0.3) {
 										this.solid[idx] = 1;
-										this.h[idx] = 0.08;
+										this.h[idx] = 0.05;
 										this.hu[idx] = 0;
 										this.hv[idx] = 0;
 									}
 								} else {
-									// Create dramatic water splash with liquid-like behavior
-									const impulse = amp * falloff * 1.2;
+									// Simple liquid splash
+									const impulse = amp * falloff;
+									this.h[idx] += impulse * 0.3;
 
-									// Add height with more variation
-									const heightImpulse = impulse * 0.4 * (1 + Math.sin(dist * 3) * 0.3);
-									this.h[idx] += heightImpulse;
-
-									// Add strong radial momentum for liquid-like flow
+									// Radial momentum for flow
+									const dist = Math.sqrt(r2) + 1e-6;
 									const nx = i / dist;
 									const ny = j / dist;
 
-									// More dynamic momentum with swirl effect
-									const swirlStrength = 0.1;
-									const swirlX = -ny * swirlStrength;
-									const swirlY = nx * swirlStrength;
-
-									this.hu[idx] += impulse * (nx + swirlX) * 0.25;
-									this.hv[idx] += impulse * (ny + swirlY) * 0.25;
-
-									// Add secondary splash effect for more liquid-like behavior
-									if (falloff > 0.3 && dist > R * 0.3) {
-										const secondaryImpulse = impulse * 0.3;
-										const secondaryR = R * 0.6;
-										for (let sj = -secondaryR; sj <= secondaryR; sj++) {
-											for (let si = -secondaryR; si <= secondaryR; si++) {
-												const sx = x + si;
-												const sy = y + sj;
-												if (sx < 3 || sx >= this.NX - 3 || sy < 3 || sy >= this.NY - 3) continue;
-
-												const sr2 = si * si + sj * sj;
-												if (sr2 > secondaryR * secondaryR) continue;
-
-												const sidx = this.idx(sx, sy);
-												const sfalloff = Math.exp(-sr2 / (0.2 * secondaryR * secondaryR)) * secondaryImpulse;
-												this.h[sidx] += sfalloff * 0.15;
-											}
-										}
-									}
-
-									// Create wave-like disturbance for more liquid appearance
-									if (dist < R * 0.8) {
-										const waveFreq = 8;
-										const waveAmp = impulse * 0.1;
-										const wavePhase = Math.atan2(j, i);
-										const waveDisturbance = Math.sin(waveFreq * dist / R + wavePhase * 2) * waveAmp;
-
-										this.h[idx] += waveDisturbance;
-									}
+									this.hu[idx] += impulse * nx * 0.2;
+									this.hv[idx] += impulse * ny * 0.2;
 								}
 							}
 						}
@@ -2194,7 +2153,7 @@
 					}
 
 					gravityStep() {
-						// Enhanced gravity and pressure forces with liquid-like behavior
+						// Fast gravity and pressure forces - optimized for performance
 						const dt = this.dt;
 						const dx = this.dx;
 						const g = this.grav;
@@ -2205,28 +2164,13 @@
 								const h = this.h[idx];
 								if (h < 0.01) continue;
 
-								// Pressure gradient with enhanced liquid behavior
+								// Simple pressure gradient
 								const dh_dx = (this.h[this.idx(i + 1, j)] - this.h[this.idx(i - 1, j)]) / (2 * dx);
 								const dh_dy = (this.h[this.idx(i, j + 1)] - this.h[this.idx(i, j - 1)]) / (2 * dx);
 
-								// Add surface tension-like effect for liquid cohesion
-								const surfaceTension = 0.001;
-								const laplacian_h = (this.h[this.idx(i + 1, j)] + this.h[this.idx(i - 1, j)] +
-												   this.h[this.idx(i, j + 1)] + this.h[this.idx(i, j - 1)] - 4 * h) / (dx * dx);
-
-								// Update momentum with both pressure and surface tension
-								this.hu[idx] -= (g * h * dh_dx + surfaceTension * laplacian_h) * dt;
-								this.hv[idx] -= (g * h * dh_dy + surfaceTension * laplacian_h) * dt;
-
-								// Add viscosity for more liquid-like flow
-								const viscosity = 0.0005;
-								const du_dx = (this.hu[this.idx(i + 1, j)] - this.hu[this.idx(i - 1, j)]) / (2 * dx);
-								const du_dy = (this.hu[this.idx(i, j + 1)] - this.hu[this.idx(i, j - 1)]) / (2 * dx);
-								const dv_dx = (this.hv[this.idx(i + 1, j)] - this.hv[this.idx(i - 1, j)]) / (2 * dx);
-								const dv_dy = (this.hv[this.idx(i, j + 1)] - this.hv[this.idx(i, j - 1)]) / (2 * dx);
-
-								this.hu[idx] += viscosity * (du_dx * du_dx + du_dy * du_dy) * dt;
-								this.hv[idx] += viscosity * (dv_dx * dv_dx + dv_dy * dv_dy) * dt;
+								// Update momentum
+								this.hu[idx] -= g * h * dh_dx * dt;
+								this.hv[idx] -= g * h * dh_dy * dt;
 							}
 						}
 					}
@@ -2328,156 +2272,42 @@
 									ty
 								);
 
-								// Enhanced liquid visualization with more punch
+								// Fast, fluid liquid visualization - optimized for performance
 								let r, g, b;
 								const t = this.clamp((h - hmin) / range, 0, 1);
 
-								// Calculate surface features for liquid-like appearance
-								let surfaceDetail = 0;
-								let foam = 0;
-								let ripple = 0;
-
-								if (i0 > 0 && i0 < this.NX - 1 && j0 > 0 && j0 < this.NY - 1) {
-									// Surface curvature for liquid detail
-									const hxx = this.h[this.idx(i0 + 1, j0)] - 2 * h + this.h[this.idx(i0 - 1, j0)];
-									const hyy = this.h[this.idx(i0, j0 + 1)] - 2 * h + this.h[this.idx(i0, j0 - 1)];
-									const curvature = Math.abs(hxx + hyy) * 50;
-
-									// Velocity for foam generation
-									const idx = this.idx(i0, j0);
-									const u = this.hu[idx] / (h + 1e-6);
-									const v = this.hv[idx] / (h + 1e-6);
-									const speed = Math.sqrt(u*u + v*v);
-
-									// Foam based on surface agitation
-									foam = Math.min(1, curvature * 0.3 + speed * 0.2);
-
-									// Ripple effect from waves
-									const waveFreq = 0.5;
-									const rippleX = Math.sin(i0 * waveFreq + this.dt * 10) * 0.1;
-									const rippleY = Math.sin(j0 * waveFreq * 0.7 + this.dt * 8) * 0.1;
-									ripple = (rippleX + rippleY) * 0.5;
-
-									// Surface detail combines curvature and ripples
-									surfaceDetail = Math.max(0, Math.min(1, curvature * 0.5 + Math.abs(ripple) * 0.3));
-								}
-
+								// Simple but effective color palettes
 								if (this.palette === "Ocean") {
-									// Enhanced ocean palette with more contrast and liquid-like colors
-									const deepBlue = [15, 45, 85];
-									const surfaceBlue = [65, 125, 200];
-									const highlightBlue = [180, 220, 255];
-
-									if (t < 0.3) {
-										// Deep water - dark, rich blue
-										r = Math.floor(deepBlue[0] + (surfaceBlue[0] - deepBlue[0]) * (t / 0.3));
-										g = Math.floor(deepBlue[1] + (surfaceBlue[1] - deepBlue[1]) * (t / 0.3));
-										b = Math.floor(deepBlue[2] + (surfaceBlue[2] - deepBlue[2]) * (t / 0.3));
-									} else if (t < 0.7) {
-										// Surface water - bright, vibrant blue
-										const midT = (t - 0.3) / 0.4;
-										r = Math.floor(surfaceBlue[0] + (highlightBlue[0] - surfaceBlue[0]) * midT);
-										g = Math.floor(surfaceBlue[1] + (highlightBlue[1] - surfaceBlue[1]) * midT);
-										b = Math.floor(surfaceBlue[2] + (highlightBlue[2] - surfaceBlue[2]) * midT);
-									} else {
-										// Wave crests - bright highlights
-										const highT = (t - 0.7) / 0.3;
-										r = Math.floor(highlightBlue[0] + 75 * highT);
-										g = Math.floor(highlightBlue[1] + 35 * highT);
-										b = Math.floor(highlightBlue[2]);
-									}
-
-									// Add foam effect
-									if (foam > 0.1) {
-										const foamIntensity = Math.min(1, foam * 2);
-										r = Math.floor(r + (255 - r) * foamIntensity * 0.6);
-										g = Math.floor(g + (255 - g) * foamIntensity * 0.8);
-										b = Math.floor(b + (255 - b) * foamIntensity * 0.4);
-									}
-
+									r = Math.floor(30 + 225 * Math.pow(t, 1.2));
+									g = Math.floor(60 + 190 * t);
+									b = Math.floor(120 + 135 * t);
 								} else if (this.palette === "Icefire") {
-									// Enhanced icefire with more dramatic contrast
 									if (t < 0.5) {
-										// Cold side - deep blues to cyan
 										const coldT = t * 2;
-										r = Math.floor(20 + 60 * coldT);
-										g = Math.floor(40 + 160 * coldT);
-										b = Math.floor(120 + 135 * coldT);
+										r = Math.floor(40 + 60 * coldT);
+										g = Math.floor(80 + 120 * coldT);
+										b = Math.floor(150 + 105 * coldT);
 									} else {
-										// Hot side - yellow to red
 										const hotT = (t - 0.5) * 2;
-										r = Math.floor(255 * hotT + 100 * (1 - hotT));
-										g = Math.floor(200 * hotT + 60 * (1 - hotT));
-										b = Math.floor(50 * hotT);
+										r = Math.floor(255 * hotT);
+										g = Math.floor(200 * hotT);
+										b = Math.floor(60 * hotT);
 									}
 								} else { // Magma
-									// Enhanced magma with richer, more liquid-like colors
-									if (t < 0.4) {
-										r = Math.floor(30 + 120 * (t / 0.4));
-										g = Math.floor(15 + 30 * (t / 0.4));
-										b = Math.floor(20 + 10 * (t / 0.4));
-									} else if (t < 0.8) {
-										const midT = (t - 0.4) / 0.4;
-										r = Math.floor(150 + 105 * midT);
-										g = Math.floor(45 + 155 * midT);
-										b = Math.floor(30 + 20 * midT);
-									} else {
-										const highT = (t - 0.8) / 0.2;
-										r = Math.floor(255);
-										g = Math.floor(200 + 55 * highT);
-										b = Math.floor(50 + 205 * highT);
-									}
+									r = Math.floor(60 + 195 * Math.pow(t, 1.1));
+									g = Math.floor(40 + 160 * t);
+									b = Math.floor(30 + 40 * t);
 								}
 
-								// Enhanced normal-based lighting with more punch
+								// Simple lighting for fluidity - only when needed
 								if (i0 > 0 && i0 < this.NX - 1 && j0 > 0 && j0 < this.NY - 1) {
 									const hx = (this.h[this.idx(i0 + 1, j0)] - this.h[this.idx(i0 - 1, j0)]) * 0.5;
 									const hy = (this.h[this.idx(i0, j0 + 1)] - this.h[this.idx(i0, j0 - 1)]) * 0.5;
+									const light = 0.7 + 0.3 * this.clamp((-hx * 0.2 + hy * 0.3) / Math.sqrt(hx*hx + hy*hy + 1), 0, 1);
 
-									// More dramatic lighting with specular highlights
-									const normalMag = Math.sqrt(hx*hx + hy*hy + 1);
-									const nx = -hx / normalMag;
-									const ny = -hy / normalMag;
-									const nz = 1.0 / normalMag;
-
-									// Multiple light sources for more liquid-like appearance
-									const lightX = Math.sin(this.dt * 0.5) * 0.5;
-									const lightY = Math.cos(this.dt * 0.3) * 0.3;
-									const lightZ = 0.8;
-
-									const dotProduct = nx * lightX + ny * lightY + nz * lightZ;
-									let lighting = Math.max(0.3, dotProduct * 0.7 + 0.5);
-
-									// Add specular highlight for liquid-like shine
-									const specular = Math.pow(Math.max(0, dotProduct), 8) * 0.8;
-									lighting += specular;
-
-									// Add dynamic ripple lighting
-									lighting += ripple * 0.2;
-
-									// More punchy lighting with higher contrast
-									lighting = Math.pow(lighting, 0.8); // Gamma correction for more contrast
-									lighting = this.clamp(lighting, 0.2, 1.8); // Allow overbright highlights
-
-									r = Math.floor(this.clamp(r * lighting, 0, 255));
-									g = Math.floor(this.clamp(g * lighting, 0, 255));
-									b = Math.floor(this.clamp(b * lighting, 0, 255));
-
-									// Add liquid-like subsurface scattering effect
-									const subsurface = Math.exp(-Math.abs(h - hmax) / (range * 0.3)) * 0.3;
-									r = Math.floor(r + subsurface * 20);
-									g = Math.floor(g + subsurface * 15);
-									b = Math.floor(b + subsurface * 40);
-								}
-
-								// Add dynamic surface detail for liquid appearance
-								if (surfaceDetail > 0.05) {
-									const detailIntensity = surfaceDetail * 0.4;
-									const detailHue = Math.sin(this.dt * 15 + i0 * 0.1 + j0 * 0.1) * 0.5 + 0.5;
-
-									r = Math.floor(r + detailIntensity * (detailHue * 50 - 25));
-									g = Math.floor(g + detailIntensity * (detailHue * 30 - 15));
-									b = Math.floor(b + detailIntensity * (detailHue * 40 - 20));
+									r = Math.floor(r * light);
+									g = Math.floor(g * light);
+									b = Math.floor(b * light);
 								}
 
 								const p = (Y * this.W + X) * 4;
@@ -2596,8 +2426,8 @@
 					addInitialLiquidFeatures() {
 						const time = performance.now() * 0.001;
 
-						// Add some initial ripples and droplets for liquid-like appearance
-						const numRipples = 8;
+						// Add some initial ripples for liquid-like appearance
+						const numRipples = 4;
 						for (let r = 0; r < numRipples; r++) {
 							const centerX = Math.floor(this.NX * (0.2 + Math.random() * 0.6));
 							const centerY = Math.floor(this.NY * (0.2 + Math.random() * 0.6));
@@ -2631,7 +2461,7 @@
 						}
 
 						// Add some initial foam-like features near the surface
-						const numFoam = 12;
+						const numFoam = 6;
 						for (let f = 0; f < numFoam; f++) {
 							const x = Math.floor(Math.random() * this.NX);
 							const y = Math.floor(Math.random() * this.NY);
