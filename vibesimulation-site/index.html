@@ -6,110 +6,405 @@
 -->
 <html>
 	<head>
-		<title>VibeSimulation - Visualize Physics</title>
+		<title>VibeSimulation - Physics Gallery</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<meta name="description" content="Interactive fluid dynamics simulation. Explore physics through real-time simulations and high-quality Manim animations. VibeSimulation.com makes complex concepts crystal clear.">
-    	<meta name="keywords" content="physics, manim, animation, education, science, mechanics, electromagnetism, quantum physics, fluid dynamics, simulation">
+		<meta name="description" content="Experience four domains of physics through interactive simulations: fluid dynamics, electrostatics, wave physics, and shallow water dynamics. Real-time, beautiful, educational.">
+    	<meta name="keywords" content="physics simulations, fluid dynamics, electrostatics, wave physics, shallow water, interactive science, computational physics">
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<link rel="stylesheet" href="assets/css/video.css" />
-		<!-- Simulation Styles -->
+		<!-- Physics Gallery Styles -->
 		<style>
-			.simulation-hero {
-				min-height: 80vh;
+			/* ===== HERO SECTION ===== */
+			.physics-hero {
+				min-height: 100vh;
+				background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #1a1a2e 100%);
+				position: relative;
+				overflow: hidden;
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				padding: 2rem 0;
-			}
-			.simulation-container {
-				background: linear-gradient(135deg, #0f172a 0%, #581c87 50%, #0f172a 100%);
-				border-radius: 1rem;
-				padding: 2rem;
-				box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-				max-width: 1400px;
-				width: 100%;
-				margin: 0 auto;
-			}
-			.simulation-header {
 				text-align: center;
-				margin-bottom: 2rem;
+				padding: 2rem;
+			}
+
+			.physics-hero::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background:
+					radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+					radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+					radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+				animation: float 20s ease-in-out infinite;
+			}
+
+			@keyframes float {
+				0%, 100% { transform: translateY(0px) rotate(0deg); }
+				50% { transform: translateY(-20px) rotate(5deg); }
+			}
+
+			.hero-content {
+				position: relative;
+				z-index: 2;
+				max-width: 800px;
 				color: white;
 			}
-			.simulation-header h1 {
-				font-size: 3.5rem;
-				font-weight: 700;
+
+			.hero-title {
+				font-size: clamp(3rem, 8vw, 6rem);
+				font-weight: 900;
 				margin-bottom: 1rem;
-				background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+				background: linear-gradient(135deg, #ffffff, #e0e7ff, #ddd6fe, #fce7f3, #ecfdf5);
+				background-clip: text;
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+				line-height: 1.1;
+				letter-spacing: -0.02em;
+			}
+
+			.hero-subtitle {
+				font-size: clamp(1.1rem, 2vw, 1.5rem);
+				opacity: 0.9;
+				margin-bottom: 2rem;
+				line-height: 1.6;
+				font-weight: 300;
+			}
+
+			.hero-cta {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.5rem;
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				color: white;
+				padding: 1rem 2rem;
+				border-radius: 50px;
+				text-decoration: none;
+				font-weight: 600;
+				font-size: 1.1rem;
+				transition: all 0.3s ease;
+				border: none;
+				cursor: pointer;
+				box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+			}
+
+			.hero-cta:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+			}
+
+			/* ===== PHYSICS GALLERY ===== */
+			.physics-gallery {
+				padding: 5rem 2rem;
+				background: #0a0a0a;
+				position: relative;
+			}
+
+			.gallery-title {
+				text-align: center;
+				font-size: clamp(2rem, 4vw, 3.5rem);
+				font-weight: 700;
+				color: white;
+				margin-bottom: 1rem;
+				background: linear-gradient(135deg, #60a5fa, #a78bfa);
 				background-clip: text;
 				-webkit-background-clip: text;
 				-webkit-text-fill-color: transparent;
 			}
-			.simulation-header p {
-				font-size: 1.25rem;
-				opacity: 0.9;
-				margin-bottom: 1rem;
+
+			.gallery-subtitle {
+				text-align: center;
+				font-size: 1.2rem;
+				color: rgba(255, 255, 255, 0.7);
+				margin-bottom: 4rem;
+				max-width: 600px;
+				margin-left: auto;
+				margin-right: auto;
 			}
-			.interaction-hint {
-				font-size: 0.875rem;
-				opacity: 0.7;
-				font-style: italic;
-			}
-			.simulation-controls {
+
+			.physics-grid {
 				display: grid;
-				grid-template-columns: 1fr 300px;
+				grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+				gap: 3rem;
+				max-width: 1400px;
+				margin: 0 auto;
+			}
+
+			.physics-card {
+				background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+				border-radius: 1.5rem;
+				overflow: hidden;
+				box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+				transition: all 0.3s ease;
+				border: 1px solid rgba(255, 255, 255, 0.1);
+			}
+
+			.physics-card:hover {
+				transform: translateY(-10px);
+				box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+				border-color: rgba(255, 255, 255, 0.2);
+			}
+
+			.physics-header {
+				padding: 2rem;
+				background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+				border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+			}
+
+			.physics-title {
+				font-size: 1.75rem;
+				font-weight: 700;
+				color: white;
+				margin-bottom: 0.5rem;
+				display: flex;
+				align-items: center;
+				gap: 0.75rem;
+			}
+
+			.physics-icon {
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 1.2rem;
+			}
+
+			.fluid-icon { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+			.charge-icon { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+			.wave-icon { background: linear-gradient(135deg, #10b981, #34d399); }
+			.water-icon { background: linear-gradient(135deg, #06b6d4, #22d3ee); }
+
+			.physics-description {
+				color: rgba(255, 255, 255, 0.8);
+				line-height: 1.6;
+				font-size: 0.95rem;
+			}
+
+			.physics-simulation {
+				padding: 2rem;
+				display: grid;
+				grid-template-columns: 1fr 280px;
 				gap: 2rem;
 				align-items: start;
 			}
-			.simulation-canvas {
-				background: #08090b;
+
+			.physics-canvas {
+				background: #000;
 				border-radius: 1rem;
 				overflow: hidden;
-				box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+				box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 			}
-			.simulation-panel {
-				background: rgba(255, 255, 255, 0.05);
+
+			.physics-controls {
+				background: rgba(255, 255, 255, 0.03);
 				border-radius: 1rem;
 				padding: 1.5rem;
 				backdrop-filter: blur(10px);
 				border: 1px solid rgba(255, 255, 255, 0.1);
 			}
+
 			.control-group {
-				margin-bottom: 1.5rem;
+				margin-bottom: 1.25rem;
 			}
+
 			.control-group label {
 				display: block;
 				color: white;
 				font-weight: 600;
 				margin-bottom: 0.5rem;
-				font-size: 0.875rem;
+				font-size: 0.85rem;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
 			}
+
 			.control-group input,
 			.control-group select {
 				width: 100%;
 				padding: 0.5rem;
 				border-radius: 0.5rem;
 				border: 1px solid rgba(255, 255, 255, 0.2);
-				background: rgba(255, 255, 255, 0.1);
+				background: rgba(255, 255, 255, 0.05);
 				color: white;
-				font-size: 0.875rem;
+				font-size: 0.85rem;
 			}
+
 			.control-group input:focus,
 			.control-group select:focus {
 				outline: none;
 				border-color: #60a5fa;
 				box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
 			}
+
+			.control-group button {
+				width: 100%;
+				padding: 0.75rem;
+				border-radius: 0.5rem;
+				border: none;
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				color: white;
+				font-weight: 600;
+				font-size: 0.85rem;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
+				cursor: pointer;
+				transition: all 0.3s ease;
+			}
+
+			.control-group button:hover {
+				transform: translateY(-1px);
+				box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+			}
+
 			.status-indicator {
 				display: inline-block;
 				padding: 0.25rem 0.75rem;
-				border-radius: 9999px;
+				border-radius: 999px;
 				font-size: 0.75rem;
 				font-weight: 600;
-				margin-top: 0.5rem;
+				text-transform: uppercase;
+				letter-spacing: 0.5px;
 			}
-			.status-stable { background: #10b981; color: white; }
-			.status-unstable { background: #ef4444; color: white; }
+
+			.status-stable { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+			.status-solving { background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
+			.status-unstable { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+			/* ===== NAVIGATION ===== */
+			.physics-nav {
+				position: fixed;
+				top: 0;
+				left: 0;
+				right: 0;
+				z-index: 1000;
+				background: rgba(0, 0, 0, 0.8);
+				backdrop-filter: blur(20px);
+				border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+				padding: 1rem 2rem;
+				transition: all 0.3s ease;
+			}
+
+			.nav-content {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				max-width: 1400px;
+				margin: 0 auto;
+			}
+
+			.nav-logo {
+				font-size: 1.5rem;
+				font-weight: 700;
+				color: white;
+				text-decoration: none;
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+			}
+
+			.nav-links {
+				display: flex;
+				align-items: center;
+				gap: 2rem;
+			}
+
+			.nav-link {
+				color: rgba(255, 255, 255, 0.8);
+				text-decoration: none;
+				font-weight: 500;
+				transition: all 0.3s ease;
+				position: relative;
+			}
+
+			.nav-link:hover {
+				color: white;
+			}
+
+			.nav-link::after {
+				content: '';
+				position: absolute;
+				bottom: -5px;
+				left: 0;
+				width: 0;
+				height: 2px;
+				background: linear-gradient(135deg, #60a5fa, #a78bfa);
+				transition: width 0.3s ease;
+			}
+
+			.nav-link:hover::after {
+				width: 100%;
+			}
+
+			.nav-cta {
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				color: white;
+				padding: 0.5rem 1.5rem;
+				border-radius: 25px;
+				text-decoration: none;
+				font-weight: 600;
+				transition: all 0.3s ease;
+			}
+
+			.nav-cta:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+			}
+
+			/* ===== FOOTER ===== */
+			.physics-footer {
+				background: #0a0a0a;
+				padding: 4rem 2rem 2rem;
+				border-top: 1px solid rgba(255, 255, 255, 0.1);
+				text-align: center;
+			}
+
+			.footer-content {
+				max-width: 800px;
+				margin: 0 auto;
+			}
+
+			.footer-title {
+				font-size: 2rem;
+				font-weight: 700;
+				color: white;
+				margin-bottom: 1rem;
+				background: linear-gradient(135deg, #60a5fa, #a78bfa);
+				background-clip: text;
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+			}
+
+			.footer-text {
+				color: rgba(255, 255, 255, 0.7);
+				line-height: 1.6;
+				font-size: 1rem;
+			}
+
+			/* ===== RESPONSIVE ===== */
+			@media (max-width: 768px) {
+				.physics-grid {
+					grid-template-columns: 1fr;
+					gap: 2rem;
+				}
+
+				.physics-simulation {
+					grid-template-columns: 1fr;
+					gap: 1.5rem;
+				}
+
+				.hero-title {
+					font-size: clamp(2rem, 12vw, 4rem);
+				}
+
+				.nav-links {
+					display: none;
+				}
+			}
+		</style>
 			@media (max-width: 1024px) {
 				.simulation-controls {
 					grid-template-columns: 1fr;
@@ -162,362 +457,353 @@
 		</script>
 	</head>
 	<body class="is-preload landing">
-		<div id="page-wrapper">
-
-			<!-- Header -->
-				<header id="header">
-					<h1 id="logo"><a href="index.html"><img src="images/logo.png" alt="Vibe Simulation Logo" style="height: 2em; vertical-align: middle; margin-right: 0.5em;">Vibe Simulation</a></h1>
-					<nav id="nav">
-						<ul>
-							<li><a href="index.html">Home</a></li>
-							<li><a href="#simulation-hero">Fluid Dynamics Lab</a></li>
-							<li>
-								<a href="#">Learning Tracks</a>
-								<ul>
-									<li><a href="basics.html">Physics: Basics</a></li>
-									<li><a href="intermediate.html">Physics: Intermediate</a></li>
-									<li><a href="advanced.html">Physics: Advanced</a></li>
-									<li><a href="ai.html">AI</a></li>
-								</ul>
-							</li>
-							<li><a href="about.html">About</a></li>
-							<li><a href="contact.html" class="button primary">Contact Us</a></li>
-						</ul>
-					</nav>
-				</header>
-
-			<!-- Simulation Hero -->
-			<section id="simulation-hero" class="simulation-hero">
-				<div class="simulation-container">
-					<div class="simulation-header">
-						<h1>Interactive Fluid Dynamics</h1>
-						<p>Experience real-time physics simulation. Brush the sky, tune parameters, and watch fluid dynamics come alive.</p>
-						<div class="interaction-hint">👆 Click and drag to interact with the simulation</div>
-					</div>
-					<div class="simulation-controls">
-						<div class="simulation-canvas">
-							<canvas id="painted-sky-canvas" width="1120" height="630"></canvas>
-						</div>
-						<div class="simulation-panel">
-							<div class="control-group">
-								<label>USER_SEED</label>
-								<input type="number" id="seed-input" value="20250827" />
-							</div>
-							<div class="control-group">
-								<label>Shear ΔU: <span id="shear-value">1.2</span></label>
-								<input type="range" id="shear-slider" min="0" max="3" step="0.05" value="1.2" />
-							</div>
-							<div class="control-group">
-								<label>Vorticity Confinement: <span id="vort-value">18.0</span></label>
-								<input type="range" id="vort-slider" min="0" max="40" step="1" value="18.0" />
-							</div>
-							<div class="control-group">
-								<label>Brush</label>
-								<select id="brush-select">
-									<option value="Stream">Stream</option>
-									<option value="Spray">Spray</option>
-									<option value="Ink-stamp">Ink-stamp</option>
-								</select>
-							</div>
-							<div class="control-group">
-								<label>Palette</label>
-								<select id="palette-select">
-									<option value="Aurora">Aurora</option>
-									<option value="NeonTokyo">Neon Tokyo</option>
-									<option value="Sunstone">Sunstone</option>
-								</select>
-							</div>
-							<div class="control-group">
-								<label>CFL Status</label>
-								<div id="cfl-status" class="status-indicator status-stable">Stable (0.0)</div>
-							</div>
-							<div class="control-group">
-								<button id="reset-simulation" class="button" style="width: 100%; background: #60a5fa; color: white; border: none; padding: 0.75rem; border-radius: 0.5rem; font-weight: 600;">Reset Simulation</button>
-							</div>
-						</div>
-					</div>
-				</div>
-				<a href="#charge-painter" class="goto-next scrolly">Explore Electrostatics</a>
-							</section>
-
-			<!-- Charge Painter Section -->
-			<section id="charge-painter" class="simulation-hero">
-				<div class="simulation-container">
-					<div class="simulation-header">
-						<h1>Electrostatic Field Simulator</h1>
-						<p>Paint conductors and watch electric fields emerge. Experience the power of Laplace's equation in real-time.</p>
-						<div class="interaction-hint">👆 Click and drag to paint conductors with different voltages</div>
-						</div>
-					<div class="simulation-controls">
-						<div class="simulation-canvas">
-							<canvas id="charge-painter-canvas" width="1120" height="630"></canvas>
-						</div>
-						<div class="simulation-panel">
-							<div class="control-group">
-								<label>USER_SEED</label>
-								<input type="number" id="cp-seed-input" value="20250827" />
-							</div>
-							<div class="control-group">
-								<label>Method</label>
-								<select id="cp-method-select">
-									<option value="SOR">SOR (Successive Over-Relaxation)</option>
-									<option value="GS">GS (Gauss-Seidel)</option>
-								</select>
-							</div>
-							<div class="control-group">
-								<label>ω (SOR Relaxation): <span id="cp-omega-value">1.85</span></label>
-								<input type="range" id="cp-omega-slider" min="1.0" max="1.99" step="0.01" value="1.85" />
-							</div>
-							<div class="control-group">
-								<label>Brush Voltage: <span id="cp-voltage-value">50</span></label>
-								<input type="range" id="cp-voltage-slider" min="-100" max="100" step="1" value="50" />
-							</div>
-							<div class="control-group">
-								<label>Brush Radius: <span id="cp-radius-value">10</span></label>
-								<input type="range" id="cp-radius-slider" min="2" max="20" step="1" value="10" />
-							</div>
-							<div class="control-group">
-								<label>Equipotentials: <span id="cp-iso-value">11</span></label>
-								<input type="range" id="cp-iso-slider" min="5" max="25" step="1" value="11" />
-							</div>
-							<div class="control-group">
-								<label><input type="checkbox" id="cp-chalk-checkbox" checked /> Electric Field Lines</label>
-							</div>
-							<div class="control-group">
-								<label>Solver Speed: <span id="cp-sweeps-value">3</span></label>
-								<input type="range" id="cp-sweeps-slider" min="1" max="12" step="1" value="3" />
-							</div>
-							<div class="control-group">
-								<label>Convergence Status</label>
-								<div id="cp-convergence-status" class="status-indicator status-stable">Solving...</div>
-							</div>
-							<div class="control-group">
-								<label>L₂ Residual: <span id="cp-residual-value">0.00</span></label>
-							</div>
-							<div class="control-group">
-								<label>Convergence Rate: <span id="cp-rate-value">1.000</span></label>
-							</div>
-							<div class="control-group">
-								<button id="cp-reset-simulation" class="button" style="width: 100%; background: #60a5fa; color: white; border: none; padding: 0.75rem; border-radius: 0.5rem; font-weight: 600;">Reset Simulation</button>
-							</div>
-							<div class="control-group">
-								<label>Residual History</label>
-								<canvas id="cp-sparkline-canvas" width="220" height="64" style="width: 100%; height: 64px; border-radius: 0.5rem; background: rgba(0,0,0,0.3);"></canvas>
-							</div>
-						</div>
-					</div>
-				</div>
-							</section>
-
-			<!-- Resonant Canvas Section -->
-			<section id="resonant-canvas" class="simulation-hero">
-				<div class="simulation-container">
-					<div class="simulation-header">
-						<h1>Wave Physics Simulator</h1>
-						<p>Experience string and membrane vibrations with real-time wave physics. Pluck, strike, or bow your virtual instruments.</p>
-						<div class="interaction-hint">🎸 Click and drag to pluck strings or strike membranes</div>
-						</div>
-					<div class="simulation-controls">
-						<div class="simulation-canvas">
-							<canvas id="resonant-canvas-canvas" width="1120" height="630"></canvas>
-					</div>
-						<div class="simulation-panel">
-							<div class="control-group">
-								<label>USER_SEED</label>
-								<input type="number" id="rc-seed-input" value="20250827" />
-				</div>
-							<div class="control-group">
-								<label>Geometry</label>
-								<select id="rc-geometry-select">
-									<option value="String1D">1D String</option>
-									<option value="Square2D">2D Square Membrane</option>
-									<option value="Circle2D">2D Circular Drum</option>
-								</select>
-							</div>
-							<div class="control-group">
-								<label>Numerical Scheme</label>
-								<select id="rc-scheme-select">
-									<option value="Leapfrog2">Leapfrog (2nd Order)</option>
-									<option value="Space4">4th Order Spatial</option>
-								</select>
-							</div>
-							<div class="control-group">
-								<label>Tension T: <span id="rc-tension-value">1.00</span></label>
-								<input type="range" id="rc-tension-slider" min="0.2" max="5.0" step="0.01" value="1.0" />
-							</div>
-							<div class="control-group">
-								<label>Density ρ: <span id="rc-density-value">1.00</span></label>
-								<input type="range" id="rc-density-slider" min="0.2" max="5.0" step="0.01" value="1.0" />
-							</div>
-							<div class="control-group">
-								<label>Courant σ Target: <span id="rc-sigma-value">0.90</span></label>
-								<input type="range" id="rc-sigma-slider" min="0.2" max="0.99" step="0.01" value="0.9" />
-							</div>
-							<div class="control-group">
-								<label>Damping: <span id="rc-damping-value">0.0005</span></label>
-								<input type="range" id="rc-damping-slider" min="0.0" max="0.01" step="0.0001" value="0.0005" />
-							</div>
-							<div class="control-group">
-								<label><input type="checkbox" id="rc-bow-checkbox" /> Enable Bowing</label>
-							</div>
-							<div class="control-group">
-								<label>Bow Frequency: <span id="rc-frequency-value">3.00</span></label>
-								<input type="range" id="rc-frequency-slider" min="0.5" max="10.0" step="0.1" value="3.0" />
-							</div>
-							<div class="control-group">
-								<label>Stability Status</label>
-								<div id="rc-stability-status" class="status-indicator status-stable">Stable</div>
-							</div>
-							<div class="control-group">
-								<label>Live Courant σ: <span id="rc-sigma-live-value">0.900</span></label>
-							</div>
-							<div class="control-group">
-								<label>Wave Speed c: <span id="rc-speed-value">1.000</span></label>
-							</div>
-							<div class="control-group">
-								<label>Energy Drift: <span id="rc-energy-value">0.00%</span></label>
-							</div>
-							<div class="control-group">
-								<button id="rc-reset-simulation" class="button" style="width: 100%; background: #60a5fa; color: white; border: none; padding: 0.75rem; border-radius: 0.5rem; font-weight: 600;">Reset Simulation</button>
-							</div>
-							<div class="control-group">
-								<label>Live Spectrogram</label>
-								<canvas id="rc-spectrogram-canvas" width="220" height="100" style="width: 100%; height: 100px; border-radius: 0.5rem; background: rgba(0,0,0,0.3);"></canvas>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			<!-- WaveForge Section -->
-			<section id="waveforge" class="simulation-hero">
-				<div class="simulation-container">
-					<div class="simulation-header">
-						<h1>Shallow Water Simulator</h1>
-						<p>Experience realistic flood dynamics with Saint-Venant equations. Paint basin walls and watch waves propagate through complex terrain.</p>
-						<div class="interaction-hint">🌊 Click and drag to paint walls or spawn water splashes</div>
-					</div>
-					<div class="simulation-controls">
-						<div class="simulation-canvas">
-							<canvas id="waveforge-canvas" width="1120" height="630"></canvas>
-						</div>
-						<div class="simulation-panel">
-							<div class="control-group">
-								<label>USER_SEED</label>
-								<input type="number" id="wf-seed-input" value="20250827" />
-							</div>
-							<div class="control-group">
-								<label>Paint Mode</label>
-								<select id="wf-mode-select">
-									<option value="Splash">Water Splash</option>
-									<option value="Walls">Basin Walls</option>
-								</select>
-							</div>
-							<div class="control-group">
-								<label>Brush Radius: <span id="wf-radius-value">10</span></label>
-								<input type="range" id="wf-radius-slider" min="3" max="24" step="1" value="10" />
-							</div>
-							<div class="control-group">
-								<label>Gravity g: <span id="wf-gravity-value">9.81</span></label>
-								<input type="range" id="wf-gravity-slider" min="1.0" max="20.0" step="0.1" value="9.81" />
-							</div>
-							<div class="control-group">
-								<label>Friction μ: <span id="wf-friction-value">0.005</span></label>
-								<input type="range" id="wf-friction-slider" min="0.0" max="0.05" step="0.001" value="0.005" />
-							</div>
-							<div class="control-group">
-								<label>CFL Target: <span id="wf-cfl-value">0.70</span></label>
-								<input type="range" id="wf-cfl-slider" min="0.2" max="0.95" step="0.01" value="0.7" />
-							</div>
-							<div class="control-group">
-								<label>Grid Scale Δx: <span id="wf-dx-value">1.00</span></label>
-								<input type="range" id="wf-dx-slider" min="0.5" max="2.0" step="0.05" value="1.0" />
-							</div>
-							<div class="control-group">
-								<label>Color Palette</label>
-								<select id="wf-palette-select">
-									<option value="Ocean">Ocean</option>
-									<option value="Icefire">Icefire</option>
-									<option value="Magma">Magma</option>
-								</select>
-							</div>
-							<div class="control-group">
-								<label><input type="checkbox" id="wf-vectors-checkbox" /> Show Velocity Vectors</label>
-							</div>
-							<div class="control-group">
-								<label>Stability Status</label>
-								<div id="wf-stability-status" class="status-indicator status-stable">Stable</div>
-							</div>
-							<div class="control-group">
-								<label>Live CFL: <span id="wf-cfl-live-value">0.00</span></label>
-							</div>
-							<div class="control-group">
-								<label>Mass Drift: <span id="wf-mass-value">0.0 ppm</span></label>
-							</div>
-							<div class="control-group">
-								<button id="wf-reset-simulation" class="button" style="width: 100%; background: #60a5fa; color: white; border: none; padding: 0.75rem; border-radius: 0.5rem; font-weight: 600;">Reset Simulation</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-
-		<!-- Main -->
-			<div id="main" class="wrapper style1">
-				<div class="container">
-					<header class="major">
-						<h2>Learning Tracks</h2>
-						<p>Follow a structured path from foundational principles to the frontiers of physics.</p>
-					</header>
-					<div class="row gtr-150">
-						<div class="col-4 col-12-medium">
-
-							<!-- Sidebar -->
-								<section id="sidebar">
-									<section>
-										<h3>Basics</h3>
-										<p>Build a strong foundation with core concepts of classical mechanics and thermodynamics.</p>
-										<footer>
-											<ul class="actions">
-												<li><a href="basics.html" class="button">Learn More</a></li>
-											</ul>
-										</footer>
-									</section>
-									<hr />
-									<section>
-										<a href="basics.html" class="image fit"><img src="images/pic06.jpg" alt="" /></a>
-									</section>
-								</section>
-
-						</div>
-						<div class="col-8 col-12-medium imp-medium">
-
-							<!-- Content -->
-								<section id="content">
-									<a href="intermediate.html" class="image fit"><img src="images/pic05.jpg" alt="" /></a>
-									<h3>Intermediate</h3>
-									<p>Deepen your understanding with topics in electromagnetism, waves, and optics.</p>
-									<a href="advanced.html" class="image fit"><img src="images/pic04.jpg" alt="" /></a>
-									<h3>Advanced</h3>
-									<p>Challenge yourself with modern physics, including relativity and quantum mechanics.</p>
-									<ul class="actions">
-										<li><a href="intermediate.html" class="button">Explore Tracks</a></li>
-									</ul>
-								</section>
-
-						</div>
-					</div>
+		<!-- Navigation -->
+		<nav class="physics-nav">
+			<div class="nav-content">
+				<a href="#physics-hero" class="nav-logo">
+					<span style="font-size: 1.8em;">🌊</span>
+					VibeSimulation
+				</a>
+				<div class="nav-links">
+					<a href="#fluid-dynamics" class="nav-link">Fluid Dynamics</a>
+					<a href="#electrostatics" class="nav-link">Electrostatics</a>
+					<a href="#wave-physics" class="nav-link">Wave Physics</a>
+					<a href="#shallow-water" class="nav-link">Shallow Water</a>
+					<a href="#about" class="nav-link">About</a>
 				</div>
 			</div>
+		</nav>
 
-			<!-- Video Tracks Section -->
-			<section id="video-tracks" class="wrapper style1 special">
-				<div class="container">
-					<header class="major">
-						<h2>Explore Our Learning Tracks</h2>
-						<p>Dive into comprehensive physics and AI education through our curated video series.</p>
-					</header>
-					<div class="row aln-center">
+		<div id="page-wrapper">
+
+			<!-- Physics Hero -->
+			<section id="physics-hero" class="physics-hero">
+				<div class="hero-content">
+					<h1 class="hero-title">Physics Gallery</h1>
+					<p class="hero-subtitle">
+						Experience four fundamental domains of physics through real-time, interactive simulations.
+						From fluid dynamics to wave phenomena, explore the beauty of computational physics.
+					</p>
+					<button onclick="document.getElementById('fluid-dynamics').scrollIntoView({behavior: 'smooth'})" class="hero-cta">
+						<span>🌊</span>
+						Explore Physics
+					</button>
+				</div>
+			</section>
+
+			<!-- Physics Gallery -->
+			<section class="physics-gallery">
+				<h2 class="gallery-title">Interactive Physics Simulations</h2>
+				<p class="gallery-subtitle">
+					Click, drag, and interact with real-time physics engines.
+					Each simulation responds to your touch, bringing complex mathematical concepts to life.
+				</p>
+
+				<div class="physics-grid">
+					<!-- Fluid Dynamics Card -->
+					<div id="fluid-dynamics" class="physics-card">
+						<div class="physics-header">
+							<h3 class="physics-title">
+								<div class="physics-icon fluid-icon">🌊</div>
+								Fluid Dynamics
+							</h3>
+							<p class="physics-description">
+								Experience Navier-Stokes equations in real-time. Watch vorticity, advection, and pressure gradients
+								create mesmerizing fluid motion. Brush the canvas to inject energy and watch turbulent flows emerge.
+							</p>
+						</div>
+						<div class="physics-simulation">
+							<div class="physics-canvas">
+								<canvas id="painted-sky-canvas" width="1120" height="630"></canvas>
+							</div>
+							<div class="physics-controls">
+								<div class="control-group">
+									<label>USER_SEED</label>
+									<input type="number" id="seed-input" value="20250827" />
+								</div>
+								<div class="control-group">
+									<label>Shear ΔU: <span id="shear-value">1.2</span></label>
+									<input type="range" id="shear-slider" min="0" max="3" step="0.05" value="1.2" />
+								</div>
+								<div class="control-group">
+									<label>Vorticity Confinement: <span id="vort-value">18.0</span></label>
+									<input type="range" id="vort-slider" min="0" max="40" step="1" value="18.0" />
+								</div>
+								<div class="control-group">
+									<label>Brush</label>
+									<select id="brush-select">
+										<option value="Stream">Stream</option>
+										<option value="Spray">Spray</option>
+										<option value="Ink-stamp">Ink-stamp</option>
+									</select>
+								</div>
+								<div class="control-group">
+									<label>Palette</label>
+									<select id="palette-select">
+										<option value="Aurora">Aurora</option>
+										<option value="NeonTokyo">Neon Tokyo</option>
+										<option value="Sunstone">Sunstone</option>
+									</select>
+								</div>
+								<div class="control-group">
+									<label>CFL Status</label>
+									<div id="cfl-status" class="status-indicator status-stable">Stable (0.0)</div>
+								</div>
+								<div class="control-group">
+									<button id="reset-simulation">Reset Simulation</button>
+								</div>
+							</div>
+						</div>
+						</div>
+
+					<!-- Electrostatics Card -->
+					<div id="electrostatics" class="physics-card">
+						<div class="physics-header">
+							<h3 class="physics-title">
+								<div class="physics-icon charge-icon">⚡</div>
+								Electrostatics
+							</h3>
+							<p class="physics-description">
+								Paint conductors and watch electric fields materialize. Experience Gauss's law and Laplace's equation
+								as you create complex charge distributions and observe field lines emerge in real-time.
+							</p>
+						</div>
+						<div class="physics-simulation">
+							<div class="physics-canvas">
+								<canvas id="charge-painter-canvas" width="1120" height="630"></canvas>
+							</div>
+							<div class="physics-controls">
+								<div class="control-group">
+									<label>USER_SEED</label>
+									<input type="number" id="cp-seed-input" value="20250827" />
+								</div>
+								<div class="control-group">
+									<label>Method</label>
+									<select id="cp-method-select">
+										<option value="SOR">SOR (Successive Over-Relaxation)</option>
+										<option value="GS">GS (Gauss-Seidel)</option>
+									</select>
+								</div>
+								<div class="control-group">
+									<label>ω (SOR Relaxation): <span id="cp-omega-value">1.85</span></label>
+									<input type="range" id="cp-omega-slider" min="1.0" max="1.99" step="0.01" value="1.85" />
+								</div>
+								<div class="control-group">
+									<label>Brush Voltage: <span id="cp-voltage-value">50</span></label>
+									<input type="range" id="cp-voltage-slider" min="-100" max="100" step="1" value="50" />
+								</div>
+								<div class="control-group">
+									<label>Brush Radius: <span id="cp-radius-value">10</span></label>
+									<input type="range" id="cp-radius-slider" min="2" max="20" step="1" value="10" />
+								</div>
+								<div class="control-group">
+									<label>Equipotentials: <span id="cp-iso-value">11</span></label>
+									<input type="range" id="cp-iso-slider" min="5" max="25" step="1" value="11" />
+								</div>
+								<div class="control-group">
+									<label><input type="checkbox" id="cp-chalk-checkbox" checked /> Electric Field Lines</label>
+								</div>
+								<div class="control-group">
+									<label>Solver Speed: <span id="cp-sweeps-value">3</span></label>
+									<input type="range" id="cp-sweeps-slider" min="1" max="12" step="1" value="3" />
+								</div>
+								<div class="control-group">
+									<label>Convergence Status</label>
+									<div id="cp-convergence-status" class="status-indicator status-stable">Solving...</div>
+								</div>
+								<div class="control-group">
+									<label>L₂ Residual: <span id="cp-residual-value">0.00</span></label>
+								</div>
+								<div class="control-group">
+									<label>Convergence Rate: <span id="cp-rate-value">1.000</span></label>
+								</div>
+								<div class="control-group">
+									<button id="cp-reset-simulation">Reset Simulation</button>
+								</div>
+								<div class="control-group">
+									<label>Residual History</label>
+									<canvas id="cp-sparkline-canvas" width="220" height="64" style="width: 100%; height: 64px; border-radius: 0.5rem; background: rgba(0,0,0,0.3);"></canvas>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Wave Physics Card -->
+					<div id="wave-physics" class="physics-card">
+						<div class="physics-header">
+							<h3 class="physics-title">
+								<div class="physics-icon wave-icon">🎵</div>
+								Wave Physics
+							</h3>
+							<p class="physics-description">
+								Explore wave equations on strings and membranes. Experience the mathematics of music and acoustics
+								as you pluck, strike, and bow virtual instruments with real-time Finite Difference Method simulation.
+							</p>
+						</div>
+						<div class="physics-simulation">
+							<div class="physics-canvas">
+								<canvas id="resonant-canvas-canvas" width="1120" height="630"></canvas>
+							</div>
+							<div class="physics-controls">
+								<div class="control-group">
+									<label>USER_SEED</label>
+									<input type="number" id="rc-seed-input" value="20250827" />
+								</div>
+								<div class="control-group">
+									<label>Geometry</label>
+									<select id="rc-geometry-select">
+										<option value="String1D">1D String</option>
+										<option value="Square2D">2D Square Membrane</option>
+										<option value="Circle2D">2D Circular Drum</option>
+									</select>
+								</div>
+								<div class="control-group">
+									<label>Numerical Scheme</label>
+									<select id="rc-scheme-select">
+										<option value="Leapfrog2">Leapfrog (2nd Order)</option>
+										<option value="Space4">4th Order Spatial</option>
+									</select>
+								</div>
+								<div class="control-group">
+									<label>Tension T: <span id="rc-tension-value">1.00</span></label>
+									<input type="range" id="rc-tension-slider" min="0.2" max="5.0" step="0.01" value="1.0" />
+								</div>
+								<div class="control-group">
+									<label>Density ρ: <span id="rc-density-value">1.00</span></label>
+									<input type="range" id="rc-density-slider" min="0.2" max="5.0" step="0.01" value="1.0" />
+								</div>
+								<div class="control-group">
+									<label>Courant σ Target: <span id="rc-sigma-value">0.90</span></label>
+									<input type="range" id="rc-sigma-slider" min="0.2" max="0.99" step="0.01" value="0.9" />
+								</div>
+								<div class="control-group">
+									<label>Damping: <span id="rc-damping-value">0.0005</span></label>
+									<input type="range" id="rc-damping-slider" min="0.0" max="0.01" step="0.0001" value="0.0005" />
+								</div>
+								<div class="control-group">
+									<label><input type="checkbox" id="rc-bow-checkbox" /> Enable Bowing</label>
+								</div>
+								<div class="control-group">
+									<label>Bow Frequency: <span id="rc-frequency-value">3.00</span></label>
+									<input type="range" id="rc-frequency-slider" min="0.5" max="10.0" step="0.1" value="3.0" />
+								</div>
+								<div class="control-group">
+									<label>Stability Status</label>
+									<div id="rc-stability-status" class="status-indicator status-stable">Stable</div>
+								</div>
+								<div class="control-group">
+									<label>Live Courant σ: <span id="rc-sigma-live-value">0.900</span></label>
+								</div>
+								<div class="control-group">
+									<label>Wave Speed c: <span id="rc-speed-value">1.000</span></label>
+								</div>
+								<div class="control-group">
+									<label>Energy Drift: <span id="rc-energy-value">0.00%</span></label>
+								</div>
+								<div class="control-group">
+									<button id="rc-reset-simulation">Reset Simulation</button>
+								</div>
+								<div class="control-group">
+									<label>Live Spectrogram</label>
+									<canvas id="rc-spectrogram-canvas" width="220" height="100" style="width: 100%; height: 100px; border-radius: 0.5rem; background: rgba(0,0,0,0.3);"></canvas>
+								</div>
+							</div>
+						</div>
+					</div>
+			</section>
+
+					<!-- Shallow Water Dynamics Card -->
+					<div id="shallow-water" class="physics-card">
+						<div class="physics-header">
+							<h3 class="physics-title">
+								<div class="physics-icon water-icon">🌊</div>
+								Shallow Water Dynamics
+							</h3>
+							<p class="physics-description">
+								Explore flood dynamics and tsunami propagation with the Saint-Venant equations. Paint terrain obstacles
+								and watch realistic water flow with momentum conservation, pressure gradients, and wave interactions.
+							</p>
+						</div>
+						<div class="physics-simulation">
+							<div class="physics-canvas">
+								<canvas id="waveforge-canvas" width="1120" height="630"></canvas>
+							</div>
+							<div class="physics-controls">
+								<div class="control-group">
+									<label>USER_SEED</label>
+									<input type="number" id="wf-seed-input" value="20250827" />
+								</div>
+								<div class="control-group">
+									<label>Paint Mode</label>
+									<select id="wf-mode-select">
+										<option value="Splash">Water Splash</option>
+										<option value="Walls">Basin Walls</option>
+									</select>
+								</div>
+								<div class="control-group">
+									<label>Brush Radius: <span id="wf-radius-value">10</span></label>
+									<input type="range" id="wf-radius-slider" min="3" max="24" step="1" value="10" />
+								</div>
+								<div class="control-group">
+									<label>Gravity g: <span id="wf-gravity-value">9.81</span></label>
+									<input type="range" id="wf-gravity-slider" min="1.0" max="20.0" step="0.1" value="9.81" />
+								</div>
+								<div class="control-group">
+									<label>Friction μ: <span id="wf-friction-value">0.005</span></label>
+									<input type="range" id="wf-friction-slider" min="0.0" max="0.05" step="0.001" value="0.005" />
+								</div>
+								<div class="control-group">
+									<label>CFL Target: <span id="wf-cfl-value">0.70</span></label>
+									<input type="range" id="wf-cfl-slider" min="0.2" max="0.95" step="0.01" value="0.7" />
+								</div>
+								<div class="control-group">
+									<label>Grid Scale Δx: <span id="wf-dx-value">1.00</span></label>
+									<input type="range" id="wf-dx-slider" min="0.5" max="2.0" step="0.05" value="1.0" />
+								</div>
+								<div class="control-group">
+									<label>Color Palette</label>
+									<select id="wf-palette-select">
+										<option value="Ocean">Ocean</option>
+										<option value="Icefire">Icefire</option>
+										<option value="Magma">Magma</option>
+									</select>
+								</div>
+								<div class="control-group">
+									<label><input type="checkbox" id="wf-vectors-checkbox" /> Show Velocity Vectors</label>
+								</div>
+								<div class="control-group">
+									<label>Stability Status</label>
+									<div id="wf-stability-status" class="status-indicator status-stable">Stable</div>
+								</div>
+								<div class="control-group">
+									<label>Live CFL: <span id="wf-cfl-live-value">0.00</span></label>
+								</div>
+								<div class="control-group">
+									<label>Mass Drift: <span id="wf-mass-value">0.0 ppm</span></label>
+								</div>
+								<div class="control-group">
+									<button id="wf-reset-simulation">Reset Simulation</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Footer -->
+			<section class="physics-footer">
+				<div class="footer-content">
+					<h3 class="footer-title">Computational Physics Made Real</h3>
+					<p class="footer-text">
+						These simulations demonstrate the power of numerical methods in revealing the hidden beauty
+						of physical laws. Each pixel represents thousands of calculations, bringing complex mathematics to life.
+					</p>
+				</div>
+			</section>
+
+
+
+
 						<div class="col-6 col-12-medium">
 							<section class="box style1">
 								<a class="image fit video-thumbnail" data-video-id="W8nWJ_bsVlM"><img src="images/lesson-01-thumbnail.png" alt="Thumbnail for Physics Lesson" /></a>
