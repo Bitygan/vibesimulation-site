@@ -1,0 +1,47 @@
+# Cloudflare Pages Headers Configuration
+# This file configures custom HTTP headers for your Cloudflare Pages deployment
+
+/*
+  # Security Headers
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+  # Cache Headers for Static Assets
+  Cache-Control: public, max-age=31536000
+
+# JavaScript and CSS files
+/*.js
+  Cache-Control: public, max-age=31536000
+
+/*.css
+  Cache-Control: public, max-age=31536000
+
+# Image files
+/*.png
+  Cache-Control: public, max-age=31536000
+
+/*.jpg
+  Cache-Control: public, max-age=31536000
+
+/*.svg
+  Cache-Control: public, max-age=31536000
+
+/*.webp
+  Cache-Control: public, max-age=31536000
+
+# Font files
+/*.woff
+  Cache-Control: public, max-age=31536000
+
+/*.woff2
+  Cache-Control: public, max-age=31536000
+
+/*.ttf
+  Cache-Control: public, max-age=31536000
+
+/*.eot
+  Cache-Control: public, max-age=31536000

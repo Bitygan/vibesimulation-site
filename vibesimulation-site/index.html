@@ -9,10 +9,148 @@
 		<title>VibeSimulation - Visualize Physics</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<meta name="description" content="Explore physics from basic to advanced levels through high-quality Manim animations. VibeSimulation.com makes complex concepts crystal clear.">
-    	<meta name="keywords" content="physics, manim, animation, education, science, mechanics, electromagnetism, quantum physics">
+		<meta name="description" content="Interactive fluid dynamics simulation. Explore physics through real-time simulations and high-quality Manim animations. VibeSimulation.com makes complex concepts crystal clear.">
+    	<meta name="keywords" content="physics, manim, animation, education, science, mechanics, electromagnetism, quantum physics, fluid dynamics, simulation">
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<link rel="stylesheet" href="assets/css/video.css" />
+		<!-- Simulation Styles -->
+		<style>
+			.simulation-hero {
+				min-height: 80vh;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding: 2rem 0;
+			}
+			.simulation-container {
+				background: linear-gradient(135deg, #0f172a 0%, #581c87 50%, #0f172a 100%);
+				border-radius: 1rem;
+				padding: 2rem;
+				box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+				max-width: 1400px;
+				width: 100%;
+				margin: 0 auto;
+			}
+			.simulation-header {
+				text-align: center;
+				margin-bottom: 2rem;
+				color: white;
+			}
+			.simulation-header h1 {
+				font-size: 3.5rem;
+				font-weight: 700;
+				margin-bottom: 1rem;
+				background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+				background-clip: text;
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+			}
+			.simulation-header p {
+				font-size: 1.25rem;
+				opacity: 0.9;
+				margin-bottom: 1rem;
+			}
+			.interaction-hint {
+				font-size: 0.875rem;
+				opacity: 0.7;
+				font-style: italic;
+			}
+			.simulation-controls {
+				display: grid;
+				grid-template-columns: 1fr 300px;
+				gap: 2rem;
+				align-items: start;
+			}
+			.simulation-canvas {
+				background: #08090b;
+				border-radius: 1rem;
+				overflow: hidden;
+				box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+			}
+			.simulation-panel {
+				background: rgba(255, 255, 255, 0.05);
+				border-radius: 1rem;
+				padding: 1.5rem;
+				backdrop-filter: blur(10px);
+				border: 1px solid rgba(255, 255, 255, 0.1);
+			}
+			.control-group {
+				margin-bottom: 1.5rem;
+			}
+			.control-group label {
+				display: block;
+				color: white;
+				font-weight: 600;
+				margin-bottom: 0.5rem;
+				font-size: 0.875rem;
+			}
+			.control-group input,
+			.control-group select {
+				width: 100%;
+				padding: 0.5rem;
+				border-radius: 0.5rem;
+				border: 1px solid rgba(255, 255, 255, 0.2);
+				background: rgba(255, 255, 255, 0.1);
+				color: white;
+				font-size: 0.875rem;
+			}
+			.control-group input:focus,
+			.control-group select:focus {
+				outline: none;
+				border-color: #60a5fa;
+				box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+			}
+			.status-indicator {
+				display: inline-block;
+				padding: 0.25rem 0.75rem;
+				border-radius: 9999px;
+				font-size: 0.75rem;
+				font-weight: 600;
+				margin-top: 0.5rem;
+			}
+			.status-stable { background: #10b981; color: white; }
+			.status-unstable { background: #ef4444; color: white; }
+			@media (max-width: 1024px) {
+				.simulation-controls {
+					grid-template-columns: 1fr;
+					gap: 1rem;
+				}
+				.simulation-header h1 {
+					font-size: 2.5rem;
+				}
+			}
+			@media (max-width: 768px) {
+				.simulation-hero {
+					min-height: auto;
+					padding: 1rem 0;
+				}
+				.simulation-container {
+					padding: 1rem;
+				}
+				.simulation-header h1 {
+					font-size: 2rem;
+				}
+				.simulation-header p {
+					font-size: 1rem;
+				}
+				#painted-sky-canvas {
+					width: 100%;
+					height: auto;
+					max-height: 400px;
+				}
+			}
+			@media (max-width: 480px) {
+				.simulation-panel {
+					padding: 1rem;
+				}
+				.control-group {
+					margin-bottom: 1rem;
+				}
+				.simulation-header h1 {
+					font-size: 1.75rem;
+				}
+			}
+		</style>
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 		<!-- Google Analytics (GA4) -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXX"></script>
@@ -32,6 +170,7 @@
 					<nav id="nav">
 						<ul>
 							<li><a href="index.html">Home</a></li>
+							<li><a href="#simulation-hero">Fluid Dynamics Lab</a></li>
 							<li>
 								<a href="#">Learning Tracks</a>
 								<ul>
@@ -47,41 +186,58 @@
 					</nav>
 				</header>
 
-			<!-- Banner -->
-			<section id="banner">
-				<div class="container">
-					<header class="major">
-						<h1>Complex Physics & AI, Made Clear.</h1>
-						<p>Explore beautiful, short animations that make learning intuitive. From Newton's Laws to Neural Networks.</p>
-					</header>
-					<div class="row aln-center">
-						<div class="col-6 col-12-medium">
-							<section class="box style1">
-								<a class="image fit video-thumbnail" data-video-id="W8nWJ_bsVlM"><img src="images/lesson-01-thumbnail.png" alt="Thumbnail for Physics Lesson" /></a>
-								<header>
-									<h3>Physics Track</h3>
-								</header>
-								<p>Build a strong foundation with core concepts of classical mechanics, thermodynamics, and more.</p>
-								<ul class="actions">
-									<li><a href="basics.html" class="button">Explore Physics</a></li>
-								</ul>
-							</section>
+			<!-- Simulation Hero -->
+			<section id="simulation-hero" class="simulation-hero">
+				<div class="simulation-container">
+					<div class="simulation-header">
+						<h1>Interactive Fluid Dynamics</h1>
+						<p>Experience real-time physics simulation. Brush the sky, tune parameters, and watch fluid dynamics come alive.</p>
+						<div class="interaction-hint">👆 Click and drag to interact with the simulation</div>
+					</div>
+					<div class="simulation-controls">
+						<div class="simulation-canvas">
+							<canvas id="painted-sky-canvas" width="1120" height="630"></canvas>
 						</div>
-						<div class="col-6 col-12-medium">
-							<section class="box style1">
-								<a class="image fit video-thumbnail" data-video-id="Tvx3wep7-DU"><img src="images/lesson-ai-01-thumbnail.png" alt="Thumbnail for AI Lesson" /></a>
-								<header>
-									<h3>AI Track</h3>
-								</header>
-								<p>Discover how massive AI models are made fast and efficient for real-world applications.</p>
-								<ul class="actions">
-									<li><a href="ai.html" class="button">Explore AI</a></li>
-								</ul>
-							</section>
+						<div class="simulation-panel">
+							<div class="control-group">
+								<label>USER_SEED</label>
+								<input type="number" id="seed-input" value="20250827" />
+							</div>
+							<div class="control-group">
+								<label>Shear ΔU: <span id="shear-value">1.2</span></label>
+								<input type="range" id="shear-slider" min="0" max="3" step="0.05" value="1.2" />
+							</div>
+							<div class="control-group">
+								<label>Vorticity Confinement: <span id="vort-value">18.0</span></label>
+								<input type="range" id="vort-slider" min="0" max="40" step="1" value="18.0" />
+							</div>
+							<div class="control-group">
+								<label>Brush</label>
+								<select id="brush-select">
+									<option value="Stream">Stream</option>
+									<option value="Spray">Spray</option>
+									<option value="Ink-stamp">Ink-stamp</option>
+								</select>
+							</div>
+							<div class="control-group">
+								<label>Palette</label>
+								<select id="palette-select">
+									<option value="Aurora">Aurora</option>
+									<option value="NeonTokyo">Neon Tokyo</option>
+									<option value="Sunstone">Sunstone</option>
+								</select>
+							</div>
+							<div class="control-group">
+								<label>CFL Status</label>
+								<div id="cfl-status" class="status-indicator status-stable">Stable (0.0)</div>
+							</div>
+							<div class="control-group">
+								<button id="reset-simulation" class="button" style="width: 100%; background: #60a5fa; color: white; border: none; padding: 0.75rem; border-radius: 0.5rem; font-weight: 600;">Reset Simulation</button>
+							</div>
 						</div>
 					</div>
 				</div>
-				<a href="#main" class="goto-next scrolly">Next</a>
+				<a href="#main" class="goto-next scrolly">Explore Learning Tracks</a>
 			</section>
 
 		<!-- Main -->
@@ -132,6 +288,42 @@
 				</div>
 			</div>
 
+			<!-- Video Tracks Section -->
+			<section id="video-tracks" class="wrapper style1 special">
+				<div class="container">
+					<header class="major">
+						<h2>Explore Our Learning Tracks</h2>
+						<p>Dive into comprehensive physics and AI education through our curated video series.</p>
+					</header>
+					<div class="row aln-center">
+						<div class="col-6 col-12-medium">
+							<section class="box style1">
+								<a class="image fit video-thumbnail" data-video-id="W8nWJ_bsVlM"><img src="images/lesson-01-thumbnail.png" alt="Thumbnail for Physics Lesson" /></a>
+								<header>
+									<h3>Physics Track</h3>
+								</header>
+								<p>Build a strong foundation with core concepts of classical mechanics, thermodynamics, and more.</p>
+								<ul class="actions">
+									<li><a href="basics.html" class="button">Explore Physics</a></li>
+								</ul>
+							</section>
+						</div>
+						<div class="col-6 col-12-medium">
+							<section class="box style1">
+								<a class="image fit video-thumbnail" data-video-id="Tvx3wep7-DU"><img src="images/lesson-ai-01-thumbnail.png" alt="Thumbnail for AI Lesson" /></a>
+								<header>
+									<h3>AI Track</h3>
+								</header>
+								<p>Discover how massive AI models are made fast and efficient for real-world applications.</p>
+								<ul class="actions">
+									<li><a href="ai.html" class="button">Explore AI</a></li>
+								</ul>
+							</section>
+						</div>
+					</div>
+				</div>
+			</section>
+
 			<!-- Four -->
 				<section id="four" class="wrapper style1 special fade-up">
 					<div class="container">
@@ -170,6 +362,357 @@
 			</div>
 		</div>
 
+		<!-- Simulation Script -->
+		<script>
+			class PaintedSkySimulation {
+				constructor() {
+					this.W = 1120;
+					this.H = 630;
+					this.NX = 192;
+					this.NY = 108;
+					this.dx = 1.0;
+					this.dt = 0.85;
+					this.VISC = 0.00006;
+
+					this.canvas = document.getElementById('painted-sky-canvas');
+					this.ctx = this.canvas.getContext('2d');
+					this.size = this.NX * this.NY;
+
+					// Simulation arrays
+					this.u = new Float32Array(this.size);
+					this.v = new Float32Array(this.size);
+					this.d = new Float32Array(this.size);
+					this.u0 = new Float32Array(this.size);
+					this.v0 = new Float32Array(this.size);
+					this.d0 = new Float32Array(this.size);
+
+					// Parameters
+					this.seed = 20250827;
+					this.shear = 1.2;
+					this.vortConf = 18.0;
+					this.brush = "Stream";
+					this.lutName = "Aurora";
+					this.cfl = 0;
+
+					// UI elements
+					this.seedInput = document.getElementById('seed-input');
+					this.shearSlider = document.getElementById('shear-slider');
+					this.shearValue = document.getElementById('shear-value');
+					this.vortSlider = document.getElementById('vort-slider');
+					this.vortValue = document.getElementById('vort-value');
+					this.brushSelect = document.getElementById('brush-select');
+					this.paletteSelect = document.getElementById('palette-select');
+					this.cflStatus = document.getElementById('cfl-status');
+					this.resetButton = document.getElementById('reset-simulation');
+
+					this.mouseDown = false;
+					this.mx = 0;
+					this.my = 0;
+					this.raf = 0;
+
+					this.init();
+				}
+
+				init() {
+					this.setupCanvasSizing();
+					this.setupEventListeners();
+					this.initializeSimulation();
+					this.startAnimation();
+				}
+
+				setupCanvasSizing() {
+					const resizeCanvas = () => {
+						const container = this.canvas.parentElement;
+						const containerWidth = container.offsetWidth;
+						const containerHeight = Math.min(containerWidth * 0.5625, 630); // 16:9 aspect ratio
+
+						this.canvas.style.width = containerWidth + 'px';
+						this.canvas.style.height = containerHeight + 'px';
+
+						// Scale factor for coordinate transformation
+						this.scaleX = this.NX / containerWidth;
+						this.scaleY = this.NY / containerHeight;
+					};
+
+					resizeCanvas();
+					window.addEventListener('resize', resizeCanvas);
+				}
+
+				setupEventListeners() {
+					// Mouse events
+					this.canvas.onpointerdown = (e) => {
+						this.mouseDown = true;
+						const r = this.canvas.getBoundingClientRect();
+						this.mx = (e.clientX - r.left) * this.scaleX;
+						this.my = (e.clientY - r.top) * this.scaleY;
+						this.inject(this.mx, this.my);
+					};
+
+					this.canvas.onpointermove = (e) => {
+						if (!this.mouseDown) return;
+						const r = this.canvas.getBoundingClientRect();
+						this.mx = (e.clientX - r.left) * this.scaleX;
+						this.my = (e.clientY - r.top) * this.scaleY;
+						this.inject(this.mx, this.my);
+					};
+
+					this.canvas.onpointerup = () => { this.mouseDown = false; };
+					this.canvas.onpointerleave = () => { this.mouseDown = false; };
+
+					// Control events
+					this.seedInput.addEventListener('change', (e) => {
+						this.seed = parseInt(e.target.value);
+						this.resetSimulation();
+					});
+
+					this.shearSlider.addEventListener('input', (e) => {
+						this.shear = parseFloat(e.target.value);
+						this.shearValue.textContent = this.shear.toFixed(2);
+					});
+
+					this.vortSlider.addEventListener('input', (e) => {
+						this.vortConf = parseFloat(e.target.value);
+						this.vortValue.textContent = this.vortConf.toFixed(1);
+					});
+
+					this.brushSelect.addEventListener('change', (e) => {
+						this.brush = e.target.value;
+					});
+
+					this.paletteSelect.addEventListener('change', (e) => {
+						this.lutName = e.target.value;
+					});
+
+					this.resetButton.addEventListener('click', () => {
+						this.resetSimulation();
+					});
+				}
+
+				inject(px, py) {
+					const R = 10;
+					for (let j = -R; j <= R; j++) {
+						for (let i = -R; i <= R; i++) {
+							const x = Math.floor(px) + i;
+							const y = Math.floor(py) + j;
+							if (x < 1 || x >= this.NX - 1 || y < 1 || y >= this.NY - 1) continue;
+							if (i * i + j * j > R * R) continue;
+							const k = y * this.NX + x;
+							this.d[k] += 2.5;
+							if (this.brush === "Stream") {
+								this.u[k] += this.shear * 0.8;
+							} else if (this.brush === "Spray") {
+								this.u[k] += (Math.random() - 0.5) * this.shear;
+								this.v[k] += (Math.random() - 0.5) * this.shear;
+							} else {
+								this.u[k] += (y > this.NY / 2 ? +this.shear : -this.shear);
+							}
+						}
+					}
+				}
+
+				makeLUT(name) {
+					const g = [];
+					for (let i = 0; i < 256; i++) {
+						const t = i / 255;
+						let r = 0, gc = 0, b = 0;
+						if (name === "Aurora") {
+							r = Math.pow(t, 0.6);
+							gc = Math.pow(1 - t, 0.4) * 0.8 + 0.1;
+							b = 0.6 + 0.4 * Math.sin(6.283 * t);
+						} else if (name === "NeonTokyo") {
+							r = 0.3 + 0.7 * t;
+							gc = 0.1 + 0.9 * (t * t);
+							b = 1.0 - 0.6 * t;
+						} else {
+							r = 1.0;
+							gc = 0.6 + 0.4 * t;
+							b = 0.2 + 0.3 * (1 - t);
+						}
+						g.push(
+							Math.round(Math.max(0, Math.min(255, r * 255))),
+							Math.round(Math.max(0, Math.min(255, gc * 255))),
+							Math.round(Math.max(0, Math.min(255, b * 255))),
+							255
+						);
+					}
+					return new Uint8ClampedArray(g);
+				}
+
+				idx(x, y) {
+					return y * this.NX + x;
+				}
+
+				advect(src, dst) {
+					for (let y = 1; y < this.NY - 1; y++) {
+						for (let x = 1; x < this.NX - 1; x++) {
+							const k = this.idx(x, y);
+							const x0 = x - this.dt * this.u[k] / this.dx;
+							const y0 = y - this.dt * this.v[k] / this.dx;
+							const xi = Math.max(0.5, Math.min(this.NX - 1.5, x0));
+							const yi = Math.max(0.5, Math.min(this.NY - 1.5, y0));
+							const xL = Math.floor(xi), xR = xL + 1, yB = Math.floor(yi), yT = yB + 1;
+							const sx = xi - xL, sy = yi - yB;
+							const k00 = this.idx(xL, yB), k10 = this.idx(xR, yB), k01 = this.idx(xL, yT), k11 = this.idx(xR, yT);
+							dst[k] = (1 - sx) * (1 - sy) * src[k00] + sx * (1 - sy) * src[k10] + (1 - sx) * sy * src[k01] + sx * sy * src[k11];
+						}
+					}
+				}
+
+				diffuse(src, dst) {
+					for (let y = 1; y < this.NY - 1; y++) {
+						for (let x = 1; x < this.NX - 1; x++) {
+							const k = this.idx(x, y);
+							dst[k] = src[k] + this.VISC * (src[this.idx(x - 1, y)] + src[this.idx(x + 1, y)] + src[this.idx(x, y - 1)] + src[this.idx(x, y + 1)] - 4 * src[k]);
+						}
+					}
+				}
+
+				project() {
+					const p = new Float32Array(this.size), div = new Float32Array(this.size);
+					for (let y = 1; y < this.NY - 1; y++) {
+						for (let x = 1; x < this.NX - 1; x++) {
+							const k = this.idx(x, y);
+							div[k] = -0.5 * this.dx * (this.u[this.idx(x + 1, y)] - this.u[this.idx(x - 1, y)] + this.v[this.idx(x, y + 1)] - this.v[this.idx(x, y - 1)]);
+							p[k] = 0;
+						}
+					}
+					for (let it = 0; it < 22; it++) {
+						for (let y = 1; y < this.NY - 1; y++) {
+							for (let x = 1; x < this.NX - 1; x++) {
+								const k = this.idx(x, y);
+								p[k] = (div[k] + p[this.idx(x - 1, y)] + p[this.idx(x + 1, y)] + p[this.idx(x, y - 1)] + p[this.idx(x, y + 1)]) / 4;
+							}
+						}
+					}
+					for (let y = 1; y < this.NY - 1; y++) {
+						for (let x = 1; x < this.NX - 1; x++) {
+							const k = this.idx(x, y);
+							this.u[k] -= 0.5 * (p[this.idx(x + 1, y)] - p[this.idx(x - 1, y)]) / this.dx;
+							this.v[k] -= 0.5 * (p[this.idx(x, y + 1)] - p[this.idx(x, y - 1)]) / this.dx;
+						}
+					}
+				}
+
+				vorticity(eps) {
+					const w = new Float32Array(this.size);
+					for (let y = 1; y < this.NY - 1; y++) {
+						for (let x = 1; x < this.NX - 1; x++) {
+							const k = this.idx(x, y);
+							w[k] = (this.v[this.idx(x + 1, y)] - this.v[this.idx(x - 1, y)] - (this.u[this.idx(x, y + 1)] - this.u[this.idx(x, y - 1)])) * 0.5;
+						}
+					}
+					for (let y = 2; y < this.NY - 2; y++) {
+						for (let x = 2; x < this.NX - 2; x++) {
+							const k = this.idx(x, y);
+							const dw_dx = Math.abs(w[this.idx(x + 1, y)]) - Math.abs(w[this.idx(x - 1, y)]);
+							const dw_dy = Math.abs(w[this.idx(x, y + 1)]) - Math.abs(w[this.idx(x, y - 1)]);
+							const mag = Math.hypot(dw_dx, dw_dy) + 1e-6;
+							const Nx = dw_dx / mag, Ny = dw_dy / mag;
+							this.u[k] += eps * Ny * w[k] * this.dt;
+							this.v[k] -= eps * Nx * w[k] * this.dt;
+						}
+					}
+					return w;
+				}
+
+				addShear() {
+					for (let y = 0; y < this.NY; y++) {
+						const s = (y / this.NY - 0.5) * 2.0;
+						for (let x = 0; x < this.NX; x++) {
+							this.u[this.idx(x, y)] += s * this.shear * 0.02;
+						}
+					}
+				}
+
+				draw() {
+					const w = this.vorticity(this.vortConf * 0.001);
+					let maxVel = 1e-6;
+					for (let i = 0; i < this.u.length; i++) {
+						const m = Math.hypot(this.u[i], this.v[i]);
+						if (m > maxVel) maxVel = m;
+					}
+					this.cfl = (maxVel * this.dt) / this.dx;
+					this.updateCFLStatus();
+
+					const img = this.ctx.createImageData(this.W, this.H);
+					const lut = this.makeLUT(this.lutName);
+
+					for (let Y = 0; Y < this.H; Y++) {
+						const gy = Y / this.H * (this.NY - 1);
+						const y0 = Math.floor(gy), y1 = y0 + 1;
+						const ty = gy - y0;
+						for (let X = 0; X < this.W; X++) {
+							const gx = X / this.W * (this.NX - 1);
+							const x0 = Math.floor(gx), x1 = x0 + 1;
+							const tx = gx - x0;
+							const k00 = this.idx(x0, y0), k10 = this.idx(x1, y0), k01 = this.idx(x0, y1), k11 = this.idx(x1, y1);
+							const dye = (1 - tx) * (1 - ty) * this.d[k00] + tx * (1 - ty) * this.d[k10] + (1 - tx) * ty * this.d[k01] + tx * ty * this.d[k11];
+							const t = Math.max(0, Math.min(1, dye / 5.0));
+							const L = (t * 255) | 0;
+							const baseR = lut[L * 4 + 0], baseG = lut[L * 4 + 1], baseB = lut[L * 4 + 2];
+							const vort = Math.abs((1 - tx) * (1 - ty) * w[k00] + tx * (1 - ty) * w[k10] + (1 - tx) * ty * w[k01] + tx * ty * w[k11]);
+							const glow = Math.max(0, Math.min(1, vort * 8.0));
+							const r = Math.min(255, baseR + glow * 120);
+							const g = Math.min(255, baseG + glow * 80);
+							const b = Math.min(255, baseB + glow * 50);
+							const p = (Y * this.W + X) * 4;
+							img.data[p] = r; img.data[p + 1] = g; img.data[p + 2] = b; img.data[p + 3] = 255;
+						}
+					}
+					this.ctx.putImageData(img, 0, 0);
+				}
+
+				updateCFLStatus() {
+					const status = this.cfl > 1 ? 'status-unstable' : 'status-stable';
+					const text = this.cfl > 1 ? `Unstable (${this.cfl.toFixed(2)})` : `Stable (${this.cfl.toFixed(2)})`;
+					this.cflStatus.className = `status-indicator ${status}`;
+					this.cflStatus.textContent = text;
+				}
+
+				step() {
+					this.addShear();
+					this.advect(this.u, this.u0);
+					this.advect(this.v, this.v0);
+					this.diffuse(this.u0, this.u);
+					this.diffuse(this.v0, this.v);
+					this.project();
+					this.advect(this.d, this.d0);
+					this.diffuse(this.d0, this.d);
+					this.draw();
+					this.raf = requestAnimationFrame(() => this.step());
+				}
+
+				initializeSimulation() {
+					// Initialize with some random density
+					for (let y = 0; y < this.NY; y++) {
+						for (let x = 0; x < this.NX; x++) {
+							this.d[this.idx(x, y)] = Math.random() * 0.3;
+						}
+					}
+				}
+
+				resetSimulation() {
+					this.u.fill(0);
+					this.v.fill(0);
+					this.d.fill(0);
+					this.initializeSimulation();
+				}
+
+				startAnimation() {
+					if (this.raf) cancelAnimationFrame(this.raf);
+					this.step();
+				}
+
+				destroy() {
+					if (this.raf) cancelAnimationFrame(this.raf);
+				}
+			}
+
+			// Initialize simulation when DOM is loaded
+			document.addEventListener('DOMContentLoaded', () => {
+				window.paintedSkySim = new PaintedSkySimulation();
+			});
+		</script>
 
 		<!-- Scripts -->
 			<script src="assets/js/jquery.min.js"></script>

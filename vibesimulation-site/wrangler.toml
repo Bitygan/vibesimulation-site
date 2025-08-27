@@ -1,0 +1,32 @@
+name = "vibesimulation-site"
+compatibility_date = "2024-01-01"
+
+[env.production]
+# Cloudflare Pages configuration
+pages_build_output_dir = "."
+pages_root_dir = "."
+
+# Pages deployment settings
+pages_build_command = ""
+pages_install_command = ""
+
+# Custom domain (update with your actual domain)
+routes = [
+  { pattern = "/*", zone_name = "vibesimulation.com" }
+]
+
+# Environment variables (update these in Cloudflare dashboard)
+[vars]
+GOOGLE_ANALYTICS_ID = "UA-XXXXX-X"
+CLOUDFLARE_ANALYTICS_TOKEN = ""
+
+# Pages configuration
+[[pages_build_config]]
+# Build command (empty for static sites)
+build_command = ""
+# Destination directory
+destination_dir = "."
+# Root directory
+root_dir = "."
+# Web analytics
+web_analytics_tag = "UA-XXXXX-X"

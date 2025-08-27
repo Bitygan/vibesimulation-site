@@ -1,0 +1,12 @@
+# Cloudflare Pages Redirects Configuration
+# This file configures URL redirects for your Cloudflare Pages deployment
+
+# Redirect common variations to the main site
+/home / 301
+/index / 301
+
+# Redirect old URLs if needed (uncomment and modify as necessary)
+/old-page /new-page 301
+
+# SPA fallback for client-side routing (if you add React Router later)
+/* /index.html 200
