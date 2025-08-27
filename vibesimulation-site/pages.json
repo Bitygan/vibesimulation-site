@@ -1,0 +1,44 @@
+# Cloudflare Pages Configuration
+# This file tells Cloudflare Pages how to build and deploy your site
+
+# Build configuration
+build_command: ""
+build_dir: "."
+install_command: ""
+
+# Pages configuration
+pages_build_output_dir: "."
+pages_root_dir: "."
+
+# Environment variables (update these with your actual values)
+env:
+  production:
+    CLOUDFLARE_ANALYTICS_TOKEN: ""
+    GOOGLE_ANALYTICS_ID: "UA-XXXXX-X"
+
+# Custom domains
+custom_domains:
+  - "vibesimulation.com"
+
+# Functions configuration (if you add any serverless functions later)
+functions:
+  directory: ""
+
+# Headers and redirects
+headers:
+  - source: "/(.*)"
+    headers:
+      - name: "X-Frame-Options"
+        value: "DENY"
+      - name: "X-Content-Type-Options"
+        value: "nosniff"
+      - name: "Referrer-Policy"
+        value: "strict-origin-when-cross-origin"
+      - name: "Permissions-Policy"
+        value: "camera=(), microphone=(), geolocation=()"
+
+# Redirects (if needed)
+redirects:
+  - source: "/home"
+    destination: "/"
+    status: 301

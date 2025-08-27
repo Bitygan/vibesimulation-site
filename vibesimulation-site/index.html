@@ -237,7 +237,76 @@
 						</div>
 					</div>
 				</div>
-				<a href="#main" class="goto-next scrolly">Explore Learning Tracks</a>
+				<a href="#charge-painter" class="goto-next scrolly">Explore Electrostatics</a>
+			</section>
+
+			<!-- Charge Painter Section -->
+			<section id="charge-painter" class="simulation-hero">
+				<div class="simulation-container">
+					<div class="simulation-header">
+						<h1>Electrostatic Field Simulator</h1>
+						<p>Paint conductors and watch electric fields emerge. Experience the power of Laplace's equation in real-time.</p>
+						<div class="interaction-hint">👆 Click and drag to paint conductors with different voltages</div>
+					</div>
+					<div class="simulation-controls">
+						<div class="simulation-canvas">
+							<canvas id="charge-painter-canvas" width="1120" height="630"></canvas>
+						</div>
+						<div class="simulation-panel">
+							<div class="control-group">
+								<label>USER_SEED</label>
+								<input type="number" id="cp-seed-input" value="20250827" />
+							</div>
+							<div class="control-group">
+								<label>Method</label>
+								<select id="cp-method-select">
+									<option value="SOR">SOR (Successive Over-Relaxation)</option>
+									<option value="GS">GS (Gauss-Seidel)</option>
+								</select>
+							</div>
+							<div class="control-group">
+								<label>ω (SOR Relaxation): <span id="cp-omega-value">1.85</span></label>
+								<input type="range" id="cp-omega-slider" min="1.0" max="1.99" step="0.01" value="1.85" />
+							</div>
+							<div class="control-group">
+								<label>Brush Voltage: <span id="cp-voltage-value">50</span></label>
+								<input type="range" id="cp-voltage-slider" min="-100" max="100" step="1" value="50" />
+							</div>
+							<div class="control-group">
+								<label>Brush Radius: <span id="cp-radius-value">10</span></label>
+								<input type="range" id="cp-radius-slider" min="2" max="20" step="1" value="10" />
+							</div>
+							<div class="control-group">
+								<label>Equipotentials: <span id="cp-iso-value">11</span></label>
+								<input type="range" id="cp-iso-slider" min="5" max="25" step="1" value="11" />
+							</div>
+							<div class="control-group">
+								<label><input type="checkbox" id="cp-chalk-checkbox" checked /> Electric Field Lines</label>
+							</div>
+							<div class="control-group">
+								<label>Solver Speed: <span id="cp-sweeps-value">3</span></label>
+								<input type="range" id="cp-sweeps-slider" min="1" max="12" step="1" value="3" />
+							</div>
+							<div class="control-group">
+								<label>Convergence Status</label>
+								<div id="cp-convergence-status" class="status-indicator status-stable">Solving...</div>
+							</div>
+							<div class="control-group">
+								<label>L₂ Residual: <span id="cp-residual-value">0.00</span></label>
+							</div>
+							<div class="control-group">
+								<label>Convergence Rate: <span id="cp-rate-value">1.000</span></label>
+							</div>
+							<div class="control-group">
+								<button id="cp-reset-simulation" class="button" style="width: 100%; background: #60a5fa; color: white; border: none; padding: 0.75rem; border-radius: 0.5rem; font-weight: 600;">Reset Simulation</button>
+							</div>
+							<div class="control-group">
+								<label>Residual History</label>
+								<canvas id="cp-sparkline-canvas" width="220" height="64" style="width: 100%; height: 64px; border-radius: 0.5rem; background: rgba(0,0,0,0.3);"></canvas>
+							</div>
+						</div>
+					</div>
+				</div>
 			</section>
 
 		<!-- Main -->
@@ -711,7 +780,424 @@
 			// Initialize simulation when DOM is loaded
 			document.addEventListener('DOMContentLoaded', () => {
 				window.paintedSkySim = new PaintedSkySimulation();
+				window.chargePainterSim = new ChargePainterSimulation();
 			});
+		</script>
+
+		<!-- Charge Painter Simulation Script -->
+		<script>
+			class ChargePainterSimulation {
+				constructor() {
+					this.W = 1120;
+					this.H = 630;
+					this.NX = 160;
+					this.NY = 90;
+					this.canvas = document.getElementById('charge-painter-canvas');
+					this.ctx = this.canvas.getContext('2d');
+					this.sparkCanvas = document.getElementById('cp-sparkline-canvas');
+					this.sparkCtx = this.sparkCanvas?.getContext('2d');
+
+					this.size = this.NX * this.NY;
+					this.phi = new Float32Array(this.size).fill(0);
+					this.fixed = new Uint8Array(this.size).fill(0);
+					this.fval = new Float32Array(this.size).fill(0);
+
+					// Parameters
+					this.seed = 20250827;
+					this.method = "SOR";
+					this.omega = 1.85;
+					this.brushV = 50;
+					this.brushR = 10;
+					this.isoCount = 11;
+					this.chalk = true;
+					this.sweepsPerFrame = 3;
+					this.residual = 0;
+					this.rate = 1.0;
+
+					// Field chalk particles
+					this.NP = 400;
+					this.px = new Float32Array(this.NP);
+					this.py = new Float32Array(this.NP);
+
+					this.resHist = [];
+					this.mouseDown = false;
+					this.raf = 0;
+					this.scaleX = this.NX / this.W;
+					this.scaleY = this.NY / this.H;
+
+					this.init();
+				}
+
+				init() {
+					this.setupCanvasSizing();
+					this.setupEventListeners();
+					this.initializeSimulation();
+					this.startAnimation();
+				}
+
+				setupCanvasSizing() {
+					const resizeCanvas = () => {
+						const container = this.canvas.parentElement;
+						const containerWidth = container.offsetWidth;
+						const containerHeight = Math.min(containerWidth * 0.5625, 630);
+
+						this.canvas.style.width = containerWidth + 'px';
+						this.canvas.style.height = containerHeight + 'px';
+						this.scaleX = this.NX / containerWidth;
+						this.scaleY = this.NY / containerHeight;
+					};
+
+					resizeCanvas();
+					window.addEventListener('resize', resizeCanvas);
+				}
+
+				setupEventListeners() {
+					// Mouse events
+					this.canvas.onpointerdown = (e) => {
+						this.mouseDown = true;
+						const r = this.canvas.getBoundingClientRect();
+						const x = (e.clientX - r.left) * this.scaleX;
+						const y = (e.clientY - r.top) * this.scaleY;
+						this.paint(x, y);
+					};
+
+					this.canvas.onpointermove = (e) => {
+						if (!this.mouseDown) return;
+						const r = this.canvas.getBoundingClientRect();
+						const x = (e.clientX - r.left) * this.scaleX;
+						const y = (e.clientY - r.top) * this.scaleY;
+						this.paint(x, y);
+					};
+
+					this.canvas.onpointerup = () => { this.mouseDown = false; };
+					this.canvas.onpointerleave = () => { this.mouseDown = false; };
+
+					// Control events
+					document.getElementById('cp-seed-input').addEventListener('change', (e) => {
+						this.seed = parseInt(e.target.value);
+						this.resetSimulation();
+					});
+
+					document.getElementById('cp-method-select').addEventListener('change', (e) => {
+						this.method = e.target.value;
+					});
+
+					document.getElementById('cp-omega-slider').addEventListener('input', (e) => {
+						this.omega = parseFloat(e.target.value);
+						document.getElementById('cp-omega-value').textContent = this.omega.toFixed(2);
+					});
+
+					document.getElementById('cp-voltage-slider').addEventListener('input', (e) => {
+						this.brushV = parseInt(e.target.value);
+						document.getElementById('cp-voltage-value').textContent = this.brushV.toString();
+					});
+
+					document.getElementById('cp-radius-slider').addEventListener('input', (e) => {
+						this.brushR = parseInt(e.target.value);
+						document.getElementById('cp-radius-value').textContent = this.brushR.toString();
+					});
+
+					document.getElementById('cp-iso-slider').addEventListener('input', (e) => {
+						this.isoCount = parseInt(e.target.value);
+						document.getElementById('cp-iso-value').textContent = this.isoCount.toString();
+					});
+
+					document.getElementById('cp-chalk-checkbox').addEventListener('change', (e) => {
+						this.chalk = e.target.checked;
+					});
+
+					document.getElementById('cp-sweeps-slider').addEventListener('input', (e) => {
+						this.sweepsPerFrame = parseInt(e.target.value);
+						document.getElementById('cp-sweeps-value').textContent = this.sweepsPerFrame.toString();
+					});
+
+					document.getElementById('cp-reset-simulation').addEventListener('click', () => {
+						this.resetSimulation();
+					});
+				}
+
+				paint(x, y) {
+					const R = this.brushR;
+					for (let j = -R; j <= R; j++) {
+						for (let i = -R; i <= R; i++) {
+							const xi = Math.floor(x) + i;
+							const yj = Math.floor(y) + j;
+							if (xi < 1 || xi >= this.NX - 1 || yj < 1 || yj >= this.NY - 1) continue;
+							if (i * i + j * j > R * R) continue;
+							const k = yj * this.NX + xi;
+							this.fixed[k] = 1;
+							this.fval[k] = this.brushV;
+							this.phi[k] = this.brushV;
+						}
+					}
+				}
+
+				idx(x, y) {
+					return y * this.NX + x;
+				}
+
+				sweepOnce() {
+					let r2 = 0, count = 0;
+					for (let j = 1; j < this.NY - 1; j++) {
+						for (let i = 1; i < this.NX - 1; i++) {
+							const k = this.idx(i, j);
+							if (this.fixed[k]) continue;
+							const newv = 0.25 * (this.phi[k - 1] + this.phi[k + 1] + this.phi[k - this.NX] + this.phi[k + this.NX]);
+							const oldv = this.phi[k];
+							const upd = (this.method === "SOR") ? ((1 - this.omega) * oldv + this.omega * newv) : newv;
+							this.phi[k] = upd;
+						}
+					}
+
+					// Enforce Dirichlet boundary conditions
+					for (let k = 0; k < this.phi.length; k++) {
+						if (this.fixed[k]) this.phi[k] = this.fval[k];
+					}
+
+					// Calculate residual using discrete Laplacian
+					for (let j = 1; j < this.NY - 1; j++) {
+						for (let i = 1; i < this.NX - 1; i++) {
+							const k = this.idx(i, j);
+							const lap = (this.phi[k - 1] + this.phi[k + 1] + this.phi[k - this.NX] + this.phi[k + this.NX] - 4 * this.phi[k]);
+							r2 += lap * lap;
+							count++;
+						}
+					}
+
+					const l2 = Math.sqrt(r2 / (count || 1));
+					this.resHist.push(l2);
+					if (this.resHist.length > 200) this.resHist.shift();
+					return l2;
+				}
+
+				draw() {
+					const img = this.ctx.createImageData(this.W, this.H);
+
+					// Find min/max values for normalization
+					let vmin = 1e9, vmax = -1e9;
+					for (let k = 0; k < this.phi.length; k++) {
+						const v = this.phi[k];
+						if (v < vmin) vmin = v;
+						if (v > vmax) vmax = v;
+					}
+
+					const levels = [];
+					for (let L = 0; L < this.isoCount; L++) {
+						levels.push(vmin + (vmax - vmin) * (L / (this.isoCount - 1)));
+					}
+
+					const norm = (v) => {
+						if (vmax <= vmin) return 0.5;
+						return (v - vmin) / (vmax - vmin);
+					};
+
+					// Colormap: blue -> white -> red
+					const colormap = (t) => {
+						t = Math.max(0, Math.min(1, t));
+						const r = t < 0.5 ? t * 2 * 255 : 255;
+						const b = t < 0.5 ? 255 : (1 - (t - 0.5) * 2) * 255;
+						const g = 220 * Math.sin(Math.PI * t);
+						return [Math.round(r), Math.round(g), Math.round(b)];
+					};
+
+					// Render potential field
+					for (let Y = 0; Y < this.H; Y++) {
+						const gy = Y / this.H * (this.NY - 1);
+						const j0 = Math.floor(gy), j1 = Math.min(this.NY - 1, j0 + 1);
+						const ty = gy - j0;
+						for (let X = 0; X < this.W; X++) {
+							const gx = X / this.W * (this.NX - 1);
+							const i0 = Math.floor(gx), i1 = Math.min(this.NX - 1, i0 + 1);
+							const tx = gx - i0;
+							const k00 = this.idx(i0, j0), k10 = this.idx(i1, j0), k01 = this.idx(i0, j1), k11 = this.idx(i1, j1);
+							const v = (1 - tx) * (1 - ty) * this.phi[k00] + tx * (1 - ty) * this.phi[k10] + (1 - tx) * ty * this.phi[k01] + tx * ty * this.phi[k11];
+							const c = colormap(norm(v));
+							const p = (Y * this.W + X) * 4;
+							img.data[p] = c[0];
+							img.data[p + 1] = c[1];
+							img.data[p + 2] = c[2];
+							img.data[p + 3] = 255;
+						}
+					}
+					this.ctx.putImageData(img, 0, 0);
+
+					// Draw equipotential lines using marching squares
+					this.ctx.strokeStyle = "rgba(255,255,255,0.18)";
+					this.ctx.lineWidth = 1;
+
+					for (const L of levels) {
+						for (let j = 0; j < this.NY - 1; j++) {
+							for (let i = 0; i < this.NX - 1; i++) {
+								const k00 = this.idx(i, j), k10 = this.idx(i + 1, j);
+								const k01 = this.idx(i, j + 1), k11 = this.idx(i + 1, j + 1);
+
+								const v00 = this.phi[k00] - L, v10 = this.phi[k10] - L;
+								const v01 = this.phi[k01] - L, v11 = this.phi[k11] - L;
+
+								const s0 = v00 > 0 ? 1 : 0, s1 = v10 > 0 ? 1 : 0;
+								const s2 = v11 > 0 ? 1 : 0, s3 = v01 > 0 ? 1 : 0;
+								const idx = s0 | (s1 << 1) | (s2 << 2) | (s3 << 3);
+
+								if (idx === 0 || idx === 15) continue;
+
+								const interp = (ax, ay, bx, by, va, vb) => {
+									const t = va / (va - vb + 1e-12);
+									return [ax + t * (bx - ax), ay + t * (by - ay)];
+								};
+
+								const x = i, y = j;
+								const eTop = interp(x, y, x + 1, y, v00, v10);
+								const eRight = interp(x + 1, y, x + 1, y + 1, v10, v11);
+								const eBottom = interp(x, y + 1, x + 1, y + 1, v01, v11);
+								const eLeft = interp(x, y, x, y + 1, v00, v01);
+
+								const table = {
+									1: [[eLeft, eBottom]], 2: [[eBottom, eRight]], 3: [[eLeft, eRight]],
+									4: [[eTop, eRight]], 5: [[eTop, eLeft], [eBottom, eRight]], 6: [[eTop, eBottom]],
+									7: [[eTop, eLeft]], 8: [[eTop, eLeft]], 9: [[eTop, eBottom]],
+									10: [[eTop, eRight], [eLeft, eBottom]], 11: [[eTop, eRight]], 12: [[eLeft, eRight]],
+									13: [[eBottom, eRight]], 14: [[eLeft, eBottom]]
+								};
+
+								const segs = table[idx];
+								if (!segs) continue;
+
+								for (const [a, b] of segs) {
+									this.ctx.beginPath();
+									this.ctx.moveTo(a[0] / (this.NX - 1) * this.W, a[1] / (this.NY - 1) * this.H);
+									this.ctx.lineTo(b[0] / (this.NX - 1) * this.W, b[1] / (this.NY - 1) * this.H);
+									this.ctx.stroke();
+								}
+							}
+						}
+					}
+
+					// Draw electric field particles
+					if (this.chalk) {
+						this.ctx.fillStyle = "rgba(255,255,255,0.45)";
+						for (let p = 0; p < this.NP; p++) {
+							let x = this.px[p], y = this.py[p];
+							const i = Math.max(1, Math.min(this.NX - 2, Math.floor(x)));
+							const j = Math.max(1, Math.min(this.NY - 2, Math.floor(y)));
+							const k = this.idx(i, j);
+
+							const Ex = -(this.phi[k + 1] - this.phi[k - 1]) * 0.5;
+							const Ey = -(this.phi[k + this.NX] - this.phi[k - this.NX]) * 0.5;
+							const mag = Math.hypot(Ex, Ey) + 1e-6;
+							const dtp = 0.15;
+
+							x += (Ex / mag) * dtp;
+							y += (Ey / mag) * dtp;
+
+							const ki = Math.floor(y) * this.NX + Math.floor(x);
+							if (x <= 1 || x >= this.NX - 2 || y <= 1 || y >= this.NY - 2 || (this.fixed[ki] && Math.random() < 0.8)) {
+								this.px[p] = Math.random() * (this.NX - 2) + 1;
+								this.py[p] = Math.random() * (this.NY - 2) + 1;
+							} else {
+								this.px[p] = x;
+								this.py[p] = y;
+							}
+
+							const X = (this.px[p] / (this.NX - 1)) * this.W;
+							const Y = (this.py[p] / (this.NY - 1)) * this.H;
+							this.ctx.fillRect(X, Y, 1.5, 1.5);
+						}
+					}
+
+					// Draw residual sparkline
+					if (this.sparkCtx) {
+						const w = this.sparkCanvas.width, h = this.sparkCanvas.height;
+						this.sparkCtx.clearRect(0, 0, w, h);
+						this.sparkCtx.strokeStyle = "#ffcc66";
+						this.sparkCtx.lineWidth = 2;
+						this.sparkCtx.beginPath();
+
+						const n = Math.max(1, this.resHist.length);
+						const maxv = Math.max(...this.resHist, 1e-6);
+						const minv = Math.min(...this.resHist, 0);
+
+						for (let i = 0; i < n; i++) {
+							const t = i / (n - 1 || 1);
+							const v = this.resHist[i];
+							const y = h - ((Math.log10(v + 1e-12) - Math.log10(minv + 1e-12)) / (Math.log10(maxv + 1e-12) - Math.log10(minv + 1e-12) + 1e-9)) * h;
+							const x = t * w;
+							if (i === 0) this.sparkCtx.moveTo(x, y);
+							else this.sparkCtx.lineTo(x, y);
+						}
+						this.sparkCtx.stroke();
+					}
+				}
+
+				updateUI() {
+					document.getElementById('cp-residual-value').textContent = this.residual.toExponential(2);
+					document.getElementById('cp-rate-value').textContent = this.rate.toFixed(3);
+
+					const status = this.residual < 1e-3 ? 'status-stable' : 'status-unstable';
+					const text = this.residual < 1e-3 ? 'Converged' : 'Solving...';
+					const statusEl = document.getElementById('cp-convergence-status');
+					statusEl.className = `status-indicator ${status}`;
+					statusEl.textContent = text;
+				}
+
+				step() {
+					const nSweeps = this.sweepsPerFrame | 0;
+					let l2 = 0;
+					for (let s = 0; s < nSweeps; s++) {
+						l2 = this.sweepOnce();
+					}
+					this.residual = l2;
+
+					// Estimate convergence rate
+					if (this.resHist.length > 5) {
+						const a = Math.log(this.resHist[this.resHist.length - 5] + 1e-12);
+						const b = Math.log(this.resHist[this.resHist.length - 1] + 1e-12);
+						this.rate = Math.exp((b - a) / 4);
+					}
+
+					this.updateUI();
+					this.draw();
+					this.raf = requestAnimationFrame(() => this.step());
+				}
+
+				initializeSimulation() {
+					// Initialize with grounded border
+					for (let i = 0; i < this.NX; i++) {
+						this.fixed[this.idx(i, 0)] = 1;
+						this.fixed[this.idx(i, this.NY - 1)] = 1;
+						this.fval[this.idx(i, 0)] = 0;
+						this.fval[this.idx(i, this.NY - 1)] = 0;
+					}
+					for (let j = 0; j < this.NY; j++) {
+						this.fixed[this.idx(0, j)] = 1;
+						this.fixed[this.idx(this.NX - 1, j)] = 1;
+						this.fval[this.idx(0, j)] = 0;
+						this.fval[this.idx(this.NX - 1, j)] = 0;
+					}
+
+					// Initialize field chalk particles
+					for (let p = 0; p < this.NP; p++) {
+						this.px[p] = Math.random() * (this.NX - 2) + 1;
+						this.py[p] = Math.random() * (this.NY - 2) + 1;
+					}
+				}
+
+				resetSimulation() {
+					this.phi.fill(0);
+					this.fixed.fill(0);
+					this.fval.fill(0);
+					this.resHist.length = 0;
+					this.initializeSimulation();
+				}
+
+				startAnimation() {
+					if (this.raf) cancelAnimationFrame(this.raf);
+					this.step();
+				}
+
+				destroy() {
+					if (this.raf) cancelAnimationFrame(this.raf);
+				}
+			}
 		</script>
 
 		<!-- Scripts -->
