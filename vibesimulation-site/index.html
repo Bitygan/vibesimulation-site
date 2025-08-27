@@ -389,6 +389,79 @@
 				</div>
 			</section>
 
+			<!-- WaveForge Section -->
+			<section id="waveforge" class="simulation-hero">
+				<div class="simulation-container">
+					<div class="simulation-header">
+						<h1>Shallow Water Simulator</h1>
+						<p>Experience realistic flood dynamics with Saint-Venant equations. Paint basin walls and watch waves propagate through complex terrain.</p>
+						<div class="interaction-hint">🌊 Click and drag to paint walls or spawn water splashes</div>
+					</div>
+					<div class="simulation-controls">
+						<div class="simulation-canvas">
+							<canvas id="waveforge-canvas" width="1120" height="630"></canvas>
+						</div>
+						<div class="simulation-panel">
+							<div class="control-group">
+								<label>USER_SEED</label>
+								<input type="number" id="wf-seed-input" value="20250827" />
+							</div>
+							<div class="control-group">
+								<label>Paint Mode</label>
+								<select id="wf-mode-select">
+									<option value="Splash">Water Splash</option>
+									<option value="Walls">Basin Walls</option>
+								</select>
+							</div>
+							<div class="control-group">
+								<label>Brush Radius: <span id="wf-radius-value">10</span></label>
+								<input type="range" id="wf-radius-slider" min="3" max="24" step="1" value="10" />
+							</div>
+							<div class="control-group">
+								<label>Gravity g: <span id="wf-gravity-value">9.81</span></label>
+								<input type="range" id="wf-gravity-slider" min="1.0" max="20.0" step="0.1" value="9.81" />
+							</div>
+							<div class="control-group">
+								<label>Friction μ: <span id="wf-friction-value">0.005</span></label>
+								<input type="range" id="wf-friction-slider" min="0.0" max="0.05" step="0.001" value="0.005" />
+							</div>
+							<div class="control-group">
+								<label>CFL Target: <span id="wf-cfl-value">0.70</span></label>
+								<input type="range" id="wf-cfl-slider" min="0.2" max="0.95" step="0.01" value="0.7" />
+							</div>
+							<div class="control-group">
+								<label>Grid Scale Δx: <span id="wf-dx-value">1.00</span></label>
+								<input type="range" id="wf-dx-slider" min="0.5" max="2.0" step="0.05" value="1.0" />
+							</div>
+							<div class="control-group">
+								<label>Color Palette</label>
+								<select id="wf-palette-select">
+									<option value="Ocean">Ocean</option>
+									<option value="Icefire">Icefire</option>
+									<option value="Magma">Magma</option>
+								</select>
+							</div>
+							<div class="control-group">
+								<label><input type="checkbox" id="wf-vectors-checkbox" /> Show Velocity Vectors</label>
+							</div>
+							<div class="control-group">
+								<label>Stability Status</label>
+								<div id="wf-stability-status" class="status-indicator status-stable">Stable</div>
+							</div>
+							<div class="control-group">
+								<label>Live CFL: <span id="wf-cfl-live-value">0.00</span></label>
+							</div>
+							<div class="control-group">
+								<label>Mass Drift: <span id="wf-mass-value">0.0 ppm</span></label>
+							</div>
+							<div class="control-group">
+								<button id="wf-reset-simulation" class="button" style="width: 100%; background: #60a5fa; color: white; border: none; padding: 0.75rem; border-radius: 0.5rem; font-weight: 600;">Reset Simulation</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
 		<!-- Main -->
 			<div id="main" class="wrapper style1">
 				<div class="container">
@@ -1787,7 +1860,502 @@
 				// Initialize simulation when DOM is loaded
 				document.addEventListener('DOMContentLoaded', () => {
 					window.resonantCanvasSim = new ResonantCanvasSimulation();
+					window.waveForgeSim = new WaveForgeSimulation();
 				});
+			</script>
+
+			<!-- WaveForge Simulation Script -->
+			<script>
+				class WaveForgeSimulation {
+					constructor() {
+						this.W = 1120;
+						this.H = 630;
+						this.NX = 160;
+						this.NY = 90;
+						this.canvas = document.getElementById('waveforge-canvas');
+						this.ctx = this.canvas.getContext('2d');
+
+						// Parameters
+						this.seed = 20250827;
+						this.mode = "Splash";
+						this.brushR = 10;
+						this.grav = 9.81;
+						this.fric = 0.005;
+						this.cflTarget = 0.7;
+						this.dxScale = 1.0;
+						this.palette = "Ocean";
+						this.showVec = false;
+
+						// Computed values
+						this.dx = 1.0;
+						this.cflLive = 0;
+						this.massPpm = 0;
+
+						// Simulation arrays
+						this.size = this.NX * this.NY * 3; // h, hu, hv for each cell
+						this.U = new Float32Array(this.size);
+						this.Utmp = new Float32Array(this.size);
+						this.solid = new Uint8Array(this.NX * this.NY);
+
+						this.raf = 0;
+						this.pointerDown = false;
+						this.pointerX = 0;
+						this.pointerY = 0;
+						this.scaleX = this.NX / this.W;
+						this.scaleY = this.NY / this.H;
+
+						this.init();
+					}
+
+					init() {
+						this.setupCanvasSizing();
+						this.setupEventListeners();
+						this.initializeSimulation();
+						this.startAnimation();
+					}
+
+					setupCanvasSizing() {
+						const resizeCanvas = () => {
+							const container = this.canvas.parentElement;
+							const containerWidth = container.offsetWidth;
+							const containerHeight = Math.min(containerWidth * 0.5625, 630);
+
+							this.canvas.style.width = containerWidth + 'px';
+							this.canvas.style.height = containerHeight + 'px';
+							this.scaleX = this.NX / containerWidth;
+							this.scaleY = this.NY / containerHeight;
+						};
+
+						resizeCanvas();
+						window.addEventListener('resize', resizeCanvas);
+					}
+
+					setupEventListeners() {
+						// Mouse events
+						this.canvas.onpointerdown = (e) => {
+							this.pointerDown = true;
+							const r = this.canvas.getBoundingClientRect();
+							this.pointerX = (e.clientX - r.left) * this.scaleX;
+							this.pointerY = (e.clientY - r.top) * this.scaleY;
+							this.inject(this.pointerX, this.pointerY);
+						};
+
+						this.canvas.onpointermove = (e) => {
+							if (!this.pointerDown) return;
+							const r = this.canvas.getBoundingClientRect();
+							this.pointerX = (e.clientX - r.left) * this.scaleX;
+							this.pointerY = (e.clientY - r.top) * this.scaleY;
+							this.inject(this.pointerX, this.pointerY);
+						};
+
+						this.canvas.onpointerup = () => { this.pointerDown = false; };
+						this.canvas.onpointerleave = () => { this.pointerDown = false; };
+
+						this.canvas.oncontextmenu = (e) => {
+							e.preventDefault();
+							return false;
+						};
+
+						// Control events
+						document.getElementById('wf-seed-input').addEventListener('change', (e) => {
+							this.seed = parseInt(e.target.value);
+							this.resetSimulation();
+						});
+
+						document.getElementById('wf-mode-select').addEventListener('change', (e) => {
+							this.mode = e.target.value;
+						});
+
+						document.getElementById('wf-radius-slider').addEventListener('input', (e) => {
+							this.brushR = parseInt(e.target.value);
+							document.getElementById('wf-radius-value').textContent = this.brushR.toString();
+						});
+
+						document.getElementById('wf-gravity-slider').addEventListener('input', (e) => {
+							this.grav = parseFloat(e.target.value);
+							document.getElementById('wf-gravity-value').textContent = this.grav.toFixed(2);
+						});
+
+						document.getElementById('wf-friction-slider').addEventListener('input', (e) => {
+							this.fric = parseFloat(e.target.value);
+							document.getElementById('wf-friction-value').textContent = this.fric.toFixed(3);
+						});
+
+						document.getElementById('wf-cfl-slider').addEventListener('input', (e) => {
+							this.cflTarget = parseFloat(e.target.value);
+							document.getElementById('wf-cfl-value').textContent = this.cflTarget.toFixed(2);
+						});
+
+						document.getElementById('wf-dx-slider').addEventListener('input', (e) => {
+							this.dxScale = parseFloat(e.target.value);
+							document.getElementById('wf-dx-value').textContent = this.dxScale.toFixed(2);
+							this.dx = 1.0 * this.dxScale;
+						});
+
+						document.getElementById('wf-palette-select').addEventListener('change', (e) => {
+							this.palette = e.target.value;
+						});
+
+						document.getElementById('wf-vectors-checkbox').addEventListener('change', (e) => {
+							this.showVec = e.target.checked;
+						});
+
+						document.getElementById('wf-reset-simulation').addEventListener('click', () => {
+							this.resetSimulation();
+						});
+					}
+
+					idx(i, j) {
+						return j * this.NX + i;
+					}
+
+					k3(i, j) {
+						return (j * this.NX + i) * 3;
+					}
+
+					inject(px, py) {
+						const R = this.brushR, amp = 0.8;
+						for (let j = -R; j <= R; j++) {
+							for (let i = -R; i <= R; i++) {
+								const x = Math.floor(px) + i;
+								const y = Math.floor(py) + j;
+								if (x < 1 || x >= this.NX - 1 || y < 1 || y >= this.NY - 1) continue;
+								const r2 = i * i + j * j;
+								if (r2 > R * R) continue;
+								const k = this.k3(x, y);
+								if (this.mode === "Walls") {
+									this.solid[this.idx(x, y)] = 1;
+									this.U[k + 0] = 0.02; // H
+									this.U[k + 1] = 0;    // HU
+									this.U[k + 2] = 0;    // HV
+								} else {
+									const bump = amp * Math.exp(-r2 / (0.5 * R * R));
+									this.U[k + 0] += bump * 0.15; // Add to height
+									const mag = Math.sqrt(r2) + 1e-6;
+									this.U[k + 1] += 0.5 * bump * (i / mag); // Add radial velocity X
+									this.U[k + 2] += 0.5 * bump * (j / mag); // Add radial velocity Y
+								}
+							}
+						}
+					}
+
+					maxWaveSpeed(i, j, g) {
+						const k = this.k3(i, j);
+						const h = this.U[k + 0];
+						const u = this.U[k + 1] / (h + 1e-6);
+						const v = this.U[k + 2] / (h + 1e-6);
+						return Math.max(0, Math.abs(u) + Math.sqrt(g * Math.max(0, h)), Math.abs(v) + Math.sqrt(g * Math.max(0, h)));
+					}
+
+					step(dt, g, mu) {
+						this.Utmp.set(this.U);
+
+						// X-direction flux (Rusanov scheme)
+						for (let j = 1; j < this.NY - 1; j++) {
+							for (let i = 1; i < this.NX - 1; i++) {
+								const leftSolid = this.solid[this.idx(i - 1, j)] === 1;
+								const rightSolid = this.solid[this.idx(i, j)] === 1;
+								if (leftSolid && rightSolid) continue;
+
+								const kL = this.k3(i - 1, j), kR = this.k3(i, j);
+								const hL = this.U[kL + 0], uL = this.U[kL + 1] / (hL + 1e-6), vL = this.U[kL + 2] / (hL + 1e-6);
+								const hR = this.U[kR + 0], uR = this.U[kR + 1] / (hR + 1e-6), vR = this.U[kR + 2] / (hR + 1e-6);
+
+								const s = Math.max(
+									Math.abs(uL) + Math.sqrt(g * Math.max(0, hL)),
+									Math.abs(uR) + Math.sqrt(g * Math.max(0, hR))
+								);
+
+								if (leftSolid || rightSolid) continue;
+
+								// Flux calculations (Rusanov scheme)
+								const FL_h = this.U[kL + 1];
+								const FR_h = this.U[kR + 1];
+								const FL_hu = this.U[kL + 1] * uL + 0.5 * g * hL * hL;
+								const FR_hu = this.U[kR + 1] * uR + 0.5 * g * hR * hR;
+								const FL_hv = this.U[kL + 1] * vL;
+								const FR_hv = this.U[kR + 1] * vR;
+
+								const f_h = 0.5 * (FL_h + FR_h) - 0.5 * s * (hR - hL);
+								const f_hu = 0.5 * (FL_hu + FR_hu) - 0.5 * s * (this.U[kR + 1] - this.U[kL + 1]);
+								const f_hv = 0.5 * (FL_hv + FR_hv) - 0.5 * s * (this.U[kR + 2] - this.U[kL + 2]);
+
+								const sdx = dt / this.dx;
+								this.Utmp[kR + 0] -= sdx * f_h;
+								this.Utmp[kR + 1] -= sdx * f_hu;
+								this.Utmp[kR + 2] -= sdx * f_hv;
+								this.Utmp[kL + 0] += sdx * f_h;
+								this.Utmp[kL + 1] += sdx * f_hu;
+								this.Utmp[kL + 2] += sdx * f_hv;
+							}
+						}
+
+						// Y-direction flux
+						for (let j = 1; j < this.NY - 1; j++) {
+							for (let i = 1; i < this.NX - 1; i++) {
+								const botSolid = this.solid[this.idx(i, j - 1)] === 1;
+								const topSolid = this.solid[this.idx(i, j)] === 1;
+								if (botSolid && topSolid) continue;
+
+								const kB = this.k3(i, j - 1), kT = this.k3(i, j);
+								const hB = this.U[kB + 0], uB = this.U[kB + 1] / (hB + 1e-6), vB = this.U[kB + 2] / (hB + 1e-6);
+								const hT = this.U[kT + 0], uT = this.U[kT + 1] / (hT + 1e-6), vT = this.U[kT + 2] / (hT + 1e-6);
+
+								const s = Math.max(
+									Math.abs(vB) + Math.sqrt(g * Math.max(0, hB)),
+									Math.abs(vT) + Math.sqrt(g * Math.max(0, hT))
+								);
+
+								if (botSolid || topSolid) continue;
+
+								const GL_h = this.U[kB + 2];
+								const GR_h = this.U[kT + 2];
+								const GL_hu = this.U[kB + 1] * vB;
+								const GR_hu = this.U[kT + 1] * vT;
+								const GL_hv = this.U[kB + 2] * vB + 0.5 * g * hB * hB;
+								const GR_hv = this.U[kT + 2] * vT + 0.5 * g * hT * hT;
+
+								const g_h = 0.5 * (GL_h + GR_h) - 0.5 * s * (hT - hB);
+								const g_hu = 0.5 * (GL_hu + GR_hu) - 0.5 * s * (this.U[kT + 1] - this.U[kB + 1]);
+								const g_hv = 0.5 * (GL_hv + GR_hv) - 0.5 * s * (this.U[kT + 2] - this.U[kB + 2]);
+
+								const sdy = dt / this.dx;
+								this.Utmp[kT + 0] -= sdy * g_h;
+								this.Utmp[kT + 1] -= sdy * g_hu;
+								this.Utmp[kT + 2] -= sdy * g_hv;
+								this.Utmp[kB + 0] += sdy * g_h;
+								this.Utmp[kB + 1] += sdy * g_hu;
+								this.Utmp[kB + 2] += sdy * g_hv;
+							}
+						}
+
+						// Friction and boundary conditions
+						const df = Math.exp(-Math.max(0, mu) * dt);
+						for (let j = 0; j < this.NY; j++) {
+							for (let i = 0; i < this.NX; i++) {
+								const k = this.k3(i, j);
+								this.Utmp[k + 1] *= df;
+								this.Utmp[k + 2] *= df;
+								const h = Math.max(0.02, this.Utmp[k + 0]);
+								const scl = h / (this.Utmp[k + 0] || h);
+								this.U[k + 0] = h;
+								this.U[k + 1] = this.Utmp[k + 1] * scl;
+								this.U[k + 2] = this.Utmp[k + 2] * scl;
+								if (this.solid[this.idx(i, j)] === 1) {
+									this.U[k + 0] = 0.02;
+									this.U[k + 1] = 0;
+									this.U[k + 2] = 0;
+								}
+							}
+						}
+					}
+
+					makeLUT(name) {
+						const g = [];
+						for (let i = 0; i < 256; i++) {
+							const t = i / 255;
+							let r = 0, gr = 0, b = 0;
+							if (name === "Ocean") {
+								r = 0.1 + 0.6 * Math.pow(t, 1.7);
+								gr = 0.3 + 0.6 * t;
+								b = 0.6 + 0.4 * (1 - t);
+							} else if (name === "Icefire") {
+								r = Math.pow(t, 1.2);
+								gr = 0.8 * Math.pow(1 - t, 0.6);
+								b = 1.0;
+							} else {
+								r = 0.2 + 0.8 * Math.pow(t, 1.8);
+								gr = 0.1 + 0.6 * Math.pow(t, 1.2);
+								b = 0.1 + 0.2 * t;
+							}
+							g.push(
+								Math.round(Math.max(0, Math.min(255, r * 255))),
+								Math.round(Math.max(0, Math.min(255, gr * 255))),
+								Math.round(Math.max(0, Math.min(255, b * 255))),
+								255
+							);
+						}
+						return new Uint8ClampedArray(g);
+					}
+
+					render() {
+						this.ctx.clearRect(0, 0, this.W, this.H);
+						this.ctx.fillStyle = "#0b0f16";
+						this.ctx.fillRect(0, 0, this.W, this.H);
+
+						const img = this.ctx.createImageData(this.W, this.H);
+						const lut = this.makeLUT(this.palette);
+
+						// Find min/max for normalization
+						let hmin = 1e9, hmax = -1e9;
+						for (let j = 0; j < this.NY; j++) {
+							for (let i = 0; i < this.NX; i++) {
+								const k = this.k3(i, j);
+								const h = this.U[k + 0];
+								if (h < hmin) hmin = h;
+								if (h > hmax) hmax = h;
+							}
+						}
+
+						const range = Math.max(1e-3, hmax - hmin);
+
+						// Render height field
+						for (let Y = 0; Y < this.H; Y++) {
+							const gy = Y / this.H * (this.NY - 1);
+							const j0 = Math.floor(gy), j1 = Math.min(this.NY - 1, j0 + 1);
+							const ty = gy - j0;
+							for (let X = 0; X < this.W; X++) {
+								const gx = X / this.W * (this.NX - 1);
+								const i0 = Math.floor(gx), i1 = Math.min(this.NX - 1, i0 + 1);
+								const tx = gx - i0;
+								const k00 = this.k3(i0, j0), k10 = this.k3(i1, j0);
+								const k01 = this.k3(i0, j1), k11 = this.k3(i1, j1);
+
+								const h = (1 - tx) * (1 - ty) * this.U[k00 + 0] +
+										  tx * (1 - ty) * this.U[k10 + 0] +
+										  (1 - tx) * ty * this.U[k01 + 0] +
+										  tx * ty * this.U[k11 + 0];
+
+								const t = Math.max(0, Math.min(1, (h - hmin) / range));
+								let L = (t * 255) | 0;
+								let r = lut[L * 4 + 0], g = lut[L * 4 + 1], b = lut[L * 4 + 2];
+
+								// Normal sparkle effect
+								const hx = (this.U[this.k3(Math.min(this.NX - 1, i0 + 1), j0) + 0] -
+										   this.U[this.k3(Math.max(0, i0 - 1), j0) + 0]) * 0.5;
+								const hy = (this.U[this.k3(i0, Math.min(this.NY - 1, j0 + 1)) + 0] -
+										   this.U[this.k3(i0, Math.max(0, j0 - 1)) + 0]) * 0.5;
+								const shade = Math.max(0, Math.min(1.2, 0.7 + 0.6 * (-0.4 * hx + 0.5 * hy)));
+								r = Math.max(0, Math.min(255, r * shade)) | 0;
+								g = Math.max(0, Math.min(255, g * shade)) | 0;
+								b = Math.max(0, Math.min(255, b * shade)) | 0;
+
+								const p = (Y * this.W + X) * 4;
+								img.data[p] = r;
+								img.data[p + 1] = g;
+								img.data[p + 2] = b;
+								img.data[p + 3] = 255;
+							}
+						}
+						this.ctx.putImageData(img, 0, 0);
+
+						// Render walls
+						for (let Y = 0; Y < this.H; Y += Math.max(1, Math.floor(this.H / this.NY))) {
+							const j = Math.floor(Y / this.H * (this.NY - 1));
+							for (let X = 0; X < this.W; X += Math.max(1, Math.floor(this.W / this.NX))) {
+								const i = Math.floor(X / this.W * (this.NX - 1));
+								if (this.solid[this.idx(i, j)] === 1) {
+									const x0 = Math.floor(i / (this.NX - 1) * this.W);
+									const y0 = Math.floor(j / (this.NY - 1) * this.H);
+									const xs = Math.floor(this.W / (this.NX - 1) + 1);
+									const ys = Math.floor(this.H / (this.NY - 1) + 1);
+									this.ctx.fillStyle = "rgba(30,30,35,255)";
+									this.ctx.fillRect(x0, y0, xs, ys);
+								}
+							}
+						}
+
+						// Render velocity vectors
+						if (this.showVec) {
+							this.ctx.strokeStyle = "rgba(255,255,255,0.32)";
+							this.ctx.lineWidth = 1;
+							const skip = 8;
+							for (let j = skip; j < this.NY - skip; j += skip) {
+								for (let i = skip; i < this.NX - skip; i += skip) {
+									const k = this.k3(i, j);
+									const h = this.U[k + 0];
+									const u = this.U[k + 1] / (h + 1e-6);
+									const v = this.U[k + 2] / (h + 1e-6);
+									const x = i / this.NX * this.W;
+									const y = j / this.NY * this.H;
+									this.ctx.beginPath();
+									this.ctx.moveTo(x, y);
+									this.ctx.lineTo(x + u * 6, y + v * 6);
+									this.ctx.stroke();
+								}
+							}
+						}
+
+						// Status overlay
+						this.ctx.fillStyle = "rgba(255,255,255,0.85)";
+						this.ctx.font = "12px ui-monospace, SFMono-Regular, Menlo, monospace";
+						this.ctx.fillText(`CFL live ≈ ${this.cflLive.toFixed(2)}  |  g=${this.grav.toFixed(2)}  μ=${this.fric.toFixed(3)}  Δx=${this.dx.toFixed(2)}  mode=${this.mode}`, 10, 18);
+						this.ctx.fillText(`Mass drift ≈ ${this.massPpm.toFixed(1)} ppm  |  Paint: ${this.mode === "Walls" ? "WALLS" : "SPLASHES"} (drag)`, 10, 34);
+					}
+
+					updateUI() {
+						document.getElementById('wf-cfl-live-value').textContent = this.cflLive.toFixed(2);
+						document.getElementById('wf-mass-value').textContent = this.massPpm.toFixed(1) + ' ppm';
+
+						const isStable = this.cflLive <= 1.0;
+						const statusEl = document.getElementById('wf-stability-status');
+						statusEl.className = `status-indicator ${isStable ? 'status-stable' : 'status-unstable'}`;
+						statusEl.textContent = isStable ? 'Stable' : 'Unstable';
+					}
+
+					initializeSimulation() {
+						// Initialize with thin water layer
+						for (let j = 0; j < this.NY; j++) {
+							for (let i = 0; i < this.NX; i++) {
+								const k = this.k3(i, j);
+								this.U[k + 0] = 0.8 + 0.02 * Math.sin(i * 0.2) * Math.sin(j * 0.17); // Height
+								this.U[k + 1] = 0; // Momentum X
+								this.U[k + 2] = 0; // Momentum Y
+							}
+						}
+						this.solid.fill(0); // Clear walls
+					}
+
+					resetSimulation() {
+						this.U.fill(0);
+						this.Utmp.fill(0);
+						this.solid.fill(0);
+						this.initializeSimulation();
+						this.massPpm = 0;
+					}
+
+					startAnimation() {
+						if (this.raf) cancelAnimationFrame(this.raf);
+						const animate = () => {
+							// Calculate CFL condition and adaptive time step
+							let smax = 1e-6;
+							for (let j = 1; j < this.NY - 1; j++) {
+								for (let i = 1; i < this.NX - 1; i++) {
+									const k = this.k3(i, j);
+									const h = this.U[k + 0];
+									const u = this.U[k + 1] / (h + 1e-6);
+									const v = this.U[k + 2] / (h + 1e-6);
+									const s = Math.max(Math.abs(u) + Math.sqrt(this.grav * Math.max(0, h)),
+													 Math.abs(v) + Math.sqrt(this.grav * Math.max(0, h)));
+									if (s > smax) smax = s;
+								}
+							}
+
+							const dt = Math.min(0.5, Math.max(0.001, (this.cflTarget * this.dx) / smax));
+							this.cflLive = Math.min(2.0, (smax * dt) / this.dx);
+
+							// Calculate mass for drift monitoring
+							let mass = 0;
+							for (let k = 0; k < this.U.length; k += 3) {
+								mass += this.U[k];
+							}
+							const initialMass = this.step.initialMass || mass;
+							this.step.initialMass = initialMass;
+							const ppm = ((mass - initialMass) / (initialMass + 1e-6)) * 1e6;
+							this.massPpm = ppm;
+
+							this.step(dt, this.grav, this.fric);
+							this.updateUI();
+							this.render();
+							this.raf = requestAnimationFrame(animate);
+						};
+						animate();
+					}
+
+					destroy() {
+						if (this.raf) cancelAnimationFrame(this.raf);
+					}
+				}
 			</script>
 
 		</body>
