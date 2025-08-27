@@ -1870,39 +1870,49 @@
 					constructor() {
 						this.W = 1120;
 						this.H = 630;
-						this.NX = 160;
-						this.NY = 90;
+						this.NX = 280;
+						this.NY = 160;
 						this.canvas = document.getElementById('waveforge-canvas');
 						this.ctx = this.canvas.getContext('2d');
 
 						// Parameters
 						this.seed = 20250827;
 						this.mode = "Splash";
-						this.brushR = 10;
+						this.brushR = 12;
 						this.grav = 9.81;
-						this.fric = 0.005;
-						this.cflTarget = 0.7;
+						this.fric = 0.001;
+						this.cflTarget = 0.85;
 						this.dxScale = 1.0;
 						this.palette = "Ocean";
 						this.showVec = false;
+						this.interactionStrength = 0.4;
 
 						// Computed values
 						this.dx = 1.0;
 						this.cflLive = 0;
 						this.massPpm = 0;
+						this.dt = 0.012;
 
-						// Simulation arrays
-						this.size = this.NX * this.NY * 3; // h, hu, hv for each cell
-						this.U = new Float32Array(this.size);
-						this.Utmp = new Float32Array(this.size);
-						this.solid = new Uint8Array(this.NX * this.NY);
+						// Simulation arrays - shallow water equations with proper separation
+						this.size = this.NX * this.NY;
+						this.h = new Float32Array(this.size);     // water depth
+						this.hu = new Float32Array(this.size);    // momentum x
+						this.hv = new Float32Array(this.size);    // momentum y
+						this.h_prev = new Float32Array(this.size);
+						this.hu_prev = new Float32Array(this.size);
+						this.hv_prev = new Float32Array(this.size);
+						this.terrain = new Float32Array(this.size); // bottom topography
+						this.solid = new Uint8Array(this.size);
 
+						// For smooth interaction
 						this.raf = 0;
 						this.pointerDown = false;
 						this.pointerX = 0;
 						this.pointerY = 0;
 						this.scaleX = this.NX / this.W;
 						this.scaleY = this.NY / this.H;
+						this.lastInteractionTime = 0;
+						this.interactionRadius = 15;
 
 						this.init();
 					}
@@ -1937,7 +1947,7 @@
 							const r = this.canvas.getBoundingClientRect();
 							this.pointerX = (e.clientX - r.left) * this.scaleX;
 							this.pointerY = (e.clientY - r.top) * this.scaleY;
-							this.inject(this.pointerX, this.pointerY);
+							this.applyInteraction(this.pointerX, this.pointerY);
 						};
 
 						this.canvas.onpointermove = (e) => {
@@ -1945,7 +1955,7 @@
 							const r = this.canvas.getBoundingClientRect();
 							this.pointerX = (e.clientX - r.left) * this.scaleX;
 							this.pointerY = (e.clientY - r.top) * this.scaleY;
-							this.inject(this.pointerX, this.pointerY);
+							this.applyInteraction(this.pointerX, this.pointerY);
 						};
 
 						this.canvas.onpointerup = () => { this.pointerDown = false; };
@@ -1978,7 +1988,7 @@
 
 						document.getElementById('wf-friction-slider').addEventListener('input', (e) => {
 							this.fric = parseFloat(e.target.value);
-							document.getElementById('wf-friction-value').textContent = this.fric.toFixed(3);
+							document.getElementById('wf-friction-value').textContent = this.fric.toExponential(1);
 						});
 
 						document.getElementById('wf-cfl-slider').addEventListener('input', (e) => {
@@ -2009,189 +2019,226 @@
 						return j * this.NX + i;
 					}
 
-					k3(i, j) {
-						return (j * this.NX + i) * 3;
+					clamp(x, min, max) {
+						return Math.max(min, Math.min(max, x));
 					}
 
-					inject(px, py) {
-						const R = this.brushR, amp = 0.8;
+					lerp(a, b, t) {
+						return a + (b - a) * t;
+					}
+
+					// Smooth interaction with water - like the other simulations
+					applyInteraction(px, py) {
+						const now = performance.now();
+						if (now - this.lastInteractionTime < 16) return; // Limit interaction rate
+						this.lastInteractionTime = now;
+
+						const R = Math.max(8, this.brushR);
+						const amp = this.interactionStrength;
+
 						for (let j = -R; j <= R; j++) {
 							for (let i = -R; i <= R; i++) {
 								const x = Math.floor(px) + i;
 								const y = Math.floor(py) + j;
-								if (x < 1 || x >= this.NX - 1 || y < 1 || y >= this.NY - 1) continue;
+								if (x < 2 || x >= this.NX - 2 || y < 2 || y >= this.NY - 2) continue;
+
 								const r2 = i * i + j * j;
 								if (r2 > R * R) continue;
-								const k = this.k3(x, y);
+
+								const idx = this.idx(x, y);
+								const dist = Math.sqrt(r2) + 1e-6;
+								const falloff = Math.exp(-r2 / (0.3 * R * R));
+
 								if (this.mode === "Walls") {
-									this.solid[this.idx(x, y)] = 1;
-									this.U[k + 0] = 0.02; // H
-									this.U[k + 1] = 0;    // HU
-									this.U[k + 2] = 0;    // HV
+									// Paint walls
+									if (falloff > 0.3) {
+										this.solid[idx] = 1;
+										this.h[idx] = 0.05;
+										this.hu[idx] = 0;
+										this.hv[idx] = 0;
+									}
 								} else {
-									const bump = amp * Math.exp(-r2 / (0.5 * R * R));
-									this.U[k + 0] += bump * 0.15; // Add to height
-									const mag = Math.sqrt(r2) + 1e-6;
-									this.U[k + 1] += 0.5 * bump * (i / mag); // Add radial velocity X
-									this.U[k + 2] += 0.5 * bump * (j / mag); // Add radial velocity Y
+									// Create water splash
+									const impulse = amp * falloff * 0.8;
+									this.h[idx] += impulse * 0.3;
+
+									// Add radial momentum
+									const nx = i / dist;
+									const ny = j / dist;
+									this.hu[idx] += impulse * nx * 0.15;
+									this.hv[idx] += impulse * ny * 0.15;
 								}
 							}
 						}
 					}
 
-					maxWaveSpeed(i, j, g) {
-						const k = this.k3(i, j);
-						const h = this.U[k + 0];
-						const u = this.U[k + 1] / (h + 1e-6);
-						const v = this.U[k + 2] / (h + 1e-6);
-						return Math.max(0, Math.abs(u) + Math.sqrt(g * Math.max(0, h)), Math.abs(v) + Math.sqrt(g * Math.max(0, h)));
+					// Shallow water equations with proper numerical methods
+					step() {
+						// Store previous state
+						this.h_prev.set(this.h);
+						this.hu_prev.set(this.hu);
+						this.hv_prev.set(this.hv);
+
+						// Adaptive time step based on CFL condition
+						let maxSpeed = 1e-6;
+						for (let j = 1; j < this.NY - 1; j++) {
+							for (let i = 1; i < this.NX - 1; i++) {
+								const idx = this.idx(i, j);
+								const h = this.h[idx];
+								if (h > 0.01) {
+									const u = this.hu[idx] / h;
+									const v = this.hv[idx] / h;
+									const speed = Math.abs(u) + Math.abs(v) + Math.sqrt(this.grav * h);
+									if (speed > maxSpeed) maxSpeed = speed;
+								}
+							}
+						}
+
+						this.dt = Math.min(0.02, Math.max(0.001, (this.cflTarget * this.dx) / maxSpeed));
+						this.cflLive = (maxSpeed * this.dt) / this.dx;
+
+						// Semi-implicit update using operator splitting
+						this.advectionStep();
+						this.gravityStep();
+						this.frictionStep();
+						this.enforceBoundaries();
 					}
 
-					step(dt, g, mu) {
-						this.Utmp.set(this.U);
+					advectionStep() {
+						// Simple semi-Lagrangian advection for momentum
+						const dt = this.dt;
+						for (let j = 2; j < this.NY - 2; j++) {
+							for (let i = 2; i < this.NX - 2; i++) {
+								const idx = this.idx(i, j);
+								const h = this.h[idx];
+								if (h < 0.01) continue;
 
-						// X-direction flux (Rusanov scheme)
-						for (let j = 1; j < this.NY - 1; j++) {
-							for (let i = 1; i < this.NX - 1; i++) {
-								const leftSolid = this.solid[this.idx(i - 1, j)] === 1;
-								const rightSolid = this.solid[this.idx(i, j)] === 1;
-								if (leftSolid && rightSolid) continue;
+								const u = this.hu[idx] / h;
+								const v = this.hv[idx] / h;
 
-								const kL = this.k3(i - 1, j), kR = this.k3(i, j);
-								const hL = this.U[kL + 0], uL = this.U[kL + 1] / (hL + 1e-6), vL = this.U[kL + 2] / (hL + 1e-6);
-								const hR = this.U[kR + 0], uR = this.U[kR + 1] / (hR + 1e-6), vR = this.U[kR + 2] / (hR + 1e-6);
+								// Trace back
+								const x_back = i - dt * u / this.dx;
+								const y_back = j - dt * v / this.dx;
 
-								const s = Math.max(
-									Math.abs(uL) + Math.sqrt(g * Math.max(0, hL)),
-									Math.abs(uR) + Math.sqrt(g * Math.max(0, hR))
-								);
+								// Bilinear interpolation
+								const i0 = Math.floor(x_back);
+								const j0 = Math.floor(y_back);
+								const fx = x_back - i0;
+								const fy = y_back - j0;
 
-								if (leftSolid || rightSolid) continue;
+								if (i0 >= 0 && i0 < this.NX - 1 && j0 >= 0 && j0 < this.NY - 1) {
+									const idx00 = this.idx(i0, j0);
+									const idx10 = this.idx(i0 + 1, j0);
+									const idx01 = this.idx(i0, j0 + 1);
+									const idx11 = this.idx(i0 + 1, j0 + 1);
 
-								// Flux calculations (Rusanov scheme)
-								const FL_h = this.U[kL + 1];
-								const FR_h = this.U[kR + 1];
-								const FL_hu = this.U[kL + 1] * uL + 0.5 * g * hL * hL;
-								const FR_hu = this.U[kR + 1] * uR + 0.5 * g * hR * hR;
-								const FL_hv = this.U[kL + 1] * vL;
-								const FR_hv = this.U[kR + 1] * vR;
+									const hu_interp = this.lerp(
+										this.lerp(this.hu_prev[idx00], this.hu_prev[idx10], fx),
+										this.lerp(this.hu_prev[idx01], this.hu_prev[idx11], fx),
+										fy
+									);
 
-								const f_h = 0.5 * (FL_h + FR_h) - 0.5 * s * (hR - hL);
-								const f_hu = 0.5 * (FL_hu + FR_hu) - 0.5 * s * (this.U[kR + 1] - this.U[kL + 1]);
-								const f_hv = 0.5 * (FL_hv + FR_hv) - 0.5 * s * (this.U[kR + 2] - this.U[kL + 2]);
+									const hv_interp = this.lerp(
+										this.lerp(this.hv_prev[idx00], this.hv_prev[idx10], fx),
+										this.lerp(this.hv_prev[idx01], this.hv_prev[idx11], fx),
+										fy
+									);
 
-								const sdx = dt / this.dx;
-								this.Utmp[kR + 0] -= sdx * f_h;
-								this.Utmp[kR + 1] -= sdx * f_hu;
-								this.Utmp[kR + 2] -= sdx * f_hv;
-								this.Utmp[kL + 0] += sdx * f_h;
-								this.Utmp[kL + 1] += sdx * f_hu;
-								this.Utmp[kL + 2] += sdx * f_hv;
+									this.hu[idx] = hu_interp;
+									this.hv[idx] = hv_interp;
+								}
 							}
 						}
+					}
 
-						// Y-direction flux
+					gravityStep() {
+						// Gravity and pressure forces using finite differences
+						const dt = this.dt;
+						const dx = this.dx;
+						const g = this.grav;
+
 						for (let j = 1; j < this.NY - 1; j++) {
 							for (let i = 1; i < this.NX - 1; i++) {
-								const botSolid = this.solid[this.idx(i, j - 1)] === 1;
-								const topSolid = this.solid[this.idx(i, j)] === 1;
-								if (botSolid && topSolid) continue;
+								const idx = this.idx(i, j);
+								const h = this.h[idx];
+								if (h < 0.01) continue;
 
-								const kB = this.k3(i, j - 1), kT = this.k3(i, j);
-								const hB = this.U[kB + 0], uB = this.U[kB + 1] / (hB + 1e-6), vB = this.U[kB + 2] / (hB + 1e-6);
-								const hT = this.U[kT + 0], uT = this.U[kT + 1] / (hT + 1e-6), vT = this.U[kT + 2] / (hT + 1e-6);
+								// Pressure gradient
+								const dh_dx = (this.h[this.idx(i + 1, j)] - this.h[this.idx(i - 1, j)]) / (2 * dx);
+								const dh_dy = (this.h[this.idx(i, j + 1)] - this.h[this.idx(i, j - 1)]) / (2 * dx);
 
-								const s = Math.max(
-									Math.abs(vB) + Math.sqrt(g * Math.max(0, hB)),
-									Math.abs(vT) + Math.sqrt(g * Math.max(0, hT))
-								);
-
-								if (botSolid || topSolid) continue;
-
-								const GL_h = this.U[kB + 2];
-								const GR_h = this.U[kT + 2];
-								const GL_hu = this.U[kB + 1] * vB;
-								const GR_hu = this.U[kT + 1] * vT;
-								const GL_hv = this.U[kB + 2] * vB + 0.5 * g * hB * hB;
-								const GR_hv = this.U[kT + 2] * vT + 0.5 * g * hT * hT;
-
-								const g_h = 0.5 * (GL_h + GR_h) - 0.5 * s * (hT - hB);
-								const g_hu = 0.5 * (GL_hu + GR_hu) - 0.5 * s * (this.U[kT + 1] - this.U[kB + 1]);
-								const g_hv = 0.5 * (GL_hv + GR_hv) - 0.5 * s * (this.U[kT + 2] - this.U[kB + 2]);
-
-								const sdy = dt / this.dx;
-								this.Utmp[kT + 0] -= sdy * g_h;
-								this.Utmp[kT + 1] -= sdy * g_hu;
-								this.Utmp[kT + 2] -= sdy * g_hv;
-								this.Utmp[kB + 0] += sdy * g_h;
-								this.Utmp[kB + 1] += sdy * g_hu;
-								this.Utmp[kB + 2] += sdy * g_hv;
+								// Update momentum
+								this.hu[idx] -= g * h * dh_dx * dt;
+								this.hv[idx] -= g * h * dh_dy * dt;
 							}
 						}
+					}
 
-						// Friction and boundary conditions
-						const df = Math.exp(-Math.max(0, mu) * dt);
+					frictionStep() {
+						// Bottom friction
+						const dt = this.dt;
+						const friction = Math.exp(-this.fric * dt);
+
 						for (let j = 0; j < this.NY; j++) {
 							for (let i = 0; i < this.NX; i++) {
-								const k = this.k3(i, j);
-								this.Utmp[k + 1] *= df;
-								this.Utmp[k + 2] *= df;
-								const h = Math.max(0.02, this.Utmp[k + 0]);
-								const scl = h / (this.Utmp[k + 0] || h);
-								this.U[k + 0] = h;
-								this.U[k + 1] = this.Utmp[k + 1] * scl;
-								this.U[k + 2] = this.Utmp[k + 2] * scl;
-								if (this.solid[this.idx(i, j)] === 1) {
-									this.U[k + 0] = 0.02;
-									this.U[k + 1] = 0;
-									this.U[k + 2] = 0;
+								const idx = this.idx(i, j);
+								const h = this.h[idx];
+								if (h > 0.01) {
+									this.hu[idx] *= friction;
+									this.hv[idx] *= friction;
 								}
 							}
 						}
 					}
 
-					makeLUT(name) {
-						const g = [];
-						for (let i = 0; i < 256; i++) {
-							const t = i / 255;
-							let r = 0, gr = 0, b = 0;
-							if (name === "Ocean") {
-								r = 0.1 + 0.6 * Math.pow(t, 1.7);
-								gr = 0.3 + 0.6 * t;
-								b = 0.6 + 0.4 * (1 - t);
-							} else if (name === "Icefire") {
-								r = Math.pow(t, 1.2);
-								gr = 0.8 * Math.pow(1 - t, 0.6);
-								b = 1.0;
-							} else {
-								r = 0.2 + 0.8 * Math.pow(t, 1.8);
-								gr = 0.1 + 0.6 * Math.pow(t, 1.2);
-								b = 0.1 + 0.2 * t;
-							}
-							g.push(
-								Math.round(Math.max(0, Math.min(255, r * 255))),
-								Math.round(Math.max(0, Math.min(255, gr * 255))),
-								Math.round(Math.max(0, Math.min(255, b * 255))),
-								255
-							);
+					enforceBoundaries() {
+						// Reflecting boundaries
+						for (let i = 0; i < this.NX; i++) {
+							// Top and bottom
+							this.h[this.idx(i, 0)] = this.h[this.idx(i, 1)];
+							this.h[this.idx(i, this.NY - 1)] = this.h[this.idx(i, this.NY - 2)];
+							this.hu[this.idx(i, 0)] = this.hu[this.idx(i, 1)];
+							this.hu[this.idx(i, this.NY - 1)] = this.hu[this.idx(i, this.NY - 2)];
+							this.hv[this.idx(i, 0)] = -this.hv[this.idx(i, 1)]; // Reflect
+							this.hv[this.idx(i, this.NY - 1)] = -this.hv[this.idx(i, this.NY - 2)];
 						}
-						return new Uint8ClampedArray(g);
+
+						for (let j = 0; j < this.NY; j++) {
+							// Left and right
+							this.h[this.idx(0, j)] = this.h[this.idx(1, j)];
+							this.h[this.idx(this.NX - 1, j)] = this.h[this.idx(this.NX - 2, j)];
+							this.hv[this.idx(0, j)] = this.hv[this.idx(1, j)];
+							this.hv[this.idx(this.NX - 1, j)] = this.hv[this.idx(this.NX - 2, j)];
+							this.hu[this.idx(0, j)] = -this.hu[this.idx(1, j)]; // Reflect
+							this.hu[this.idx(this.NX - 1, j)] = -this.hu[this.idx(this.NX - 2, j)];
+						}
+
+						// Solid obstacles
+						for (let j = 0; j < this.NY; j++) {
+							for (let i = 0; i < this.NX; i++) {
+								const idx = this.idx(i, j);
+								if (this.solid[idx]) {
+									this.h[idx] = 0.05;
+									this.hu[idx] = 0;
+									this.hv[idx] = 0;
+								}
+							}
+						}
 					}
 
+					// High-quality visualization following SAX Perceptual Integrity principle
 					render() {
 						this.ctx.clearRect(0, 0, this.W, this.H);
 						this.ctx.fillStyle = "#0b0f16";
 						this.ctx.fillRect(0, 0, this.W, this.H);
 
 						const img = this.ctx.createImageData(this.W, this.H);
-						const lut = this.makeLUT(this.palette);
 
-						// Find min/max for normalization
+						// Smooth interpolation for high-quality rendering
 						let hmin = 1e9, hmax = -1e9;
 						for (let j = 0; j < this.NY; j++) {
 							for (let i = 0; i < this.NX; i++) {
-								const k = this.k3(i, j);
-								const h = this.U[k + 0];
+								const h = this.h[this.idx(i, j)];
 								if (h < hmin) hmin = h;
 								if (h > hmax) hmax = h;
 							}
@@ -2199,88 +2246,112 @@
 
 						const range = Math.max(1e-3, hmax - hmin);
 
-						// Render height field
+						// High-quality bilinear interpolation
 						for (let Y = 0; Y < this.H; Y++) {
 							const gy = Y / this.H * (this.NY - 1);
-							const j0 = Math.floor(gy), j1 = Math.min(this.NY - 1, j0 + 1);
+							const j0 = Math.floor(gy);
+							const j1 = Math.min(this.NY - 1, j0 + 1);
 							const ty = gy - j0;
+
 							for (let X = 0; X < this.W; X++) {
 								const gx = X / this.W * (this.NX - 1);
-								const i0 = Math.floor(gx), i1 = Math.min(this.NX - 1, i0 + 1);
+								const i0 = Math.floor(gx);
+								const i1 = Math.min(this.NX - 1, i0 + 1);
 								const tx = gx - i0;
-								const k00 = this.k3(i0, j0), k10 = this.k3(i1, j0);
-								const k01 = this.k3(i0, j1), k11 = this.k3(i1, j1);
 
-								const h = (1 - tx) * (1 - ty) * this.U[k00 + 0] +
-										  tx * (1 - ty) * this.U[k10 + 0] +
-										  (1 - tx) * ty * this.U[k01 + 0] +
-										  tx * ty * this.U[k11 + 0];
+								// Bilinear interpolation of height
+								const h00 = this.h[this.idx(i0, j0)];
+								const h10 = this.h[this.idx(i1, j0)];
+								const h01 = this.h[this.idx(i0, j1)];
+								const h11 = this.h[this.idx(i1, j1)];
 
-								const t = Math.max(0, Math.min(1, (h - hmin) / range));
-								let L = (t * 255) | 0;
-								let r = lut[L * 4 + 0], g = lut[L * 4 + 1], b = lut[L * 4 + 2];
+								const h = this.lerp(
+									this.lerp(h00, h10, tx),
+									this.lerp(h01, h11, tx),
+									ty
+								);
 
-								// Normal sparkle effect
-								const hx = (this.U[this.k3(Math.min(this.NX - 1, i0 + 1), j0) + 0] -
-										   this.U[this.k3(Math.max(0, i0 - 1), j0) + 0]) * 0.5;
-								const hy = (this.U[this.k3(i0, Math.min(this.NY - 1, j0 + 1)) + 0] -
-										   this.U[this.k3(i0, Math.max(0, j0 - 1)) + 0]) * 0.5;
-								const shade = Math.max(0, Math.min(1.2, 0.7 + 0.6 * (-0.4 * hx + 0.5 * hy)));
-								r = Math.max(0, Math.min(255, r * shade)) | 0;
-								g = Math.max(0, Math.min(255, g * shade)) | 0;
-								b = Math.max(0, Math.min(255, b * shade)) | 0;
+								// Color based on palette
+								let r, g, b;
+								const t = this.clamp((h - hmin) / range, 0, 1);
+
+								if (this.palette === "Ocean") {
+									r = Math.floor(20 + 235 * Math.pow(t, 1.7));
+									g = Math.floor(40 + 215 * t);
+									b = Math.floor(255 - 235 * t);
+								} else if (this.palette === "Icefire") {
+									r = Math.floor(255 * Math.pow(t, 1.2));
+									g = Math.floor(204 * Math.pow(1 - t, 0.6));
+									b = Math.floor(255);
+								} else { // Magma
+									r = Math.floor(51 + 204 * Math.pow(t, 1.8));
+									g = Math.floor(25 + 230 * Math.pow(t, 1.2));
+									b = Math.floor(25 + 230 * t);
+								}
+
+								// Add normal-based lighting for realism
+								if (i0 > 0 && i0 < this.NX - 1 && j0 > 0 && j0 < this.NY - 1) {
+									const hx = (this.h[this.idx(i0 + 1, j0)] - this.h[this.idx(i0 - 1, j0)]) * 0.5;
+									const hy = (this.h[this.idx(i0, j0 + 1)] - this.h[this.idx(i0, j0 - 1)]) * 0.5;
+									const light = 0.6 + 0.4 * this.clamp((-hx * 0.3 + hy * 0.4) / Math.sqrt(hx*hx + hy*hy + 1), 0, 1);
+									r = Math.floor(r * light);
+									g = Math.floor(g * light);
+									b = Math.floor(b * light);
+								}
 
 								const p = (Y * this.W + X) * 4;
-								img.data[p] = r;
-								img.data[p + 1] = g;
-								img.data[p + 2] = b;
+								img.data[p] = this.clamp(r, 0, 255);
+								img.data[p + 1] = this.clamp(g, 0, 255);
+								img.data[p + 2] = this.clamp(b, 0, 255);
 								img.data[p + 3] = 255;
 							}
 						}
+
 						this.ctx.putImageData(img, 0, 0);
 
-						// Render walls
-						for (let Y = 0; Y < this.H; Y += Math.max(1, Math.floor(this.H / this.NY))) {
-							const j = Math.floor(Y / this.H * (this.NY - 1));
-							for (let X = 0; X < this.W; X += Math.max(1, Math.floor(this.W / this.NX))) {
-								const i = Math.floor(X / this.W * (this.NX - 1));
-								if (this.solid[this.idx(i, j)] === 1) {
-									const x0 = Math.floor(i / (this.NX - 1) * this.W);
-									const y0 = Math.floor(j / (this.NY - 1) * this.H);
-									const xs = Math.floor(this.W / (this.NX - 1) + 1);
-									const ys = Math.floor(this.H / (this.NY - 1) + 1);
-									this.ctx.fillStyle = "rgba(30,30,35,255)";
-									this.ctx.fillRect(x0, y0, xs, ys);
+						// Render solid walls
+						this.ctx.fillStyle = "rgba(64,64,74,255)";
+						for (let j = 0; j < this.NY; j++) {
+							for (let i = 0; i < this.NX; i++) {
+								if (this.solid[this.idx(i, j)]) {
+									const x = i / (this.NX - 1) * this.W;
+									const y = j / (this.NY - 1) * this.H;
+									const w = this.W / (this.NX - 1);
+									const h = this.H / (this.NY - 1);
+									this.ctx.fillRect(x - w/2, y - h/2, w, h);
 								}
 							}
 						}
 
-						// Render velocity vectors
+						// Velocity vectors
 						if (this.showVec) {
-							this.ctx.strokeStyle = "rgba(255,255,255,0.32)";
-							this.ctx.lineWidth = 1;
-							const skip = 8;
+							this.ctx.strokeStyle = "rgba(255,255,255,0.6)";
+							this.ctx.lineWidth = 1.5;
+							const skip = 12;
 							for (let j = skip; j < this.NY - skip; j += skip) {
 								for (let i = skip; i < this.NX - skip; i += skip) {
-									const k = this.k3(i, j);
-									const h = this.U[k + 0];
-									const u = this.U[k + 1] / (h + 1e-6);
-									const v = this.U[k + 2] / (h + 1e-6);
-									const x = i / this.NX * this.W;
-									const y = j / this.NY * this.H;
-									this.ctx.beginPath();
-									this.ctx.moveTo(x, y);
-									this.ctx.lineTo(x + u * 6, y + v * 6);
-									this.ctx.stroke();
+									const idx = this.idx(i, j);
+									const h = this.h[idx];
+									if (h > 0.1) {
+										const u = this.hu[idx] / h;
+										const v = this.hv[idx] / h;
+										const x = i / (this.NX - 1) * this.W;
+										const y = j / (this.NY - 1) * this.H;
+										const scale = 8;
+										this.ctx.beginPath();
+										this.ctx.moveTo(x, y);
+										this.ctx.lineTo(x + u * scale, y + v * scale);
+										this.ctx.stroke();
+									}
 								}
 							}
 						}
 
 						// Status overlay
-						this.ctx.fillStyle = "rgba(255,255,255,0.85)";
-						this.ctx.font = "12px ui-monospace, SFMono-Regular, Menlo, monospace";
-						this.ctx.fillText(`CFL live ≈ ${this.cflLive.toFixed(2)}  |  g=${this.grav.toFixed(2)}  μ=${this.fric.toFixed(3)}  Δx=${this.dx.toFixed(2)}  mode=${this.mode}`, 10, 18);
-						this.ctx.fillText(`Mass drift ≈ ${this.massPpm.toFixed(1)} ppm  |  Paint: ${this.mode === "Walls" ? "WALLS" : "SPLASHES"} (drag)`, 10, 34);
+						this.ctx.fillStyle = "rgba(255,255,255,0.9)";
+						this.ctx.font = "bold 13px ui-monospace, SFMono-Regular, Menlo, monospace";
+						this.ctx.fillText(`CFL: ${this.cflLive.toFixed(2)} | Depth: ${(hmax-hmin).toFixed(3)} | Mode: ${this.mode}`, 12, 20);
+						this.ctx.fillText(`g: ${this.grav.toFixed(2)} | Friction: ${this.fric.toExponential(1)}`, 12, 40);
 					}
 
 					updateUI() {
@@ -2294,57 +2365,35 @@
 					}
 
 					initializeSimulation() {
-						// Initialize with thin water layer
+						// Initialize with smooth water surface
 						for (let j = 0; j < this.NY; j++) {
 							for (let i = 0; i < this.NX; i++) {
-								const k = this.k3(i, j);
-								this.U[k + 0] = 0.8 + 0.02 * Math.sin(i * 0.2) * Math.sin(j * 0.17); // Height
-								this.U[k + 1] = 0; // Momentum X
-								this.U[k + 2] = 0; // Momentum Y
+								const idx = this.idx(i, j);
+								// Smooth initial conditions with some natural variation
+								const wave1 = 0.03 * Math.sin(i * 0.1) * Math.sin(j * 0.07);
+								const wave2 = 0.02 * Math.sin(i * 0.05 + j * 0.03);
+								this.h[idx] = 0.8 + wave1 + wave2;
+								this.hu[idx] = 0;
+								this.hv[idx] = 0;
+								this.terrain[idx] = 0;
 							}
 						}
-						this.solid.fill(0); // Clear walls
+						this.solid.fill(0);
+						this.massPpm = 0;
 					}
 
 					resetSimulation() {
-						this.U.fill(0);
-						this.Utmp.fill(0);
+						this.h.fill(0);
+						this.hu.fill(0);
+						this.hv.fill(0);
 						this.solid.fill(0);
 						this.initializeSimulation();
-						this.massPpm = 0;
 					}
 
 					startAnimation() {
 						if (this.raf) cancelAnimationFrame(this.raf);
 						const animate = () => {
-							// Calculate CFL condition and adaptive time step
-							let smax = 1e-6;
-							for (let j = 1; j < this.NY - 1; j++) {
-								for (let i = 1; i < this.NX - 1; i++) {
-									const k = this.k3(i, j);
-									const h = this.U[k + 0];
-									const u = this.U[k + 1] / (h + 1e-6);
-									const v = this.U[k + 2] / (h + 1e-6);
-									const s = Math.max(Math.abs(u) + Math.sqrt(this.grav * Math.max(0, h)),
-													 Math.abs(v) + Math.sqrt(this.grav * Math.max(0, h)));
-									if (s > smax) smax = s;
-								}
-							}
-
-							const dt = Math.min(0.5, Math.max(0.001, (this.cflTarget * this.dx) / smax));
-							this.cflLive = Math.min(2.0, (smax * dt) / this.dx);
-
-							// Calculate mass for drift monitoring
-							let mass = 0;
-							for (let k = 0; k < this.U.length; k += 3) {
-								mass += this.U[k];
-							}
-							const initialMass = this.step.initialMass || mass;
-							this.step.initialMass = initialMass;
-							const ppm = ((mass - initialMass) / (initialMass + 1e-6)) * 1e6;
-							this.massPpm = ppm;
-
-							this.step(dt, this.grav, this.fric);
+							this.step();
 							this.updateUI();
 							this.render();
 							this.raf = requestAnimationFrame(animate);
@@ -2356,6 +2405,11 @@
 						if (this.raf) cancelAnimationFrame(this.raf);
 					}
 				}
+
+				// Initialize simulation when DOM is loaded
+				document.addEventListener('DOMContentLoaded', () => {
+					window.waveForgeSim = new WaveForgeSimulation();
+				});
 			</script>
 
 		</body>
