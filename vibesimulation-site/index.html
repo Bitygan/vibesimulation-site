@@ -2383,6 +2383,8 @@
 
 							this.canvas.style.width = containerWidth + 'px';
 							this.canvas.style.height = containerHeight + 'px';
+
+							// Update scale factors based on current geometry
 							this.scaleX = this.NX / containerWidth;
 							this.scaleY = this.NY / containerHeight;
 						};
@@ -2817,9 +2819,25 @@
 					}
 
 					resetSimulation() {
-						this.u_now.fill(0);
-						this.u_prv.fill(0);
-						this.u_nxt.fill(0);
+						// Update grid dimensions based on geometry
+						this.NX = this.geometry === "String1D" ? 256 : 160;
+						this.NY = this.geometry === "String1D" ? 1 : 90;
+						this.size = this.NX * this.NY;
+
+						// Recreate arrays with new dimensions
+						this.u_now = new Float32Array(this.size);
+						this.u_prv = new Float32Array(this.size);
+						this.u_nxt = new Float32Array(this.size);
+						this.mask = new Uint8Array(this.size);
+
+						// Update canvas scaling
+						const container = this.canvas.parentElement;
+						const containerWidth = container.offsetWidth;
+						const containerHeight = Math.min(containerWidth * 0.5625, 630);
+						this.scaleX = this.NX / containerWidth;
+						this.scaleY = this.NY / containerHeight;
+
+						// Reinitialize simulation
 						this.initializeSimulation();
 					}
 
