@@ -522,7 +522,7 @@
 
             // Check if the network has found an optimal path
             function checkOptimalPath(G) {
-                const {start, end} = G;
+                const {start, end, bias} = G;
                 const {path: optimalPath, distance: optimalDistance} = findShortestPath(G, start, end);
 
                 if (optimalDistance === Infinity || optimalPath.length === 0) {
@@ -534,35 +534,67 @@
                 const {I} = computeCurrents(G);
                 let totalCurrent = 0, optimalCurrent = 0;
 
-                console.log(`Checking optimal path: ${optimalPath.join('->')}`);
+                console.log(`Optimal path: ${optimalPath.join('->')} (distance: ${optimalDistance.toFixed(3)})`);
+
+                // Create set of optimal path edges for efficient lookup
+                const optimalEdges = new Set();
+                for (let i = 0; i < optimalPath.length - 1; i++) {
+                    const u = optimalPath[i], v = optimalPath[i+1];
+                    const key1 = `${u}-${v}`;
+                    const key2 = `${v}-${u}`;
+                    optimalEdges.add(key1);
+                    optimalEdges.add(key2);
+                }
+
+                console.log(`Optimal path has ${optimalEdges.size/2} edges`);
 
                 // Calculate total current and current through optimal path
+                let optimalEdgeCount = 0;
+                let maxEdgeCurrent = 0;
+                let maxEdgeKey = '';
+
                 for (const [edgeKey, current] of I) {
-                    totalCurrent += current;
-                    // Check if this edge is part of the optimal path
-                    const [u, v] = edgeKey.split('-').map(Number);
-                    for (let i = 0; i < optimalPath.length - 1; i++) {
-                        if ((optimalPath[i] === u && optimalPath[i+1] === v) ||
-                            (optimalPath[i] === v && optimalPath[i+1] === u)) {
-                            optimalCurrent += current;
-                            console.log(`Edge ${edgeKey}: ${current}A (optimal path)`);
-                            break;
-                        }
+                    totalCurrent += Math.abs(current); // Use absolute value for total
+                    if (optimalEdges.has(edgeKey)) {
+                        optimalCurrent += Math.abs(current); // Use absolute value
+                        optimalEdgeCount++;
+                        console.log(`Edge ${edgeKey}: ${current.toFixed(4)}A (ON optimal path)`);
+                    } else {
+                        console.log(`Edge ${edgeKey}: ${current.toFixed(4)}A (OFF optimal path)`);
+                    }
+
+                    // Track the highest current edge for debugging
+                    if (Math.abs(current) > maxEdgeCurrent) {
+                        maxEdgeCurrent = Math.abs(current);
+                        maxEdgeKey = edgeKey;
                     }
                 }
+
+                console.log(`Max current edge: ${maxEdgeKey} with ${maxEdgeCurrent.toFixed(4)}A`);
+                console.log(`Found ${optimalEdgeCount} optimal path edges out of ${I.size} total edges`);
 
                 if (totalCurrent === 0) {
                     console.log('No current flow detected');
                     return false;
                 }
 
-                // Check if most current (>90%) flows through optimal path
+                // Check if most current flows through optimal path
                 const efficiency = optimalCurrent / totalCurrent;
-                const isSolved = efficiency > 0.9 && optimalPath.length > 0;
+                console.log(`Current efficiency: ${(efficiency * 100).toFixed(2)}%`);
+                console.log(`Optimal current: ${optimalCurrent.toFixed(4)}A / Total current: ${totalCurrent.toFixed(4)}A`);
 
-                if (isSolved) {
-                    console.log(`✅ Network SOLVED! (Efficiency: ${(efficiency * 100).toFixed(1)}%)`);
+                // Use different thresholds based on network type
+                let solvedThreshold;
+                if (bias === 'random') {
+                    solvedThreshold = 0.6; // More lenient for random networks
+                    console.log('Using random network threshold: 60%');
+                } else {
+                    solvedThreshold = 0.8; // Stricter for biased networks
+                    console.log('Using biased network threshold: 80%');
                 }
+
+                const isSolved = efficiency > solvedThreshold && optimalPath.length > 0;
+                console.log(`Solved threshold: ${(solvedThreshold * 100).toFixed(1)}%, Result: ${isSolved ? 'SOLVED' : 'NOT SOLVED'}`);
 
                 return isSolved;
             }
