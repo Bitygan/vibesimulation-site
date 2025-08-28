@@ -69,6 +69,7 @@
 ## 📁 **Files**
 
 - `circuit-lab.html` — Dedicated page for the Interactive Circuit Lab
+- `drag-rangefinder.html` — Dedicated page for Drag Rangefinder projectile simulation
 - `circuit_lab.js` — Interactive drag-and-drop circuit simulator with SAX SOP v2.2 compliance
 - `recorder_circuit_patch.js` — Optional patch for existing Reasoning Reels setup
 - `test-circuit-lab.html` — Test suite to verify functionality
@@ -81,17 +82,19 @@
 ### **Option 1: Separate Page (Recommended for Performance)**
 
 1. **Copy files** to your website root:
-   - `circuit-lab.html` (main page)
-   - `circuit_lab.js` (simulation engine)
+   - `circuit-lab.html` (Circuit Lab page)
+   - `drag-rangefinder.html` (Drag Rangefinder page)
+   - `circuit_lab.js` (simulation engines)
    - `recorder.js` (reasoning reels)
    - `recorder_circuit_patch.js` (optional)
 
-2. **Add navigation link** to your main site:
+2. **Add navigation links** to your main site:
    ```html
    <a href="circuit-lab.html" class="nav-link">Circuit Lab</a>
+   <a href="drag-rangefinder.html" class="nav-link">Drag Rangefinder</a>
    ```
 
-3. **Access the Circuit Lab** by clicking the navigation link
+3. **Access the simulations** by clicking the navigation links
 
 ### **Option 2: Embedded in Main Page**
 
@@ -120,12 +123,20 @@
 
 ## 🎯 **Quick Start**
 
-1. **Navigate to Circuit Lab** from your main site
-2. **Choose an example circuit** from the dropdown
-3. **Drag components** onto the canvas
-4. **Connect with wires** by clicking terminals
-5. **Toggle switches** to control circuits
-6. **Watch light bulbs glow** based on current!
+### **Circuit Lab:**
+1. **Navigate to Circuit Lab** from your main site navigation
+2. **Choose an example circuit** from the dropdown (Battery + Resistor, Light Bulb, etc.)
+3. **Drag components** (battery, resistor, light bulb, switch) onto the canvas
+4. **Connect with wires** by clicking component terminals
+5. **Toggle switches** to control circuits on/off
+6. **Watch light bulbs glow** based on current flow!
+
+### **Drag Rangefinder:**
+1. **Navigate to Drag Rangefinder** from your main site navigation
+2. **Adjust parameters** using the sliders (speed, angle, drag model)
+3. **Click "Fire Projectile"** to launch the simulation
+4. **Compare results** with different integration methods (Euler vs RK4)
+5. **Observe wind effects** and air resistance in real-time
 
 ## 🎮 **User Experience**
 

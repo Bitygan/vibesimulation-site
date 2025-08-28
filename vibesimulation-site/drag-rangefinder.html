@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Drag Rangefinder - Projectile Motion Simulator - VibeSimulation</title>
+    <meta name="description" content="Experience realistic projectile motion with air resistance. Compare numerical integration methods and drag models in real-time physics simulation.">
+    <meta name="keywords" content="projectile motion, drag force, air resistance, physics simulation, numerical integration, ballistics">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
+
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/video.css" />
+    <link rel="stylesheet" href="assets/css/cookie-consent.css" />
+
+    <!-- Drag Rangefinder Specific Styles -->
+    <style>
+        body {
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #1a1a2e 100%);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .drag-rangefinder-header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .drag-rangefinder-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff, #e0e7ff, #ddd6fe, #fce7f3, #ecfdf5);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .drag-rangefinder-subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-weight: 300;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .drag-rangefinder-features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            min-width: 2rem;
+            text-align: center;
+        }
+
+        .feature-text {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .back-link {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(79, 70, 229, 0.3);
+            z-index: 1000;
+        }
+
+        .back-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(79, 70, 229, 0.4);
+        }
+
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            color: white;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top: 3px solid #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hide main content initially */
+        .main-content {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .main-content.loaded {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="is-preload">
+    <!-- Navigation -->
+    <a href="index.html" class="back-link">
+        <span>←</span> Back to Simulations
+    </a>
+
+    <!-- Header -->
+    <header class="drag-rangefinder-header">
+        <h1 class="drag-rangefinder-title">Drag Rangefinder</h1>
+        <p class="drag-rangefinder-subtitle">
+            Experience realistic projectile motion with air resistance. Compare quadratic and linear drag models,
+            observe wind effects, and analyze numerical accuracy using different integration methods.
+        </p>
+
+        <div class="drag-rangefinder-features">
+            <div class="feature-item">
+                <span class="feature-icon">🎯</span>
+                <span class="feature-text">Realistic Ballistics</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">💨</span>
+                <span class="feature-text">Air Resistance</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🌪️</span>
+                <span class="feature-text">Wind Effects</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">📊</span>
+                <span class="feature-text">Numerical Analysis</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🎓</span>
+                <span class="feature-text">Educational</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading">
+        <div class="loading-spinner"></div>
+        <h3>Loading Drag Rangefinder...</h3>
+        <p>Setting up projectile physics simulation</p>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="main-content">
+        <!-- Drag Rangefinder will be inserted here -->
+    </div>
+
+    <!-- Scripts -->
+    <script src="recorder.js"></script>
+    <script>
+        // Show loading screen initially
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Drag Rangefinder page loaded');
+
+            // Wait for recorder.js to load before creating the simulation
+            function waitForRecorder() {
+                if (typeof makeReel !== 'undefined') {
+                    console.log('makeReel found, creating Drag Rangefinder...');
+
+                    try {
+                        // Create the Drag Rangefinder simulation
+                        createDragRangefinder();
+
+                        // Wait a bit for the simulation to initialize
+                        setTimeout(function() {
+                            const dragCard = document.getElementById('drag-rangefinder');
+                            if (dragCard) {
+                                const mainContent = document.getElementById('main-content');
+                                mainContent.appendChild(dragCard);
+
+                                // Hide loading screen
+                                document.getElementById('loading-screen').style.display = 'none';
+
+                                // Show main content
+                                mainContent.classList.add('loaded');
+
+                                console.log('Drag Rangefinder successfully loaded!');
+                            } else {
+                                throw new Error('Drag Rangefinder card not found in DOM');
+                            }
+                        }, 1000);
+
+                    } catch (error) {
+                        console.error('Error creating Drag Rangefinder:', error);
+                        document.getElementById('loading-screen').innerHTML = `
+                            <h3>❌ Error Loading Drag Rangefinder</h3>
+                            <p>${error.message}</p>
+                            <p>Please check the browser console for more details.</p>
+                            <a href="index.html" style="color: #4f46e5;">← Back to Main Site</a>
+                        `;
+                    }
+                } else {
+                    console.log('Waiting for makeReel...');
+                    setTimeout(waitForRecorder, 100);
+                }
+            }
+
+            // Start waiting for dependencies
+            setTimeout(waitForRecorder, 500);
+        });
+
+        // Drag Rangefinder Simulation Class
+        function createDragRangefinder() {
+            class DragRangefinderSimulation {
+                constructor() {
+                    this.W = 1400;
+                    this.H = 700;
+                    this.canvas = this.createCanvas();
+                    this.ctx = this.canvas.getContext('2d');
+
+                    this.seed = 20250827;
+                    this.integrator = "EulerCromer";
+                    this.dragModel = "Quadratic";
+                    this.v0 = 35.5;
+                    this.angle = 34;
+                    this.dt = 0.022;
+                    this.rho = 1.22;
+                    this.Cd = 0.47;
+                    this.radius = 0.0366;
+                    this.mass = 0.145;
+                    this.wind = 5;
+                    this.windDir = 180;
+                    this.fireKey = 0;
+
+                    this.raf = null;
+                    this.setupEventListeners();
+                    this.initializeCanvas();
+                }
+
+                createCanvas() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = this.W;
+                    canvas.height = this.H;
+                    canvas.style.width = '100%';
+                    canvas.style.height = 'auto';
+                    canvas.style.border = '1px solid #333';
+                    canvas.style.borderRadius = '8px';
+                    canvas.style.cursor = 'crosshair';
+                    return canvas;
+                }
+
+                clamp(x, lo, hi) { return Math.max(lo, Math.min(hi, x)); }
+                rad(d) { return d * Math.PI / 180; }
+                lerp(a, b, t) { return a + (b - a) * t; }
+                hsl(h, s, l) { return `hsl(${h} ${s}% ${l}%)`; }
+
+                setupEventListeners() {
+                    // We'll set these up after the card is created
+                }
+
+                initializeCanvas() {
+                    this.canvas.width = this.W;
+                    this.canvas.height = this.H;
+                }
+
+                integrateOnce(intg, dt) {
+                    const g = 9.81;
+                    const A = Math.PI * this.radius * this.radius;
+                    const k_lin = 6 * Math.PI * 1.8 * this.radius;
+                    const k_quad = 0.5 * this.rho * this.Cd * A;
+                    const theta = this.rad(this.angle);
+                    const wvx = this.wind * Math.cos(this.rad(this.windDir));
+                    const wvy = this.wind * Math.sin(this.rad(this.windDir));
+
+                    let x = 0, y = 1.0;
+                    let vx = this.v0 * Math.cos(theta), vy = this.v0 * Math.sin(theta);
+                    const xs = [x], ys = [y], ts = [0], vs = [Math.hypot(vx, vy)];
+                    let t = 0, work = 0, apexY = y;
+
+                    function accel(vx, vy) {
+                        const vrelx = vx - wvx, vrely = vy - wvy;
+                        const vrel = Math.hypot(vrelx, vrely) + 1e-12;
+                        let ax = 0, ay = 0;
+                        if (this.dragModel === "Quadratic") {
+                            const fx = -k_quad * vrel * vrelx;
+                            const fy = -k_quad * vrel * vrely;
+                            ax = fx / this.mass;
+                            ay = fy / this.mass - g;
+                            work += (fx * vx + fy * vy) * dt;
+                        } else {
+                            const fx = -k_lin * vrelx;
+                            const fy = -k_lin * vrely;
+                            ax = fx / this.mass;
+                            ay = fy / this.mass - g;
+                            work += (fx * vx + fy * vy) * dt;
+                        }
+                        return [ax, ay];
+                    }
+
+                    const accelBound = accel.bind(this);
+
+                    function stepEC() {
+                        const [ax, ay] = accelBound(vx, vy);
+                        vx += ax * dt; vy += ay * dt;
+                        x += vx * dt; y += vy * dt;
+                    }
+
+                    function stepRK4() {
+                        const f = (X) => {
+                            const [x, y, vx, vy] = X;
+                            const [ax, ay] = accelBound(vx, vy);
+                            return [vx, vy, ax, ay];
+                        };
+                        const s0 = [x, y, vx, vy];
+                        const k1 = f(s0);
+                        const s1 = [x + 0.5 * dt * k1[0], y + 0.5 * dt * k1[1], vx + 0.5 * dt * k1[2], vy + 0.5 * dt * k1[3]];
+                        const k2 = f(s1);
+                        const s2 = [x + 0.5 * dt * k2[0], y + 0.5 * dt * k2[1], vx + 0.5 * dt * k2[2], vy + 0.5 * dt * k2[3]];
+                        const k3 = f(s2);
+                        const s3 = [x + dt * k3[0], y + dt * k3[1], vx + dt * k3[2], vy + dt * k3[3]];
+                        const k4 = f(s3);
+                        x += (dt / 6) * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]);
+                        y += (dt / 6) * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]);
+                        vx += (dt / 6) * (k1[2] + 2 * k2[2] + 2 * k3[2] + k4[2]);
+                        vy += (dt / 6) * (k1[3] + 2 * k2[3] + 2 * k3[3] + k4[3]);
+                    }
+
+                    const maxSteps = 20000;
+                    for (let n = 0; n < maxSteps; n++) {
+                        ts.push(t += dt); xs.push(x); ys.push(y); vs.push(Math.hypot(vx, vy));
+                        if (intg === "EulerCromer") stepEC(); else stepRK4();
+                        if (y > apexY) apexY = y;
+                        if (y <= 0) {
+                            const y1 = ys[ys.length - 2], y2 = y;
+                            const x1 = xs[xs.length - 2], x2 = x;
+                            const t1 = ts[ts.length - 2], t2 = t;
+                            const a = (0 - y1) / ((y2 - y1) || 1e-9);
+                            const xr = x1 + a * (x2 - x1);
+                            const tr = t1 + a * (t2 - t1);
+                            xs[xs.length - 1] = xr; ys[xs.length - 1] = 0; ts[ts.length - 1] = tr;
+                            break;
+                        }
+                    }
+                    const range = xs[xs.length - 1];
+                    const flightTime = ts[ts.length - 1];
+                    return { x: xs, y: ys, t: ts, v: vs, workLoss: -work, range, apexY, flightTime };
+                }
+
+                shootPair(intg, dt) {
+                    const shotA = this.integrateOnce(intg, dt);
+                    const shotB = this.integrateOnce(intg, dt * 0.5);
+                    return { shotA, shotB };
+                }
+
+                X(x) { return (x - 0) / (70 - 0 + 1e-6) * this.W * 0.92 + this.W * 0.04; }
+                Y(y) { return this.H * 0.90 - (y - 0) / (20 - 0 + 1e-6) * this.H * 0.80; }
+
+                drawTrail(shot, alpha, th, neonHue) {
+                    this.ctx.save();
+                    this.ctx.globalAlpha = alpha;
+                    this.ctx.lineWidth = th;
+                    this.ctx.beginPath();
+                    const vmax = Math.max(...shot.v);
+                    for (let i = 0; i < shot.x.length; i++) {
+                        const sp = shot.v[i];
+                        const h = (neonHue + 60 * sp / Math.max(1, vmax)) % 360;
+                        this.ctx.strokeStyle = this.hsl(h, 95, 65);
+                        const x = this.X(shot.x[i]), y = this.Y(shot.y[i]);
+                        if (i === 0) this.ctx.moveTo(x, y); else this.ctx.lineTo(x, y);
+                    }
+                    this.ctx.stroke();
+                    this.ctx.restore();
+                }
+
+                drawMarkers(sA, sB) {
+                    let iMax = 0;
+                    for (let i = 1; i < sB.y.length; i++) {
+                        if (sB.y[i] > sB.y[iMax]) iMax = i;
+                    }
+                    const xa = this.X(sB.x[iMax]), ya = this.Y(sB.y[iMax]);
+                    this.ctx.fillStyle = "rgba(255,239,120,0.9)";
+                    this.ctx.beginPath(); this.ctx.arc(xa, ya, 5, 0, Math.PI * 2); this.ctx.fill();
+                    const xr = this.X(sB.x[sB.x.length - 1]), yr = this.Y(0);
+                    const R = 8 + 6 * Math.sin(Date.now() * 0.005);
+                    this.ctx.strokeStyle = "rgba(255,220,200,0.6)"; this.ctx.lineWidth = 2;
+                    this.ctx.beginPath(); this.ctx.arc(xr, yr, R, 0, Math.PI * 2); this.ctx.stroke();
+                    const xrA = this.X(sA.x[sA.x.length - 1]);
+                    this.ctx.fillStyle = "rgba(255,120,120,0.7)"; this.ctx.fillRect(xrA - 2, yr - 6, 4, 12);
+                }
+
+                hud(shotA, shotB) {
+                    const da = Math.abs(shotA.apexY - shotB.apexY);
+                    const dr = Math.abs(shotA.range - shotB.range);
+                    const Wd = shotB.workLoss;
+                    this.ctx.fillStyle = "rgba(255,255,255,0.9)";
+                    this.ctx.font = "13px ui-monospace, Menlo, monospace";
+                    this.ctx.fillText(`Integrator: ${this.integrator}  |  Drag: ${this.dragModel}  |  dt = ${this.dt.toFixed(3)} vs dt/2`, 12, 44);
+                    this.ctx.fillText(`Range: ${shotB.range.toFixed(2)} m  (Δ vs dt: ${dr.toFixed(2)} m)`, 12, 62);
+                    this.ctx.fillText(`Apex: ${shotB.apexY.toFixed(2)} m  (Δ vs dt: ${da.toFixed(2)} m)`, 12, 80);
+                    this.ctx.fillText(`Flight time: ${shotB.flightTime.toFixed(2)} s  |  Work lost to drag: ${Wd.toFixed(1)} J`, 12, 98);
+                }
+
+                background() {
+                    const g = this.ctx.createLinearGradient(0, 0, 0, this.H);
+                    g.addColorStop(0, this.hsl(210, 90, 12));
+                    g.addColorStop(0.4, this.hsl(250, 80, 18));
+                    g.addColorStop(1, this.hsl(245, 65, 8));
+                    this.ctx.fillStyle = g; this.ctx.fillRect(0, 0, this.W, this.H);
+                    this.ctx.fillStyle = this.hsl(210, 20, 12); this.ctx.fillRect(0, this.H * 0.90, this.W, this.H * 0.10);
+                    // wind ribbons
+                    const ny = 6;
+                    for (let j = 0; j < ny; j++) {
+                        const y = 40 + j * 36;
+                        this.ctx.strokeStyle = `rgba(180,220,255,0.12)`; this.ctx.lineWidth = 2;
+                        this.ctx.beginPath();
+                        for (let x = 0; x < this.W; x += 20) {
+                            const yy = y + 6 * Math.sin((x * 0.02) + Date.now() * 0.001 + j * 0.8);
+                            if (x === 0) this.ctx.moveTo(x, yy); else this.ctx.lineTo(x, yy);
+                        }
+                        this.ctx.stroke();
+                        this.ctx.fillStyle = `rgba(180,220,255,0.10)`;
+                        for (let k = 0; k < 10; k++) {
+                            const x = ((Date.now() * 0.004 + k * 120 + j * 30) % this.W);
+                            const yy = y + 6 * Math.sin((x * 0.02) + j * 0.8);
+                            this.ctx.fillRect(x, yy, 18, 2);
+                        }
+                    }
+                    this.ctx.fillStyle = "rgba(255,255,255,0.85)"; this.ctx.font = "12px ui-monospace, Menlo, monospace";
+                    this.ctx.fillText(`Wind ${this.wind.toFixed(1)} m/s @ ${this.windDir.toFixed(0)}°`, 12, 20);
+                }
+
+                render() {
+                    const { shotA, shotB } = this.shootPair(this.integrator, this.dt);
+                    this.ctx.clearRect(0, 0, this.W, this.H);
+                    this.background();
+                    this.drawTrail(shotA, 0.5, 4, 320);
+                    const seg = Math.floor(this.lerp(2, shotB.x.length, Math.min(1, Date.now() * 0.001 % 3 / 3)));
+                    this.drawTrail({ ...shotB, x: shotB.x.slice(0, seg), y: shotB.y.slice(0, seg), t: shotB.t.slice(0, seg), v: shotB.v.slice(0, seg), workLoss: shotB.workLoss, range: shotB.range, apexY: shotB.apexY, flightTime: shotB.flightTime }, 0.95, 5, 200);
+                    this.drawMarkers(shotA, shotB);
+                    this.hud(shotA, shotB);
+                }
+
+                startAnimation() {
+                    this.stopAnimation();
+                    const animate = () => {
+                        this.render();
+                        this.raf = requestAnimationFrame(animate);
+                    };
+                    animate();
+                }
+
+                stopAnimation() {
+                    if (this.raf) {
+                        cancelAnimationFrame(this.raf);
+                        this.raf = null;
+                    }
+                }
+
+                destroy() {
+                    this.stopAnimation();
+                }
+            }
+
+            // Create the card structure
+            const card = document.createElement('div');
+            card.id = 'drag-rangefinder';
+            card.className = 'physics-card';
+            card.innerHTML = `
+                <div class="physics-header">
+                    <h3 class="physics-title">
+                        <div class="physics-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🎯</div>
+                        Drag Rangefinder
+                    </h3>
+                    <p class="physics-description">
+                        Experience projectile motion with realistic air resistance. Compare quadratic and linear drag models,
+                        observe wind effects, and analyze numerical accuracy using different integration methods.
+                    </p>
+                </div>
+                <div class="physics-simulation">
+                    <div class="physics-canvas">
+                        <!-- Canvas will be inserted here -->
+                    </div>
+                    <div class="physics-controls">
+                        <!-- Basic Physics Parameters -->
+                        <div class="control-group">
+                            <label>USER_SEED</label>
+                            <input type="number" id="dr-seed-input" value="20250827" />
+                        </div>
+                        <div class="control-group">
+                            <label>Speed v0: <span id="dr-v0-value">35.5</span> m/s</label>
+                            <input type="range" id="dr-v0-slider" min="5" max="80" step="0.5" value="35.5" />
+                        </div>
+                        <div class="control-group">
+                            <label>Angle: <span id="dr-angle-value">34</span>°</label>
+                            <input type="range" id="dr-angle-slider" min="5" max="85" step="1" value="34" />
+                        </div>
+
+                        <!-- Numerical Method -->
+                        <div class="control-group">
+                            <label>Integrator</label>
+                            <select id="dr-integrator-select">
+                                <option value="EulerCromer">Euler-Cromer</option>
+                                <option value="RK4">RK4 (4th Order)</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>Drag Model</label>
+                            <select id="dr-drag-select">
+                                <option value="Quadratic">Quadratic</option>
+                                <option value="Linear">Linear</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>dt: <span id="dr-dt-value">0.022</span> s</label>
+                            <input type="range" id="dr-dt-slider" min="0.002" max="0.05" step="0.002" value="0.022" />
+                        </div>
+
+                        <!-- Environment Controls -->
+                        <div class="control-group dr-advanced-controls" style="display: none;">
+                            <label>Air Density ρ: <span id="dr-rho-value">1.22</span> kg/m³</label>
+                            <input type="range" id="dr-rho-slider" min="0.5" max="1.5" step="0.01" value="1.22" />
+                        </div>
+                        <div class="control-group dr-advanced-controls" style="display: none;">
+                            <label>Wind Speed: <span id="dr-wind-value">5.0</span> m/s</label>
+                            <input type="range" id="dr-wind-slider" min="-15" max="15" step="0.5" value="5" />
+                        </div>
+                        <div class="control-group dr-advanced-controls" style="display: none;">
+                            <label>Wind Direction: <span id="dr-winddir-value">180</span>°</label>
+                            <input type="range" id="dr-winddir-slider" min="0" max="360" step="1" value="180" />
+                        </div>
+
+                        <!-- Projectile Properties -->
+                        <div class="control-group dr-advanced-controls" style="display: none;">
+                            <label>Drag Coeff Cd: <span id="dr-cd-value">0.47</span></label>
+                            <input type="range" id="dr-cd-slider" min="0.10" max="1.20" step="0.01" value="0.47" />
+                        </div>
+                        <div class="control-group dr-advanced-controls" style="display: none;">
+                            <label>Radius: <span id="dr-radius-value">0.0366</span> m</label>
+                            <input type="range" id="dr-radius-slider" min="0.02" max="0.06" step="0.0005" value="0.0366" />
+                        </div>
+                        <div class="control-group dr-advanced-controls" style="display: none;">
+                            <label>Mass: <span id="dr-mass-value">0.145</span> kg</label>
+                            <input type="range" id="dr-mass-slider" min="0.03" max="0.2" step="0.001" value="0.145" />
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="control-group">
+                            <button id="dr-show-advanced" class="control-toggle-btn">Show Advanced</button>
+                        </div>
+                        <div class="control-group">
+                            <button id="dr-reset-simulation">Reset Simulation</button>
+                        </div>
+                        <div class="control-group">
+                            <button id="dr-fire-button">Fire Projectile</button>
+                        </div>
+                        <div class="control-group">
+                            <button id="drag-fullscreen" class="fullscreen-btn" title="Fullscreen">⛶</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Create the simulation instance
+            const simulation = new DragRangefinderSimulation();
+
+            // Add canvas to the card
+            const canvasContainer = card.querySelector('.physics-canvas');
+            if (canvasContainer) {
+                canvasContainer.appendChild(simulation.canvas);
+            }
+
+            // Setup event listeners after DOM is ready
+            setTimeout(() => {
+                simulation.setupEventListeners = function() {
+                    // Control listeners
+                    document.getElementById('dr-seed-input').addEventListener('input', (e) => {
+                        this.seed = parseInt(e.target.value);
+                    });
+                    document.getElementById('dr-integrator-select').addEventListener('change', (e) => {
+                        this.integrator = e.target.value;
+                        this.fireKey++;
+                    });
+                    document.getElementById('dr-drag-select').addEventListener('change', (e) => {
+                        this.dragModel = e.target.value;
+                        this.fireKey++;
+                    });
+                    document.getElementById('dr-v0-slider').addEventListener('input', (e) => {
+                        this.v0 = parseFloat(e.target.value);
+                        document.getElementById('dr-v0-value').textContent = this.v0.toFixed(1);
+                        this.fireKey++;
+                    });
+                    document.getElementById('dr-angle-slider').addEventListener('input', (e) => {
+                        this.angle = parseInt(e.target.value);
+                        document.getElementById('dr-angle-value').textContent = this.angle;
+                        this.fireKey++;
+                    });
+                    document.getElementById('dr-dt-slider').addEventListener('input', (e) => {
+                        this.dt = parseFloat(e.target.value);
+                        document.getElementById('dr-dt-value').textContent = this.dt.toFixed(3);
+                        this.fireKey++;
+                    });
+                    document.getElementById('dr-rho-slider').addEventListener('input', (e) => {
+                        this.rho = parseFloat(e.target.value);
+                        document.getElementById('dr-rho-value').textContent = this.rho.toFixed(2);
+                        this.fireKey++;
+                    });
+                    document.getElementById('dr-cd-slider').addEventListener('input', (e) => {
+                        this.Cd = parseFloat(e.target.value);
+                        document.getElementById('dr-cd-value').textContent = this.Cd.toFixed(2);
+                        this.fireKey++;
+                    });
+                    document.getElementById('dr-radius-slider').addEventListener('input', (e) => {
+                        this.radius = parseFloat(e.target.value);
+                        document.getElementById('dr-radius-value').textContent = this.radius.toFixed(4);
+                        this.fireKey++;
+                    });
+                    document.getElementById('dr-mass-slider').addEventListener('input', (e) => {
+                        this.mass = parseFloat(e.target.value);
+                        document.getElementById('dr-mass-value').textContent = this.mass.toFixed(3);
+                        this.fireKey++;
+                    });
+                    document.getElementById('dr-wind-slider').addEventListener('input', (e) => {
+                        this.wind = parseFloat(e.target.value);
+                        document.getElementById('dr-wind-value').textContent = this.wind.toFixed(1);
+                        this.fireKey++;
+                    });
+                    document.getElementById('dr-winddir-slider').addEventListener('input', (e) => {
+                        this.windDir = parseInt(e.target.value);
+                        document.getElementById('dr-winddir-value').textContent = this.windDir;
+                        this.fireKey++;
+                    });
+                    document.getElementById('dr-fire-button').addEventListener('click', () => {
+                        this.fireKey++;
+                    });
+
+                    document.getElementById('dr-reset-simulation').addEventListener('click', () => {
+                        this.resetSimulation();
+                    });
+
+                    // Advanced controls toggle
+                    document.getElementById('dr-show-advanced').addEventListener('click', () => {
+                        this.toggleAdvancedControls();
+                    });
+
+                    // Fullscreen functionality
+                    document.getElementById('drag-fullscreen').addEventListener('click', () => {
+                        this.toggleFullscreen();
+                    });
+                };
+
+                // Add additional methods
+                simulation.resetSimulation = function() {
+                    // Reset all parameters to default values
+                    this.seed = 20250827;
+                    this.integrator = "EulerCromer";
+                    this.dragModel = "Quadratic";
+                    this.v0 = 35.5;
+                    this.angle = 34;
+                    this.dt = 0.022;
+                    this.rho = 1.22;
+                    this.Cd = 0.47;
+                    this.radius = 0.0366;
+                    this.mass = 0.145;
+                    this.wind = 5;
+                    this.windDir = 180;
+                    this.fireKey = 0;
+
+                    // Update UI elements
+                    document.getElementById('dr-seed-input').value = this.seed;
+                    document.getElementById('dr-integrator-select').value = this.integrator;
+                    document.getElementById('dr-drag-select').value = this.dragModel;
+                    document.getElementById('dr-v0-slider').value = this.v0;
+                    document.getElementById('dr-v0-value').textContent = this.v0.toFixed(1);
+                    document.getElementById('dr-angle-slider').value = this.angle;
+                    document.getElementById('dr-angle-value').textContent = this.angle;
+                    document.getElementById('dr-dt-slider').value = this.dt;
+                    document.getElementById('dr-dt-value').textContent = this.dt.toFixed(3);
+                    document.getElementById('dr-rho-slider').value = this.rho;
+                    document.getElementById('dr-rho-value').textContent = this.rho.toFixed(2);
+                    document.getElementById('dr-cd-slider').value = this.Cd;
+                    document.getElementById('dr-cd-value').textContent = this.Cd.toFixed(2);
+                    document.getElementById('dr-radius-slider').value = this.radius;
+                    document.getElementById('dr-radius-value').textContent = this.radius.toFixed(4);
+                    document.getElementById('dr-mass-slider').value = this.mass;
+                    document.getElementById('dr-mass-value').textContent = this.mass.toFixed(3);
+                    document.getElementById('dr-wind-slider').value = this.wind;
+                    document.getElementById('dr-wind-value').textContent = this.wind.toFixed(1);
+                    document.getElementById('dr-winddir-slider').value = this.windDir;
+                    document.getElementById('dr-winddir-value').textContent = this.windDir;
+
+                    // Clear canvas
+                    this.ctx.clearRect(0, 0, this.W, this.H);
+                    this.render(); // Render with default values
+                };
+
+                simulation.toggleAdvancedControls = function() {
+                    const advancedControls = document.querySelectorAll('.dr-advanced-controls');
+                    const toggleBtn = document.getElementById('dr-show-advanced');
+                    let isVisible = false;
+
+                    // Check if controls are currently visible
+                    advancedControls.forEach(control => {
+                        if (control.style.display !== 'none') {
+                            isVisible = true;
+                        }
+                    });
+
+                    if (isVisible) {
+                        // Hide advanced controls
+                        advancedControls.forEach(control => {
+                            control.style.display = 'none';
+                        });
+                        toggleBtn.textContent = 'Show Advanced Controls';
+                    } else {
+                        // Show advanced controls
+                        advancedControls.forEach(control => {
+                            control.style.display = 'block';
+                        });
+                        toggleBtn.textContent = 'Hide Advanced Controls';
+                    }
+                };
+
+                simulation.toggleFullscreen = function() {
+                    const card = document.getElementById('drag-rangefinder');
+                    const controls = card.querySelector('.physics-controls');
+
+                    if (card.classList.contains('physics-fullscreen')) {
+                        // Exit fullscreen
+                        document.body.removeChild(document.querySelector('.fullscreen-exit'));
+                        card.classList.remove('physics-fullscreen');
+                        controls.style.position = '';
+                        controls.style.bottom = '';
+                        controls.style.right = '';
+                        controls.style.maxHeight = '';
+                        controls.style.overflowY = '';
+                    } else {
+                        // Enter fullscreen
+                        const exitBtn = document.createElement('button');
+                        exitBtn.textContent = 'Exit Fullscreen';
+                        exitBtn.className = 'fullscreen-exit';
+                        exitBtn.onclick = () => this.toggleFullscreen();
+                        document.body.appendChild(exitBtn);
+
+                        card.classList.add('physics-fullscreen');
+                        controls.style.position = 'absolute';
+                        controls.style.bottom = '2rem';
+                        controls.style.right = '2rem';
+                        controls.style.maxHeight = '70vh';
+                        controls.style.overflowY = 'auto';
+                    }
+                };
+
+                // Setup event listeners and start animation
+                simulation.setupEventListeners();
+                simulation.startAnimation();
+
+                // Make it globally available
+                window.dragRangefinderSim = simulation;
+
+                // Add to DOM
+                const mainContent = document.getElementById('main-content');
+                mainContent.appendChild(card);
+            }, 500);
+        }
+    </script>
+</body>
+</html>

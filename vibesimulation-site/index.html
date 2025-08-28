@@ -869,49 +869,7 @@
 					grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 				}
 
-				/* Drag Rangefinder specific adjustments */
-				#drag-rangefinder .physics-controls {
-					grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-					justify-content: center;
-					max-width: 1200px;
-					margin: 0 auto;
-				}
-
-				#drag-rangefinder .control-group {
-					display: flex;
-					flex-direction: column;
-					align-items: center;
-					text-align: center;
-					width: 100%;
-					max-width: 220px;
-				}
-
-				#drag-rangefinder .control-group input,
-				#drag-rangefinder .control-group select {
-					width: 100%;
-					text-align: center;
-				}
-
-				#drag-rangefinder .control-group button {
-					width: 100%;
-					text-align: center;
-				}
-
-				/* Mobile adjustments for drag rangefinder */
-				@media (max-width: 768px) {
-					#drag-rangefinder .physics-controls {
-						grid-template-columns: 1fr;
-						justify-content: stretch;
-						max-width: none;
-						margin: 0;
-					}
-
-					#drag-rangefinder .control-group {
-						max-width: none;
-						align-items: stretch;
-						text-align: left;
-					}
-				}
+				/* Drag Rangefinder moved to separate page for better performance */
 
 				.hero-title {
 					font-size: clamp(2rem, 12vw, 4rem);
@@ -1297,102 +1255,8 @@
 					<!-- Shallow Water Dynamics Card -->
 
 
-					<!-- Drag Rangefinder Card -->
-					<div id="drag-rangefinder" class="physics-card">
-						<div class="physics-header">
-							<h3 class="physics-title">
-								<div class="physics-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🎯</div>
-								Drag Rangefinder
-							</h3>
-							<p class="physics-description">
-								Experience projectile motion with realistic air resistance. Compare quadratic and linear drag models,
-								observe wind effects, and analyze numerical accuracy using different integration methods.
-							</p>
+					<!-- Drag Rangefinder moved to separate page for better performance -->
 						</div>
-						<div class="physics-simulation">
-							<div class="physics-canvas">
-								<canvas id="drag-rangefinder-canvas" width="1400" height="700"></canvas>
-							</div>
-							<div class="physics-controls">
-								<!-- Basic Physics Parameters -->
-								<div class="control-group">
-									<label>USER_SEED</label>
-									<input type="number" id="dr-seed-input" value="20250827" />
-								</div>
-								<div class="control-group">
-									<label>Speed v0: <span id="dr-v0-value">35.5</span> m/s</label>
-									<input type="range" id="dr-v0-slider" min="5" max="80" step="0.5" value="35.5" />
-								</div>
-								<div class="control-group">
-									<label>Angle: <span id="dr-angle-value">34</span>°</label>
-									<input type="range" id="dr-angle-slider" min="5" max="85" step="1" value="34" />
-								</div>
-
-								<!-- Numerical Method -->
-								<div class="control-group">
-									<label>Integrator</label>
-									<select id="dr-integrator-select">
-										<option value="EulerCromer">Euler-Cromer</option>
-										<option value="RK4">RK4 (4th Order)</option>
-									</select>
-								</div>
-								<div class="control-group">
-									<label>Drag Model</label>
-									<select id="dr-drag-select">
-										<option value="Quadratic">Quadratic</option>
-										<option value="Linear">Linear</option>
-									</select>
-								</div>
-								<div class="control-group">
-									<label>dt: <span id="dr-dt-value">0.022</span> s</label>
-									<input type="range" id="dr-dt-slider" min="0.002" max="0.05" step="0.002" value="0.022" />
-								</div>
-
-								<!-- Environment Controls -->
-								<div class="control-group dr-advanced-controls" style="display: none;">
-									<label>Air Density ρ: <span id="dr-rho-value">1.22</span> kg/m³</label>
-									<input type="range" id="dr-rho-slider" min="0.5" max="1.5" step="0.01" value="1.22" />
-								</div>
-								<div class="control-group dr-advanced-controls" style="display: none;">
-									<label>Wind Speed: <span id="dr-wind-value">5.0</span> m/s</label>
-									<input type="range" id="dr-wind-slider" min="-15" max="15" step="0.5" value="5" />
-								</div>
-								<div class="control-group dr-advanced-controls" style="display: none;">
-									<label>Wind Direction: <span id="dr-winddir-value">180</span>°</label>
-									<input type="range" id="dr-winddir-slider" min="0" max="360" step="1" value="180" />
-								</div>
-
-								<!-- Projectile Properties -->
-								<div class="control-group dr-advanced-controls" style="display: none;">
-									<label>Drag Coeff Cd: <span id="dr-cd-value">0.47</span></label>
-									<input type="range" id="dr-cd-slider" min="0.10" max="1.20" step="0.01" value="0.47" />
-								</div>
-								<div class="control-group dr-advanced-controls" style="display: none;">
-									<label>Radius: <span id="dr-radius-value">0.0366</span> m</label>
-									<input type="range" id="dr-radius-slider" min="0.02" max="0.06" step="0.0005" value="0.0366" />
-								</div>
-								<div class="control-group dr-advanced-controls" style="display: none;">
-									<label>Mass: <span id="dr-mass-value">0.145</span> kg</label>
-									<input type="range" id="dr-mass-slider" min="0.03" max="0.2" step="0.001" value="0.145" />
-								</div>
-
-								<!-- Action Buttons -->
-								<div class="control-group">
-									<button id="dr-show-advanced" class="control-toggle-btn">Show Advanced</button>
-								</div>
-								<div class="control-group">
-									<button id="dr-reset-simulation">Reset Simulation</button>
-								</div>
-								<div class="control-group">
-									<button id="dr-fire-button">Fire Projectile</button>
-								</div>
-								<div class="control-group">
-									<button id="drag-fullscreen" class="fullscreen-btn" title="Fullscreen">⛶</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
 			</section>
 
 			<!-- World-Class Footer -->
@@ -1406,7 +1270,7 @@
 								<div class="footer-logo">
 									<span class="logo-icon">🌊</span>
 									<h3 class="footer-brand-name">VibeSimulation</h3>
-								</div>
+							</div>
 								<p class="footer-description">
 									Experience computational physics through interactive simulations.
 									Real-time mathematical beauty brought to life through cutting-edge algorithms.
@@ -1422,9 +1286,9 @@
 											<path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
 										</svg>
 									</a>
-				</div>
-							</div>
-						</div>
+								</div>
+								</div>
+								</div>
 
 						<!-- Quick Links -->
 						<div class="footer-section">
@@ -1433,10 +1297,10 @@
 								<li><a href="#fluid-dynamics">Fluid Dynamics</a></li>
 								<li><a href="#electrostatics">Electrostatics</a></li>
 								<li><a href="#wave-physics">Wave Physics</a></li>
-								<li><a href="#drag-rangefinder">Drag Rangefinder</a></li>
+								<li><a href="drag-rangefinder.html">Drag Rangefinder</a></li>
 								<li><a href="blog/">Blog</a></li>
 								</ul>
-						</div>
+								</div>
 
 						<!-- Resources -->
 						<div class="footer-section">
@@ -1447,7 +1311,7 @@
 								<li><a href="privacy-policy.html">Privacy Policy</a></li>
 								<li><a href="terms.html">Terms of Service</a></li>
 								</ul>
-						</div>
+								</div>
 
 						<!-- Contact & Newsletter -->
 						<div class="footer-section">
@@ -1458,8 +1322,8 @@
 								<div class="newsletter-input-group">
 									<input type="email" placeholder="Enter your email" class="newsletter-input">
 									<button type="submit" class="newsletter-btn">Subscribe</button>
-					</div>
-				</div>
+								</div>
+								</div>
 
 							<div class="footer-contact">
 								<div class="contact-item">
@@ -1467,30 +1331,30 @@
 										<path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.89 2 1.99 2H20c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
 									</svg>
 									<span>vibesimulations@gmail.com</span>
-					</div>
+								</div>
 								<div class="contact-item">
 									<svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
 										<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
 									</svg>
 									<span>Bristol, UK</span>
 								</div>
-							</div>
-						</div>
-		</div>
+								</div>
+								</div>
+								</div>
 
 					<!-- Footer Bottom -->
 					<div class="footer-bottom">
 						<div class="footer-bottom-content">
 							<div class="copyright">
 								<p>&copy; 2024 VibeSimulation. All rights reserved. | Made with ❤️ for science education.</p>
-			</div>
+								</div>
 							<div class="footer-bottom-links">
 								<a href="privacy-policy.html">Privacy</a>
 								<a href="terms.html">Terms</a>
 								<a href="cookies.html">Cookies</a>
 								<a href="sitemap.xml">Sitemap</a>
 								<a href="robots.txt">Robots</a>
-		</div>
+								</div>
 
 							<!-- Version Info -->
 							<div class="footer-version-info">
@@ -1500,15 +1364,15 @@
 									<span class="version-separator">•</span>
 									<span class="version-label">Code Hash:</span>
 									<code class="version-hash" id="code-hash">Loading...</code>
-			</div>
+				</div>
 								<div class="reproducible-notice">
 									<small>All simulations use deterministic RNG (PCG32) for reproducible results</small>
-		</div>
-							</div>
+						</div>
 						</div>
 					</div>
 				</div>
-			</footer>
+					</div>
+				</footer>
 
 		<!-- PCG32 Deterministic RNG Helper -->
 		<script>
@@ -3018,477 +2882,17 @@
 
 			</script>
 
-			<!-- Drag Rangefinder Simulation Script -->
-			<script>
-				class DragRangefinderSimulation {
-					constructor() {
-						this.W = 1400;
-						this.H = 700;
-						this.canvas = document.getElementById('drag-rangefinder-canvas');
-						this.ctx = this.canvas.getContext('2d');
-
-						this.seed = 20250827;
-						this.integrator = "EulerCromer";
-						this.dragModel = "Quadratic";
-						this.v0 = 35.5;
-						this.angle = 34;
-						this.dt = 0.022;
-						this.rho = 1.22;
-						this.Cd = 0.47;
-						this.radius = 0.0366;
-						this.mass = 0.145;
-						this.wind = 5;
-						this.windDir = 180;
-						this.fireKey = 0;
-
-						this.raf = null;
-						this.setupEventListeners();
-						this.initializeCanvas();
-					}
-
-					clamp(x, lo, hi) { return Math.max(lo, Math.min(hi, x)); }
-					rad(d) { return d * Math.PI / 180; }
-					lerp(a, b, t) { return a + (b - a) * t; }
-					hsl(h, s, l) { return `hsl(${h} ${s}% ${l}%)`; }
-
-					setupEventListeners() {
-						// Control listeners
-						document.getElementById('dr-seed-input').addEventListener('input', (e) => {
-							this.seed = parseInt(e.target.value);
-						});
-						document.getElementById('dr-integrator-select').addEventListener('change', (e) => {
-							this.integrator = e.target.value;
-							this.fireKey++;
-						});
-						document.getElementById('dr-drag-select').addEventListener('change', (e) => {
-							this.dragModel = e.target.value;
-							this.fireKey++;
-						});
-						document.getElementById('dr-v0-slider').addEventListener('input', (e) => {
-							this.v0 = parseFloat(e.target.value);
-							document.getElementById('dr-v0-value').textContent = this.v0.toFixed(1);
-							this.fireKey++;
-						});
-						document.getElementById('dr-angle-slider').addEventListener('input', (e) => {
-							this.angle = parseInt(e.target.value);
-							document.getElementById('dr-angle-value').textContent = this.angle;
-							this.fireKey++;
-						});
-						document.getElementById('dr-dt-slider').addEventListener('input', (e) => {
-							this.dt = parseFloat(e.target.value);
-							document.getElementById('dr-dt-value').textContent = this.dt.toFixed(3);
-							this.fireKey++;
-						});
-						document.getElementById('dr-rho-slider').addEventListener('input', (e) => {
-							this.rho = parseFloat(e.target.value);
-							document.getElementById('dr-rho-value').textContent = this.rho.toFixed(2);
-							this.fireKey++;
-						});
-						document.getElementById('dr-cd-slider').addEventListener('input', (e) => {
-							this.Cd = parseFloat(e.target.value);
-							document.getElementById('dr-cd-value').textContent = this.Cd.toFixed(2);
-							this.fireKey++;
-						});
-						document.getElementById('dr-radius-slider').addEventListener('input', (e) => {
-							this.radius = parseFloat(e.target.value);
-							document.getElementById('dr-radius-value').textContent = this.radius.toFixed(4);
-							this.fireKey++;
-						});
-						document.getElementById('dr-mass-slider').addEventListener('input', (e) => {
-							this.mass = parseFloat(e.target.value);
-							document.getElementById('dr-mass-value').textContent = this.mass.toFixed(3);
-							this.fireKey++;
-						});
-						document.getElementById('dr-wind-slider').addEventListener('input', (e) => {
-							this.wind = parseFloat(e.target.value);
-							document.getElementById('dr-wind-value').textContent = this.wind.toFixed(1);
-							this.fireKey++;
-						});
-						document.getElementById('dr-winddir-slider').addEventListener('input', (e) => {
-							this.windDir = parseInt(e.target.value);
-							document.getElementById('dr-winddir-value').textContent = this.windDir;
-							this.fireKey++;
-						});
-						document.getElementById('dr-fire-button').addEventListener('click', () => {
-							this.fireKey++;
-						});
-
-						document.getElementById('dr-reset-simulation').addEventListener('click', () => {
-							this.resetSimulation();
-						});
-
-						// Advanced controls toggle
-						document.getElementById('dr-show-advanced').addEventListener('click', () => {
-							this.toggleAdvancedControls();
-						});
-
-						// Fullscreen functionality
-						document.getElementById('drag-fullscreen').addEventListener('click', () => {
-							this.toggleFullscreen();
-						});
-					}
-
-					initializeCanvas() {
-						this.canvas.width = this.W;
-						this.canvas.height = this.H;
-					}
-
-					integrateOnce(intg, dt) {
-						const g = 9.81;
-						const A = Math.PI * this.radius * this.radius;
-						const k_lin = 6 * Math.PI * 1.8 * this.radius;
-						const k_quad = 0.5 * this.rho * this.Cd * A;
-						const theta = this.rad(this.angle);
-						const wvx = this.wind * Math.cos(this.rad(this.windDir));
-						const wvy = this.wind * Math.sin(this.rad(this.windDir));
-
-						let x = 0, y = 1.0;
-						let vx = this.v0 * Math.cos(theta), vy = this.v0 * Math.sin(theta);
-						const xs = [x], ys = [y], ts = [0], vs = [Math.hypot(vx, vy)];
-						let t = 0, work = 0, apexY = y;
-
-						function accel(vx, vy) {
-							const vrelx = vx - wvx, vrely = vy - wvy;
-							const vrel = Math.hypot(vrelx, vrely) + 1e-12;
-							let ax = 0, ay = 0;
-							if (this.dragModel === "Quadratic") {
-								const fx = -k_quad * vrel * vrelx;
-								const fy = -k_quad * vrel * vrely;
-								ax = fx / this.mass;
-								ay = fy / this.mass - g;
-								work += (fx * vx + fy * vy) * dt;
-							} else {
-								const fx = -k_lin * vrelx;
-								const fy = -k_lin * vrely;
-								ax = fx / this.mass;
-								ay = fy / this.mass - g;
-								work += (fx * vx + fy * vy) * dt;
-							}
-							return [ax, ay];
-						}
-
-						const accelBound = accel.bind(this);
-
-						function stepEC() {
-							const [ax, ay] = accelBound(vx, vy);
-							vx += ax * dt; vy += ay * dt;
-							x += vx * dt; y += vy * dt;
-						}
-
-						function stepRK4() {
-							const f = (X) => {
-								const [x, y, vx, vy] = X;
-								const [ax, ay] = accelBound(vx, vy);
-								return [vx, vy, ax, ay];
-							};
-							const s0 = [x, y, vx, vy];
-							const k1 = f(s0);
-							const s1 = [x + 0.5 * dt * k1[0], y + 0.5 * dt * k1[1], vx + 0.5 * dt * k1[2], vy + 0.5 * dt * k1[3]];
-							const k2 = f(s1);
-							const s2 = [x + 0.5 * dt * k2[0], y + 0.5 * dt * k2[1], vx + 0.5 * dt * k2[2], vy + 0.5 * dt * k2[3]];
-							const k3 = f(s2);
-							const s3 = [x + dt * k3[0], y + dt * k3[1], vx + dt * k3[2], vy + dt * k3[3]];
-							const k4 = f(s3);
-							x += (dt / 6) * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]);
-							y += (dt / 6) * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]);
-							vx += (dt / 6) * (k1[2] + 2 * k2[2] + 2 * k3[2] + k4[2]);
-							vy += (dt / 6) * (k1[3] + 2 * k2[3] + 2 * k3[3] + k4[3]);
-						}
-
-						const maxSteps = 20000;
-						for (let n = 0; n < maxSteps; n++) {
-							ts.push(t += dt); xs.push(x); ys.push(y); vs.push(Math.hypot(vx, vy));
-							if (intg === "EulerCromer") stepEC(); else stepRK4();
-							if (y > apexY) apexY = y;
-							if (y <= 0) {
-								const y1 = ys[ys.length - 2], y2 = y;
-								const x1 = xs[xs.length - 2], x2 = x;
-								const t1 = ts[ts.length - 2], t2 = t;
-								const a = (0 - y1) / ((y2 - y1) || 1e-9);
-								const xr = x1 + a * (x2 - x1);
-								const tr = t1 + a * (t2 - t1);
-								xs[xs.length - 1] = xr; ys[xs.length - 1] = 0; ts[ts.length - 1] = tr;
-								break;
-							}
-						}
-						const range = xs[xs.length - 1];
-						const flightTime = ts[ts.length - 1];
-						return { x: xs, y: ys, t: ts, v: vs, workLoss: -work, range, apexY, flightTime };
-					}
-
-					shootPair(intg, dt) {
-						const shotA = this.integrateOnce(intg, dt);
-						const shotB = this.integrateOnce(intg, dt * 0.5);
-						return { shotA, shotB };
-					}
-
-					X(x) { return (x - 0) / (70 - 0 + 1e-6) * this.W * 0.92 + this.W * 0.04; }
-					Y(y) { return this.H * 0.90 - (y - 0) / (20 - 0 + 1e-6) * this.H * 0.80; }
-
-					drawTrail(shot, alpha, th, neonHue) {
-						this.ctx.save();
-						this.ctx.globalAlpha = alpha;
-						this.ctx.lineWidth = th;
-						this.ctx.beginPath();
-						const vmax = Math.max(...shot.v);
-						for (let i = 0; i < shot.x.length; i++) {
-							const sp = shot.v[i];
-							const h = (neonHue + 60 * sp / Math.max(1, vmax)) % 360;
-							this.ctx.strokeStyle = this.hsl(h, 95, 65);
-							const x = this.X(shot.x[i]), y = this.Y(shot.y[i]);
-							if (i === 0) this.ctx.moveTo(x, y); else this.ctx.lineTo(x, y);
-						}
-						this.ctx.stroke();
-						this.ctx.restore();
-					}
-
-					drawMarkers(sA, sB) {
-						let iMax = 0;
-						for (let i = 1; i < sB.y.length; i++) {
-							if (sB.y[i] > sB.y[iMax]) iMax = i;
-						}
-						const xa = this.X(sB.x[iMax]), ya = this.Y(sB.y[iMax]);
-						this.ctx.fillStyle = "rgba(255,239,120,0.9)";
-						this.ctx.beginPath(); this.ctx.arc(xa, ya, 5, 0, Math.PI * 2); this.ctx.fill();
-						const xr = this.X(sB.x[sB.x.length - 1]), yr = this.Y(0);
-						const R = 8 + 6 * Math.sin(Date.now() * 0.005);
-						this.ctx.strokeStyle = "rgba(255,220,200,0.6)"; this.ctx.lineWidth = 2;
-						this.ctx.beginPath(); this.ctx.arc(xr, yr, R, 0, Math.PI * 2); this.ctx.stroke();
-						const xrA = this.X(sA.x[sA.x.length - 1]);
-						this.ctx.fillStyle = "rgba(255,120,120,0.7)"; this.ctx.fillRect(xrA - 2, yr - 6, 4, 12);
-					}
-
-					hud(shotA, shotB) {
-						const da = Math.abs(shotA.apexY - shotB.apexY);
-						const dr = Math.abs(shotA.range - shotB.range);
-						const Wd = shotB.workLoss;
-						this.ctx.fillStyle = "rgba(255,255,255,0.9)";
-						this.ctx.font = "13px ui-monospace, Menlo, monospace";
-						this.ctx.fillText(`Integrator: ${this.integrator}  |  Drag: ${this.dragModel}  |  dt = ${this.dt.toFixed(3)} vs dt/2`, 12, 44);
-						this.ctx.fillText(`Range: ${shotB.range.toFixed(2)} m  (Δ vs dt: ${dr.toFixed(2)} m)`, 12, 62);
-						this.ctx.fillText(`Apex: ${shotB.apexY.toFixed(2)} m  (Δ vs dt: ${da.toFixed(2)} m)`, 12, 80);
-						this.ctx.fillText(`Flight time: ${shotB.flightTime.toFixed(2)} s  |  Work lost to drag: ${Wd.toFixed(1)} J`, 12, 98);
-					}
-
-					background() {
-						const g = this.ctx.createLinearGradient(0, 0, 0, this.H);
-						g.addColorStop(0, this.hsl(210, 90, 12));
-						g.addColorStop(0.4, this.hsl(250, 80, 18));
-						g.addColorStop(1, this.hsl(245, 65, 8));
-						this.ctx.fillStyle = g; this.ctx.fillRect(0, 0, this.W, this.H);
-						this.ctx.fillStyle = this.hsl(210, 20, 12); this.ctx.fillRect(0, this.H * 0.90, this.W, this.H * 0.10);
-						// wind ribbons
-						const ny = 6;
-						for (let j = 0; j < ny; j++) {
-							const y = 40 + j * 36;
-							this.ctx.strokeStyle = `rgba(180,220,255,0.12)`; this.ctx.lineWidth = 2;
-							this.ctx.beginPath();
-							for (let x = 0; x < this.W; x += 20) {
-								const yy = y + 6 * Math.sin((x * 0.02) + Date.now() * 0.001 + j * 0.8);
-								if (x === 0) this.ctx.moveTo(x, yy); else this.ctx.lineTo(x, yy);
-							}
-							this.ctx.stroke();
-							this.ctx.fillStyle = `rgba(180,220,255,0.10)`;
-							for (let k = 0; k < 10; k++) {
-								const x = ((Date.now() * 0.004 + k * 120 + j * 30) % this.W);
-								const yy = y + 6 * Math.sin((x * 0.02) + j * 0.8);
-								this.ctx.fillRect(x, yy, 18, 2);
-							}
-						}
-						this.ctx.fillStyle = "rgba(255,255,255,0.85)"; this.ctx.font = "12px ui-monospace, Menlo, monospace";
-						this.ctx.fillText(`Wind ${this.wind.toFixed(1)} m/s @ ${this.windDir.toFixed(0)}°`, 12, 20);
-					}
-
-					render() {
-						const { shotA, shotB } = this.shootPair(this.integrator, this.dt);
-						this.ctx.clearRect(0, 0, this.W, this.H);
-						this.background();
-						this.drawTrail(shotA, 0.5, 4, 320);
-						const seg = Math.floor(this.lerp(2, shotB.x.length, Math.min(1, Date.now() * 0.001 % 3 / 3)));
-						this.drawTrail({ ...shotB, x: shotB.x.slice(0, seg), y: shotB.y.slice(0, seg), t: shotB.t.slice(0, seg), v: shotB.v.slice(0, seg), workLoss: shotB.workLoss, range: shotB.range, apexY: shotB.apexY, flightTime: shotB.flightTime }, 0.95, 5, 200);
-						this.drawMarkers(shotA, shotB);
-						this.hud(shotA, shotB);
-					}
-
-					startAnimation() {
-						this.stopAnimation();
-						const animate = () => {
-							this.render();
-							this.raf = requestAnimationFrame(animate);
-						};
-						animate();
-					}
-
-					stopAnimation() {
-						if (this.raf) {
-							cancelAnimationFrame(this.raf);
-							this.raf = null;
-						}
-					}
-
-					resetSimulation() {
-						// Reset all parameters to default values
-						this.seed = 20250827;
-						this.integrator = "EulerCromer";
-						this.dragModel = "Quadratic";
-						this.v0 = 35.5;
-						this.angle = 34;
-						this.dt = 0.022;
-						this.rho = 1.22;
-						this.Cd = 0.47;
-						this.radius = 0.0366;
-						this.mass = 0.145;
-						this.wind = 5;
-						this.windDir = 180;
-						this.fireKey = 0;
-
-						// Update UI elements
-						document.getElementById('dr-seed-input').value = this.seed;
-						document.getElementById('dr-integrator-select').value = this.integrator;
-						document.getElementById('dr-drag-select').value = this.dragModel;
-						document.getElementById('dr-v0-slider').value = this.v0;
-						document.getElementById('dr-v0-value').textContent = this.v0.toFixed(1);
-						document.getElementById('dr-angle-slider').value = this.angle;
-						document.getElementById('dr-angle-value').textContent = this.angle;
-						document.getElementById('dr-dt-slider').value = this.dt;
-						document.getElementById('dr-dt-value').textContent = this.dt.toFixed(3);
-						document.getElementById('dr-rho-slider').value = this.rho;
-						document.getElementById('dr-rho-value').textContent = this.rho.toFixed(2);
-						document.getElementById('dr-cd-slider').value = this.Cd;
-						document.getElementById('dr-cd-value').textContent = this.Cd.toFixed(2);
-						document.getElementById('dr-radius-slider').value = this.radius;
-						document.getElementById('dr-radius-value').textContent = this.radius.toFixed(4);
-						document.getElementById('dr-mass-slider').value = this.mass;
-						document.getElementById('dr-mass-value').textContent = this.mass.toFixed(3);
-						document.getElementById('dr-wind-slider').value = this.wind;
-						document.getElementById('dr-wind-value').textContent = this.wind.toFixed(1);
-						document.getElementById('dr-winddir-slider').value = this.windDir;
-						document.getElementById('dr-winddir-value').textContent = this.windDir;
-
-						// Clear canvas
-						this.ctx.clearRect(0, 0, this.W, this.H);
-						this.render(); // Render with default values
-					}
-
-					toggleFullscreen() {
-						const card = document.getElementById('drag-rangefinder');
-						const canvas = this.canvas;
-						const controls = card.querySelector('.physics-controls');
-
-						if (card.classList.contains('physics-fullscreen')) {
-							// Exit fullscreen
-							document.body.removeChild(document.querySelector('.fullscreen-exit'));
-							card.classList.remove('physics-fullscreen');
-							controls.style.position = '';
-							controls.style.bottom = '';
-							controls.style.right = '';
-							controls.style.maxHeight = '';
-							controls.style.overflowY = '';
-						} else {
-							// Enter fullscreen
-							const exitBtn = document.createElement('button');
-							exitBtn.textContent = 'Exit Fullscreen';
-							exitBtn.className = 'fullscreen-exit';
-							exitBtn.onclick = () => this.toggleFullscreen();
-							document.body.appendChild(exitBtn);
-
-							card.classList.add('physics-fullscreen');
-							controls.style.position = 'absolute';
-							controls.style.bottom = '2rem';
-							controls.style.right = '2rem';
-							controls.style.maxHeight = '70vh';
-							controls.style.overflowY = 'auto';
-						}
-					}
-
-					toggleAdvancedControls() {
-						const advancedControls = document.querySelectorAll('.dr-advanced-controls');
-						const toggleBtn = document.getElementById('dr-show-advanced');
-						let isVisible = false;
-
-						// Check if controls are currently visible
-						advancedControls.forEach(control => {
-							if (control.style.display !== 'none') {
-								isVisible = true;
-							}
-						});
-
-						if (isVisible) {
-							// Hide advanced controls
-							advancedControls.forEach(control => {
-								control.style.display = 'none';
-							});
-							toggleBtn.textContent = 'Show Advanced Controls';
-						} else {
-							// Show advanced controls
-							advancedControls.forEach(control => {
-								control.style.display = 'block';
-							});
-							toggleBtn.textContent = 'Hide Advanced Controls';
-						}
-					}
-
-					destroy() {
-						this.stopAnimation();
-					}
-				}
-
-				// Initialize simulation when DOM is loaded
-				document.addEventListener('DOMContentLoaded', () => {
-					window.dragRangefinderSim = new DragRangefinderSimulation();
-					window.dragRangefinderSim.startAnimation();
-				});
-
-				// Fullscreen functionality for all simulations
-				document.addEventListener('DOMContentLoaded', () => {
-					// Fluid Dynamics fullscreen
-					document.getElementById('fluid-fullscreen').addEventListener('click', () => {
-						toggleFullscreen('fluid-dynamics');
-					});
-
-					// Electrostatics fullscreen
-					document.getElementById('charge-fullscreen').addEventListener('click', () => {
-						toggleFullscreen('electrostatics');
-					});
-
-					// Wave Physics fullscreen
-					document.getElementById('wave-fullscreen').addEventListener('click', () => {
-						toggleFullscreen('wave-physics');
-					});
+			<!-- Drag Rangefinder moved to separate page for better performance -->
+			<!-- Drag Rangefinder moved to separate page for better performance -->
 
 
 
-					function toggleFullscreen(cardId) {
-						const card = document.getElementById(cardId);
-						const controls = card.querySelector('.physics-controls');
+			<!-- Drag Rangefinder script content removed for performance -->
+			<!-- Drag Rangefinder script content removed for performance -->
+			<!-- Drag Rangefinder script content removed for performance -->
 
-						if (card.classList.contains('physics-fullscreen')) {
-							// Exit fullscreen
-							document.body.removeChild(document.querySelector('.fullscreen-exit'));
-							card.classList.remove('physics-fullscreen');
-							controls.style.position = '';
-							controls.style.bottom = '';
-							controls.style.right = '';
-							controls.style.maxHeight = '';
-							controls.style.overflowY = '';
-						} else {
-							// Enter fullscreen
-							const exitBtn = document.createElement('button');
-							exitBtn.textContent = 'Exit Fullscreen';
-							exitBtn.className = 'fullscreen-exit';
-							exitBtn.onclick = () => toggleFullscreen(cardId);
-							document.body.appendChild(exitBtn);
+			<!-- Drag Rangefinder script content removed for performance -->
 
-							card.classList.add('physics-fullscreen');
-							controls.style.position = 'absolute';
-							controls.style.bottom = '2rem';
-							controls.style.right = '2rem';
-							controls.style.maxHeight = '70vh';
-							controls.style.overflowY = 'auto';
-						}
-					}
-				});
-			</script>
 
 		<!-- App Version & Code Hash -->
 		<script src="app_version.js"></script>
@@ -3526,4 +2930,4 @@
 		<script src="recorder_circuit_patch.js"></script>
 
 	</body>
-</html> 
+</html>
