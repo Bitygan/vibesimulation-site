@@ -187,10 +187,10 @@
 
 			.physics-simulation {
 				padding: 1.5rem;
-				display: grid;
-				grid-template-columns: 1fr 180px;
+				display: flex;
+				flex-direction: column;
 				gap: 1rem;
-				align-items: start;
+				align-items: stretch;
 			}
 
 			.physics-canvas {
@@ -198,16 +198,20 @@
 				border-radius: 1rem;
 				overflow: hidden;
 				box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-				min-height: 500px;
+				min-height: 700px;
+				width: 100%;
 			}
 
 			.physics-controls {
 				background: rgba(255, 255, 255, 0.02);
 				border-radius: 0.75rem;
-				padding: 1rem;
+				padding: 1.5rem;
 				backdrop-filter: blur(8px);
 				border: 1px solid rgba(255, 255, 255, 0.08);
-				align-self: start;
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+				gap: 1.25rem;
+				align-items: start;
 			}
 
 			.control-group {
@@ -2283,8 +2287,8 @@
 			<script>
 				class WaveForgeSimulation {
 					constructor() {
-						this.W = 1120;
-						this.H = 630;
+						this.W = 1400;
+						this.H = 700;
 						this.NX = 180; // Optimized for performance
 						this.NY = 100; // Optimized for performance
 						this.canvas = document.getElementById('waveforge-canvas');
