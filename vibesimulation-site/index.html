@@ -186,10 +186,10 @@
 			}
 
 			.physics-simulation {
-				padding: 2rem;
+				padding: 1.5rem;
 				display: grid;
-				grid-template-columns: 1fr 280px;
-				gap: 2rem;
+				grid-template-columns: 1fr 200px;
+				gap: 1.5rem;
 				align-items: start;
 			}
 
@@ -198,26 +198,28 @@
 				border-radius: 1rem;
 				overflow: hidden;
 				box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+				min-height: 500px;
 			}
 
 			.physics-controls {
-				background: rgba(255, 255, 255, 0.03);
-				border-radius: 1rem;
-				padding: 1.5rem;
-				backdrop-filter: blur(10px);
-				border: 1px solid rgba(255, 255, 255, 0.1);
+				background: rgba(255, 255, 255, 0.02);
+				border-radius: 0.75rem;
+				padding: 1rem;
+				backdrop-filter: blur(8px);
+				border: 1px solid rgba(255, 255, 255, 0.08);
+				align-self: start;
 			}
 
 			.control-group {
-				margin-bottom: 1.25rem;
+				margin-bottom: 0.75rem;
 			}
 
 			.control-group label {
 				display: block;
-				color: white;
-				font-weight: 600;
-				margin-bottom: 0.5rem;
-				font-size: 0.85rem;
+				color: rgba(255, 255, 255, 0.8);
+				font-weight: 500;
+				margin-bottom: 0.25rem;
+				font-size: 0.75rem;
 				text-transform: uppercase;
 				letter-spacing: 0.5px;
 			}
@@ -225,12 +227,12 @@
 			.control-group input,
 			.control-group select {
 				width: 100%;
-				padding: 0.5rem;
-				border-radius: 0.5rem;
-				border: 1px solid rgba(255, 255, 255, 0.2);
-				background: rgba(255, 255, 255, 0.05);
+				padding: 0.375rem;
+				border-radius: 0.375rem;
+				border: 1px solid rgba(255, 255, 255, 0.15);
+				background: rgba(255, 255, 255, 0.03);
 				color: white;
-				font-size: 0.85rem;
+				font-size: 0.75rem;
 			}
 
 			.control-group input:focus,
@@ -242,37 +244,37 @@
 
 			.control-group button {
 				width: 100%;
-				padding: 0.75rem;
-				border-radius: 0.5rem;
+				padding: 0.5rem;
+				border-radius: 0.375rem;
 				border: none;
-				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-				color: white;
-				font-weight: 600;
-				font-size: 0.85rem;
+				background: rgba(255, 255, 255, 0.1);
+				color: rgba(255, 255, 255, 0.9);
+				font-weight: 500;
+				font-size: 0.75rem;
 				text-transform: uppercase;
 				letter-spacing: 0.5px;
 				cursor: pointer;
-				transition: all 0.3s ease;
+				transition: all 0.2s ease;
 			}
 
 			.control-group button:hover {
-				transform: translateY(-1px);
-				box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+				background: rgba(255, 255, 255, 0.15);
+				transform: translateY(-0.5px);
 			}
 
 			.status-indicator {
 				display: inline-block;
-				padding: 0.25rem 0.75rem;
-				border-radius: 999px;
-				font-size: 0.75rem;
-				font-weight: 600;
+				padding: 0.125rem 0.5rem;
+				border-radius: 0.25rem;
+				font-size: 0.7rem;
+				font-weight: 500;
 				text-transform: uppercase;
 				letter-spacing: 0.5px;
 			}
 
-			.status-stable { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
-			.status-solving { background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
-			.status-unstable { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+			.status-stable { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); }
+			.status-solving { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.2); }
+			.status-unstable { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
 
 			/* ===== NAVIGATION ===== */
 			.physics-nav {
@@ -393,7 +395,16 @@
 
 				.physics-simulation {
 					grid-template-columns: 1fr;
-					gap: 1.5rem;
+					gap: 1rem;
+				}
+
+				.physics-canvas {
+					min-height: 400px;
+				}
+
+				.physics-controls {
+					padding: 0.75rem;
+					align-self: stretch;
 				}
 
 				.hero-title {
@@ -402,47 +413,6 @@
 
 				.nav-links {
 					display: none;
-				}
-			}
-		</style>
-			@media (max-width: 1024px) {
-				.simulation-controls {
-					grid-template-columns: 1fr;
-					gap: 1rem;
-				}
-				.simulation-header h1 {
-					font-size: 2.5rem;
-				}
-			}
-			@media (max-width: 768px) {
-				.simulation-hero {
-					min-height: auto;
-					padding: 1rem 0;
-				}
-				.simulation-container {
-					padding: 1rem;
-				}
-				.simulation-header h1 {
-					font-size: 2rem;
-				}
-				.simulation-header p {
-					font-size: 1rem;
-				}
-				#painted-sky-canvas {
-					width: 100%;
-					height: auto;
-					max-height: 400px;
-				}
-			}
-			@media (max-width: 480px) {
-				.simulation-panel {
-					padding: 1rem;
-				}
-				.control-group {
-					margin-bottom: 1rem;
-				}
-				.simulation-header h1 {
-					font-size: 1.75rem;
 				}
 			}
 		</style>
@@ -514,7 +484,7 @@
 						</div>
 						<div class="physics-simulation">
 							<div class="physics-canvas">
-								<canvas id="painted-sky-canvas" width="1120" height="630"></canvas>
+								<canvas id="painted-sky-canvas" width="1400" height="700"></canvas>
 							</div>
 							<div class="physics-controls">
 								<div class="control-group">
@@ -570,7 +540,7 @@
 						</div>
 						<div class="physics-simulation">
 							<div class="physics-canvas">
-								<canvas id="charge-painter-canvas" width="1120" height="630"></canvas>
+								<canvas id="charge-painter-canvas" width="1400" height="700"></canvas>
 							</div>
 							<div class="physics-controls">
 								<div class="control-group">
@@ -642,7 +612,7 @@
 						</div>
 						<div class="physics-simulation">
 							<div class="physics-canvas">
-								<canvas id="resonant-canvas-canvas" width="1120" height="630"></canvas>
+								<canvas id="resonant-canvas-canvas" width="1400" height="700"></canvas>
 							</div>
 							<div class="physics-controls">
 								<div class="control-group">
@@ -726,7 +696,7 @@
 						</div>
 						<div class="physics-simulation">
 							<div class="physics-canvas">
-								<canvas id="waveforge-canvas" width="1120" height="630"></canvas>
+								<canvas id="waveforge-canvas" width="1400" height="700"></canvas>
 							</div>
 							<div class="physics-controls">
 								<div class="control-group">
@@ -874,8 +844,8 @@
 		<script>
 			class PaintedSkySimulation {
 				constructor() {
-					this.W = 1120;
-					this.H = 630;
+					this.W = 1400;
+					this.H = 700;
 					this.NX = 192;
 					this.NY = 108;
 					this.dx = 1.0;
@@ -1227,8 +1197,8 @@
 		<script>
 			class ChargePainterSimulation {
 				constructor() {
-					this.W = 1120;
-					this.H = 630;
+					this.W = 1400;
+					this.H = 700;
 					this.NX = 160;
 					this.NY = 90;
 					this.canvas = document.getElementById('charge-painter-canvas');
