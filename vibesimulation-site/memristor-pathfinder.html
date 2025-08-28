@@ -481,12 +481,15 @@
                 return hash.toString(16);
             }
 
-            // Export Reasoning Reel
-            function exportMemristorReel() {
+            // Export Reasoning Reel (compatible with verifier format)
+            async function exportMemristorReel() {
                 if (reelEvents.length === 0) {
                     alert('No simulation data to export. Please run the simulation first.');
                     return;
                 }
+
+                // Compute event root (SHA-256 hash chain)
+                const eventRoot = await computeEventRoot(reelEvents);
 
                 const finalState = G ? {
                     stepCount: stepCount,
@@ -496,33 +499,35 @@
                     finalContrast: lastStepData ? lastStepData.contrast : 0
                 } : null;
 
-                const reelData = {
-                    metadata: {
-                        simulation: 'Memristor Pathfinder',
-                        version: '1.0',
-                        sessionStart: new Date(sessionStartTime).toISOString(),
-                        sessionEnd: new Date().toISOString(),
-                        totalSteps: stepCount,
-                        parameters: {
-                            rows: rows,
-                            cols: cols,
-                            seed: seed,
-                            eta: eta,
-                            backbone: backbone,
-                            stepsPerFrame: stepsPerFrame
-                        }
+                // Create metadata object (first line of file)
+                const metaData = {
+                    simulation: 'Memristor Pathfinder',
+                    version: '1.0',
+                    sessionStart: new Date(sessionStartTime).toISOString(),
+                    sessionEnd: new Date().toISOString(),
+                    totalSteps: stepCount,
+                    event_root: eventRoot,
+                    parameters: {
+                        rows: rows,
+                        cols: cols,
+                        seed: seed,
+                        eta: eta,
+                        backbone: backbone,
+                        stepsPerFrame: stepsPerFrame
                     },
-                    events: reelEvents,
                     finalState: finalState,
                     integrity: {
                         eventCount: reelEvents.length,
-                        dataHash: hashString(JSON.stringify(reelEvents)),
                         sessionDuration: Date.now() - sessionStartTime
                     }
                 };
 
+                // Create file content: metadata JSON + each event as separate line
+                const fileContent = JSON.stringify(metaData) + '\n' +
+                    reelEvents.map(event => JSON.stringify(event)).join('\n');
+
                 // Create and download the file
-                const blob = new Blob([JSON.stringify(reelData, null, 2)], {type: 'application/json'});
+                const blob = new Blob([fileContent], {type: 'text/plain'});
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
@@ -532,8 +537,44 @@
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
 
-                console.log('🎬 Exported Reasoning Reel:', reelData);
-                alert('Reasoning Reel exported successfully!\nFile: ' + a.download);
+                console.log('🎬 Exported Reasoning Reel:', metaData);
+                console.log('📄 File content preview:', fileContent.substring(0, 500) + '...');
+                alert('Reasoning Reel exported successfully!\nFile: ' + a.download + '\nFormat: Compatible with Verifier');
+            }
+
+            // Compute SHA-256 event root for tamper-evident verification
+            async function computeEventRoot(events) {
+                let prev = new Uint8Array(32); // Start with empty hash
+
+                for (const event of events) {
+                    // Canonicalize and stringify event
+                    const canonicalEvent = canonicalizeEvent(event);
+                    const eventString = JSON.stringify(canonicalEvent);
+
+                    // Concatenate previous hash with event data
+                    const eventBytes = new TextEncoder().encode(eventString);
+                    const data = new Uint8Array(prev.length + eventBytes.length);
+                    data.set(prev);
+                    data.set(eventBytes, prev.length);
+
+                    // Compute new hash
+                    prev = new Uint8Array(await crypto.subtle.digest('SHA-256', data));
+                }
+
+                // Return as hex string with prefix
+                return 'sha256-' + Array.from(prev).map(b => b.toString(16).padStart(2, '0')).join('');
+            }
+
+            // Canonicalize event for consistent hashing
+            function canonicalizeEvent(obj) {
+                if (obj === null || typeof obj !== 'object') return obj;
+                if (Array.isArray(obj)) return obj.map(canonicalizeEvent);
+
+                const sorted = {};
+                Object.keys(obj).sort().forEach(key => {
+                    sorted[key] = canonicalizeEvent(obj[key]);
+                });
+                return sorted;
             }
 
             // Grid creation and pathfinding functions
@@ -1081,9 +1122,9 @@
                 init();
             });
 
-            document.getElementById('mp-export').addEventListener('click', () => {
+            document.getElementById('mp-export').addEventListener('click', async () => {
                 recordEvent('export', {action: 'export_requested'});
-                exportMemristorReel();
+                await exportMemristorReel();
             });
 
             document.getElementById('mp-verify').addEventListener('click', () => {
