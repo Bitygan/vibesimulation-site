@@ -123,6 +123,37 @@ async function signMetaEd25519(metaWithoutSig, event_root) {
   }
 }
 
+// ---------- Background Hashing Worker ----------
+let hashWorker = null;
+let backgroundHashingEnabled = false;
+
+function initHashWorker() {
+  if (hashWorker) return hashWorker;
+
+  try {
+    hashWorker = new Worker('recorder_worker.js');
+    hashWorker.onmessage = function(e) {
+      const { type, data } = e.data;
+      // Handle worker messages if needed
+      console.log(`[HashWorker] ${type}`, data);
+    };
+    return hashWorker;
+  } catch (error) {
+    console.warn('Background hashing worker not available:', error);
+    return null;
+  }
+}
+
+function toggleBackgroundHashing(enabled) {
+  backgroundHashingEnabled = enabled;
+  if (enabled && !hashWorker) {
+    initHashWorker();
+  }
+  if (hashWorker) {
+    hashWorker.postMessage({ type: enabled ? 'ping' : 'reset' });
+  }
+}
+
 // ---------- Recorder core ----------
 function makeRecorder(simName) {
   const rows = [];
@@ -130,7 +161,19 @@ function makeRecorder(simName) {
   const t0 = now();
 
   function log(type, obj) {
-    rows.push({ t: Number((now() - t0).toFixed(3)), type, ...obj });
+    const event = { t: Number((now() - t0).toFixed(3)), type, ...obj };
+    rows.push(event);
+
+    // Send to background worker if enabled
+    if (backgroundHashingEnabled && hashWorker) {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => {
+          hashWorker.postMessage({ type: 'queue_event', data: event });
+        });
+      } else {
+        hashWorker.postMessage({ type: 'queue_event', data: event });
+      }
+    }
   }
 
   function throttle(key, hz, fn) {
@@ -168,14 +211,46 @@ function makeRecorder(simName) {
     const meta = {
       spec: "saxlg/1",
       sim: simName,
-      code_hash: "unknown", // optional: replace with a real hash at build time
+      code_hash: (window.APP_CODE_HASH || "unknown"),
       version: (window.APP_VERSION || "dev"),
-      rng: "unknown",
+      rng: "pcg32-seeded", // Now deterministic!
       user_seed: (metaExtras && metaExtras.user_seed) || undefined,
       env: { ua: navigator.userAgent, tz: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC" },
       deep_link: window.location.href
     };
-    const event_root = await computeEventRoot(rows);
+
+    let event_root;
+
+    // Use worker's incremental hash if background hashing enabled
+    if (backgroundHashingEnabled && hashWorker) {
+      try {
+        const rootPromise = new Promise((resolve, reject) => {
+          const timeout = setTimeout(() => reject(new Error('Worker timeout')), 5000);
+
+          hashWorker.onmessage = function(e) {
+            if (e.data.type === 'root_result') {
+              clearTimeout(timeout);
+              resolve(e.data.root);
+            } else if (e.data.type === 'error') {
+              clearTimeout(timeout);
+              reject(new Error(e.data.error));
+            }
+          };
+
+          hashWorker.postMessage({ type: 'get_root' });
+        });
+
+        event_root = await rootPromise;
+        console.log(`[Reels] Using background hash: ${event_root}`);
+      } catch (error) {
+        console.warn('[Reels] Background hash failed, falling back to recompute:', error);
+        event_root = await computeEventRoot(rows);
+      }
+    } else {
+      // Traditional recompute for all events
+      event_root = await computeEventRoot(rows);
+    }
+
     const sigPack = await signMetaEd25519(meta, event_root);
     if (sigPack) Object.assign(meta, { event_root, ...sigPack });
     else Object.assign(meta, { event_root });
@@ -388,7 +463,8 @@ function attachToDrag() {
 
 function addButtons(controls, onExport) {
   if (!controls) return;
-  // Create a row container
+
+  // Create export button row
   const row = document.createElement("div");
   row.className = "control-group";
   const exportBtn = document.createElement("button");
@@ -405,12 +481,43 @@ function addButtons(controls, onExport) {
   });
 
   row.appendChild(exportBtn);
+
+  // Create verify button row
   const row2 = document.createElement("div");
   row2.className = "control-group";
   row2.appendChild(verifyBtn);
 
+  // Create background hashing toggle row
+  const row3 = document.createElement("div");
+  row3.className = "control-group";
+
+  const hashLabel = document.createElement("label");
+  hashLabel.style.display = "flex";
+  hashLabel.style.alignItems = "center";
+  hashLabel.style.gap = "0.5rem";
+  hashLabel.style.fontSize = "0.8rem";
+
+  const hashCheckbox = document.createElement("input");
+  hashCheckbox.type = "checkbox";
+  hashCheckbox.id = "background-hashing-toggle";
+  hashCheckbox.checked = backgroundHashingEnabled;
+
+  const hashText = document.createElement("span");
+  hashText.textContent = "Background hashing (beta)";
+
+  hashLabel.appendChild(hashCheckbox);
+  hashLabel.appendChild(hashText);
+  hashLabel.title = "Enable incremental hashing in background worker for faster export of long sessions";
+
+  hashCheckbox.addEventListener("change", (e) => {
+    toggleBackgroundHashing(e.target.checked);
+  });
+
+  row3.appendChild(hashLabel);
+
   controls.appendChild(row);
   controls.appendChild(row2);
+  controls.appendChild(row3);
 }
 
 // Defer attach until DOM + sims exist

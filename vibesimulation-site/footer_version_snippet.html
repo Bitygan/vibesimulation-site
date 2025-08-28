@@ -1,0 +1,107 @@
+<!-- Version Info Footer Snippet -->
+<div class="footer-version-info">
+  <div class="version-details">
+    <span class="version-label">Version:</span>
+    <span class="version-value" id="app-version">Loading...</span>
+    <span class="version-separator">•</span>
+    <span class="version-label">Code Hash:</span>
+    <code class="version-hash" id="code-hash">Loading...</code>
+  </div>
+  <div class="reproducible-notice">
+    <small>All simulations use deterministic RNG (PCG32) for reproducible results</small>
+  </div>
+</div>
+
+<style>
+.footer-version-info {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.version-details {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.version-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+.version-value {
+  color: #60a5fa;
+  font-weight: 600;
+  background: rgba(96, 165, 250, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.version-hash {
+  color: #a78bfa;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  font-size: 0.8rem;
+  background: rgba(167, 139, 250, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  word-break: break-all;
+}
+
+.version-separator {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.reproducible-notice {
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+}
+
+.reproducible-notice small {
+  font-size: 0.75rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .version-details {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .version-hash {
+    font-size: 0.7rem;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+</style>
+
+<script>
+// Load version information when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  const versionEl = document.getElementById('app-version');
+  const hashEl = document.getElementById('code-hash');
+
+  if (versionEl && window.APP_VERSION) {
+    versionEl.textContent = window.APP_VERSION;
+  } else if (versionEl) {
+    versionEl.textContent = 'dev';
+  }
+
+  if (hashEl && window.APP_CODE_HASH) {
+    // Truncate long hashes for display
+    const shortHash = window.APP_CODE_HASH.length > 20
+      ? window.APP_CODE_HASH.substring(0, 12) + '...' + window.APP_CODE_HASH.slice(-8)
+      : window.APP_CODE_HASH;
+    hashEl.textContent = shortHash;
+    hashEl.title = window.APP_CODE_HASH; // Full hash on hover
+  } else if (hashEl) {
+    hashEl.textContent = 'unknown';
+  }
+});
+</script>
