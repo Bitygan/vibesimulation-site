@@ -544,14 +544,15 @@
     // Try to detect current sim from visible cards
     const cards = $$('.physics-card');
     for(const card of cards){
-      if(card.style.display !== 'none' && !card.classList.contains('physics-fullscreen')) continue;
+      // Check if card is visible (not hidden)
+      if(card.style.display === 'none') continue;
       const id = card.id;
       if(id === 'fluid-dynamics') return 'PaintedSky';
       if(id === 'electrostatics') return 'ChargePainter';
       if(id === 'wave-physics') return 'ResonantCanvas';
       if(id === 'drag-rangefinder') return 'DragRangefinder';
     }
-    return 'PaintedSky'; // Default
+    return null; // No current sim found
   }
 
   async function resetSimToSeed(simName, seed){
@@ -569,20 +570,55 @@
   }
 
   async function runReplicate(simName, seed){
-    // This is a simplified version - in practice you'd need to run the sim for a specific duration
-    // and collect events. For now, we'll just simulate some events.
+    // Run the actual simulation for a short period and collect events
     const rows = [];
-    const startTime = Date.now() / 1000;
+    const startTime = performance.now() / 1000;
 
-    // Simulate 5 state digests over 5 seconds
-    for(let i=0; i<5; i++){
-      await new Promise(r => setTimeout(r, 1000));
-      const digest = getCurrentDigest(simName);
+    // Get the global recorder instance
+    const recorder = window.reasoningReelsRecorder;
+    if(!recorder) {
+      console.warn("No recorder available for replicate");
+      return rows;
+    }
+
+    // Clear any existing events
+    recorder.rows = [];
+    recorder.eventCount = 0;
+
+    // Reset simulation to the given seed
+    await resetSimToSeed(simName, seed);
+
+    // Wait for simulation to initialize
+    await new Promise(r => setTimeout(r, 1000));
+
+    // Run simulation for 10 seconds, collecting events
+    const duration = 10000; // 10 seconds
+    const start = performance.now();
+
+    while(performance.now() - start < duration) {
+      // Let the simulation run naturally
+      await new Promise(r => setTimeout(r, 100));
+
+      // Periodically log state (every second)
+      if(Math.floor((performance.now() - start) / 1000) > rows.length) {
+        const digest = getCurrentDigest(simName);
+        if(digest) {
+          rows.push({
+            t: startTime + (performance.now() - start) / 1000,
+            type: "state",
+            digest: digest
+          });
+        }
+      }
+    }
+
+    // Add final state
+    const finalDigest = getCurrentDigest(simName);
+    if(finalDigest) {
       rows.push({
-        t: (Date.now() / 1000) - startTime,
+        t: startTime + duration / 1000,
         type: "state",
-        digest,
-        seed
+        digest: finalDigest
       });
     }
 

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Debug Evidence Drawer</title>
+    <style>
+        body { font-family: monospace; margin: 20px; }
+        .debug-section { margin: 20px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { color: green; }
+        .error { color: red; }
+        button { padding: 10px; margin: 5px; }
+        .output { margin-top: 10px; padding: 10px; background: #f5f5f5; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>Evidence Drawer Debug</h1>
+
+    <div class="debug-section">
+        <h3>Test Current Simulation Detection</h3>
+        <button onclick="testCurrentSimDetection()">Test Sim Detection</button>
+        <div id="sim-detection-results" class="output"></div>
+    </div>
+
+    <div class="debug-section">
+        <h3>Test Global Recorder</h3>
+        <button onclick="testGlobalRecorder()">Test Recorder</button>
+        <div id="recorder-results" class="output"></div>
+    </div>
+
+    <div class="debug-section">
+        <h3>Test Simulation Instances</h3>
+        <button onclick="testSimInstances()">Test Sim Instances</button>
+        <div id="sim-instances-results" class="output"></div>
+    </div>
+
+    <div class="debug-section">
+        <h3>Test Digest Functions</h3>
+        <button onclick="testDigestFunctions()">Test Digests</button>
+        <div id="digest-results" class="output"></div>
+    </div>
+
+    <script>
+        // Mock the evidence drawer functions for testing
+        const SIM_UI = {
+            "PaintedSky": {
+                canvas: "#painted-sky-canvas",
+                seed: "#seed-input",
+                params: [
+                    ["#shear-slider", "shear"],
+                    ["#vort-slider", "vort_conf"],
+                    ["#brush-select", "brush"],
+                    ["#palette-select", "palette"]
+                ]
+            },
+            "ChargePainter": {
+                canvas: "#charge-painter-canvas",
+                seed: "#cp-seed-input",
+                params: [
+                    ["#cp-method-select", "method"],
+                    ["#cp-omega-slider", "omega"],
+                    ["#cp-voltage-slider", "brushV"],
+                    ["#cp-radius-slider", "brushR"],
+                    ["#cp-iso-slider", "isoCount"],
+                    ["#cp-chalk-checkbox", "chalk"],
+                    ["#cp-sweeps-slider", "sweepsPerFrame"]
+                ]
+            },
+            "ResonantCanvas": {
+                canvas: "#resonant-canvas-canvas",
+                seed: "#rc-seed-input",
+                params: [
+                    ["#rc-geometry-select", "geometry"],
+                    ["#rc-scheme-select", "scheme"],
+                    ["#rc-sigma-slider", "sigmaTarget"],
+                    ["#rc-damping-slider", "damping"],
+                    ["#rc-bow-checkbox", "enableBow"],
+                    ["#rc-frequency-slider", "bowFrequency"]
+                ]
+            },
+            "DragRangefinder": {
+                canvas: "#drag-rangefinder-canvas",
+                params: Array.from({length:20}, (_,i)=> [`#dr-${String(i+1).padStart(2,"0")}`, `param${i+1}`])
+            }
+        };
+
+        function getCurrentSimName(){
+            console.log("Testing simulation detection...");
+            const cards = document.querySelectorAll('.physics-card');
+            console.log(`Found ${cards.length} physics cards`);
+
+            for(const card of cards){
+                console.log(`Card: ${card.id}, style.display: ${card.style.display}`);
+                if(card.style.display === 'none') continue;
+                const id = card.id;
+                if(id === 'fluid-dynamics') return 'PaintedSky';
+                if(id === 'electrostatics') return 'ChargePainter';
+                if(id === 'wave-physics') return 'ResonantCanvas';
+                if(id === 'drag-rangefinder') return 'DragRangefinder';
+            }
+            return null;
+        }
+
+        function testCurrentSimDetection() {
+            const results = document.getElementById('sim-detection-results');
+            results.textContent = 'Testing...\n';
+
+            const simName = getCurrentSimName();
+            results.textContent += `Detected simulation: ${simName || 'None'}\n`;
+
+            const cards = document.querySelectorAll('.physics-card');
+            results.textContent += `Found ${cards.length} cards:\n`;
+            cards.forEach(card => {
+                results.textContent += `  - ${card.id}: display=${card.style.display}\n`;
+            });
+        }
+
+        function testGlobalRecorder() {
+            const results = document.getElementById('recorder-results');
+            results.textContent = 'Testing global recorder...\n';
+
+            const recorder = window.reasoningReelsRecorder;
+            if(recorder) {
+                results.textContent += '✅ Recorder found\n';
+                results.textContent += `Event count: ${recorder.eventCount || 0}\n`;
+                results.textContent += `Rows: ${recorder.rows ? recorder.rows.length : 0}\n`;
+            } else {
+                results.textContent += '❌ No recorder found\n';
+            }
+        }
+
+        function testSimInstances() {
+            const results = document.getElementById('sim-instances-results');
+            results.textContent = 'Testing simulation instances...\n';
+
+            const sims = {
+                'PaintedSky': window.paintedSkySim,
+                'ChargePainter': window.chargePainterSim,
+                'ResonantCanvas': window.resonantCanvasSim,
+                'DragRangefinder': window.dragRangefinderSim
+            };
+
+            Object.entries(sims).forEach(([name, sim]) => {
+                results.textContent += `${name}: ${sim ? '✅' : '❌'}\n`;
+            });
+        }
+
+        // Simple digest functions for testing
+        function fnv1a32(bytes){
+            let h=0x811c9dc5>>>0;
+            for(let i=0;i<bytes.length;i++){
+                h^=bytes[i];
+                h=Math.imul(h,0x01000193)>>>0;
+            }
+            return ("00000000"+h.toString(16)).slice(-8);
+        }
+
+        function sampleFloat32(arr, step){
+            const view=new DataView(new ArrayBuffer(4));
+            const out=new Uint8Array(Math.ceil(arr.length/step)*4);
+            let j=0;
+            for(let i=0;i<arr.length;i+=step){
+                view.setFloat32(0, arr[i]||0, true);
+                out.set(new Uint8Array(view.buffer), j);
+                j+=4;
+            }
+            return out;
+        }
+
+        function digestPaintedSky(sim){
+            try{
+                const s=64;
+                return "ps-"+fnv1a32(sampleFloat32(sim.u,s))+fnv1a32(sampleFloat32(sim.v,s))+fnv1a32(sampleFloat32(sim.d,s));
+            }catch{
+                return "ps-NA";
+            }
+        }
+
+        function digestChargePainter(sim){
+            try{
+                const s=64;
+                return "cp-"+fnv1a32(sampleFloat32(sim.phi,s))+"-"+(sim.residual||0).toExponential(2);
+            }catch{
+                return "cp-NA";
+            }
+        }
+
+        function digestResonant(sim){
+            try{
+                const s=64;
+                return "rc-"+fnv1a32(sampleFloat32(sim.u_now,s))+"-"+(sim.energyDrift||0).toFixed(3);
+            }catch{
+                return "rc-NA";
+            }
+        }
+
+        function digestDrag(sim){
+            try{
+                return "dr-"+(sim.lastRange||0).toFixed(2);
+            }catch{
+                return "dr-NA";
+            }
+        }
+
+        function testDigestFunctions() {
+            const results = document.getElementById('digest-results');
+            results.textContent = 'Testing digest functions...\n';
+
+            const simName = getCurrentSimName();
+            if(!simName) {
+                results.textContent += 'No simulation detected\n';
+                return;
+            }
+
+            results.textContent += `Testing ${simName}...\n`;
+
+            const simMap = {
+                "PaintedSky": window.paintedSkySim,
+                "ChargePainter": window.chargePainterSim,
+                "ResonantCanvas": window.resonantCanvasSim,
+                "DragRangefinder": window.dragRangefinderSim
+            };
+
+            const sim = simMap[simName];
+            if(!sim) {
+                results.textContent += 'Simulation instance not found\n';
+                return;
+            }
+
+            const digestMap = {
+                "PaintedSky": digestPaintedSky,
+                "ChargePainter": digestChargePainter,
+                "ResonantCanvas": digestResonant,
+                "DragRangefinder": digestDrag
+            };
+
+            const digestFn = digestMap[simName];
+            if(digestFn) {
+                const digest = digestFn(sim);
+                results.textContent += `Digest: ${digest}\n`;
+            } else {
+                results.textContent += 'No digest function found\n';
+            }
+        }
+
+        // Auto-run some basic tests
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                testGlobalRecorder();
+                testSimInstances();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
