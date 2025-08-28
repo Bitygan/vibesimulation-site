@@ -309,7 +309,7 @@
                         <select id="mp-backbone">
                             <option value="zigzag">Zigzag</option>
                             <option value="bfs">BFS</option>
-                            <option value="none">None</option>
+                            <option value="random">Random</option>
                         </select>
                     </div>
                     <div class="control-group">
@@ -353,10 +353,7 @@
                         <button id="mp-verify" class="control-toggle-btn">Verify Reel</button>
                     </div>
 
-                    <!-- Debug Button (temporary) -->
-                    <div class="control-group">
-                        <button id="mp-check-solved" class="control-toggle-btn" style="background: #ff6b6b;">Check Solved</button>
-                    </div>
+
 
                     <!-- Status -->
                     <div class="control-group">
@@ -561,14 +558,10 @@
 
                 // Check if most current (>90%) flows through optimal path
                 const efficiency = optimalCurrent / totalCurrent;
-                console.log(`Efficiency: ${(efficiency * 100).toFixed(1)}% (${optimalCurrent.toFixed(3)}A / ${totalCurrent.toFixed(3)}A)`);
-
-                // Temporarily lower threshold for debugging
-                const solvedThreshold = 0.5; // Changed from 0.9 to 0.5 for testing
-                const isSolved = efficiency > solvedThreshold && optimalPath.length > 0;
+                const isSolved = efficiency > 0.9 && optimalPath.length > 0;
 
                 if (isSolved) {
-                    console.log(`✅ Network SOLVED! (Efficiency: ${(efficiency * 100).toFixed(1)}% > ${(solvedThreshold * 100).toFixed(1)}%)`);
+                    console.log(`✅ Network SOLVED! (Efficiency: ${(efficiency * 100).toFixed(1)}%)`);
                 }
 
                 return isSolved;
@@ -593,18 +586,28 @@
                     }
                 }
                 const start=0, end=R*C-1;
-                // backbone bias
-                const path = (bias==="zigzag") ? zigzagPath(R,C) : (bias==="bfs" ? bfsPath(R,C,start,end,adj) : []);
-                const pathSet = new Set();
-                for (let i=0;i<path.length-1;i++){
-                    const a=path[i], b=path[i+1];
-                    const key=(a<b)?`${a}-${b}`:`${b}-${a}`;
-                    pathSet.add(key);
+
+                if (bias === "random") {
+                    // Random resistances: marginally random between 0.7 and 1.3
+                    // No backbone bias - all resistances are random but solvable
+                    res.forEach((Rval, key) => {
+                        const randomFactor = 0.7 + rand() * 0.6; // Random between 0.7 and 1.3
+                        res.set(key, Rval * randomFactor);
+                    });
+                } else {
+                    // Original backbone bias logic for zigzag and bfs
+                    const path = (bias==="zigzag") ? zigzagPath(R,C) : (bias==="bfs" ? bfsPath(R,C,start,end,adj) : []);
+                    const pathSet = new Set();
+                    for (let i=0;i<path.length-1;i++){
+                        const a=path[i], b=path[i+1];
+                        const key=(a<b)?`${a}-${b}`:`${b}-${a}`;
+                        pathSet.add(key);
+                    }
+                    res.forEach((Rval,key)=>{
+                        if (pathSet.has(key)) res.set(key, Math.min(Rval, 0.2));
+                        else res.set(key, Math.max(Rval*1.5, 1.0));
+                    });
                 }
-                res.forEach((Rval,key)=>{
-                    if (pathSet.has(key)) res.set(key, Math.min(Rval, 0.2));
-                    else res.set(key, Math.max(Rval*1.5, 1.0));
-                });
                 return {R,C,nodes,edges,res,adj,start,end,eta, seed, bias,
                         V:new Float64Array(nodes).fill(0), knownV: new Map([[start,1],[end,0]]), stepCount:0};
             }
@@ -756,21 +759,12 @@
                 const sc = score(G, I);
 
                 // Check if network has found optimal path
-                const wasSolved = isSolved;
                 isSolved = checkOptimalPath(G);
-
-                // Debug logging for solved state changes
-                if (isSolved && !wasSolved) {
-                    console.log(`🎉 Network SOLVED at step ${stepCount}!`);
-                } else if (!isSolved && wasSolved) {
-                    console.log(`❌ Network no longer solved at step ${stepCount}`);
-                }
 
                 // Show learning progress with solved status
                 let statusText = `step ${stepCount} • contrast ${sc.toFixed(4)} • solve ${(performance.now()-t0).toFixed(1)} ms`;
                 if (isSolved) {
                     statusText += ` • SOLVED`;
-                    console.log(`📊 Status updated: ${statusText}`);
                 }
                 document.getElementById("mp-info").textContent = statusText;
             }
@@ -869,17 +863,7 @@
                 window.open("verify.html","_blank");
             });
 
-            // Debug button to manually check solved state
-            document.getElementById('mp-check-solved').addEventListener('click', () => {
-                if (G) {
-                    console.log('🔍 Manual solved check triggered');
-                    const solved = checkOptimalPath(G);
-                    const status = solved ? 'SOLVED' : 'NOT SOLVED';
-                    document.getElementById("mp-info").textContent = `Manual check: ${status}`;
-                } else {
-                    console.log('❌ No grid available for solved check');
-                }
-            });
+
         }
     </script>
 </body>
