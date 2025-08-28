@@ -268,6 +268,24 @@
 				letter-spacing: 0.5px;
 			}
 
+			.control-toggle-btn {
+				background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+				color: white;
+				border: none;
+				border-radius: 0.5rem;
+				padding: 0.5rem 1rem;
+				font-size: 0.8rem;
+				font-weight: 500;
+				cursor: pointer;
+				transition: all 0.3s ease;
+				width: 100%;
+			}
+
+			.control-toggle-btn:hover {
+				transform: translateY(-1px);
+				box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+			}
+
 			.control-group input,
 			.control-group select {
 				width: 100%;
@@ -709,10 +727,7 @@
 									<div id="cp-convergence-status" class="status-indicator status-stable">Solving...</div>
 								</div>
 								<div class="control-group">
-									<label>L₂ Residual: <span id="cp-residual-value">0.00</span></label>
-								</div>
-								<div class="control-group">
-									<label>Convergence Rate: <span id="cp-rate-value">1.000</span></label>
+									<button id="cp-show-advanced" class="control-toggle-btn">Show Advanced</button>
 								</div>
 								<div class="control-group">
 									<button id="cp-reset-simulation">Reset Simulation</button>
@@ -720,7 +735,13 @@
 								<div class="control-group">
 									<button id="charge-fullscreen" class="fullscreen-btn" title="Fullscreen">⛶</button>
 								</div>
-								<div class="control-group">
+								<div class="control-group cp-advanced-controls" style="display: none;">
+									<label>L₂ Residual: <span id="cp-residual-value">0.00</span></label>
+								</div>
+								<div class="control-group cp-advanced-controls" style="display: none;">
+									<label>Convergence Rate: <span id="cp-rate-value">1.000</span></label>
+								</div>
+								<div class="control-group cp-advanced-controls" style="display: none;">
 									<label>Residual History</label>
 									<canvas id="cp-sparkline-canvas" width="220" height="64" style="width: 100%; height: 64px; border-radius: 0.5rem; background: rgba(0,0,0,0.3);"></canvas>
 								</div>
@@ -798,7 +819,7 @@
 									<label>Wave Speed c: <span id="rc-speed-value">1.000</span></label>
 								</div>
 								<div class="control-group">
-									<label>Energy Drift: <span id="rc-energy-value">0.00%</span></label>
+									<button id="rc-show-advanced" class="control-toggle-btn">Show Advanced</button>
 								</div>
 								<div class="control-group">
 									<button id="rc-reset-simulation">Reset Simulation</button>
@@ -806,7 +827,10 @@
 								<div class="control-group">
 									<button id="wave-fullscreen" class="fullscreen-btn" title="Fullscreen">⛶</button>
 								</div>
-								<div class="control-group">
+								<div class="control-group rc-advanced-controls" style="display: none;">
+									<label>Energy Drift: <span id="rc-energy-value">0.00%</span></label>
+								</div>
+								<div class="control-group rc-advanced-controls" style="display: none;">
 									<label>Live Spectrogram</label>
 									<canvas id="rc-spectrogram-canvas" width="220" height="100" style="width: 100%; height: 100px; border-radius: 0.5rem; background: rgba(0,0,0,0.3);"></canvas>
 								</div>
@@ -865,29 +889,32 @@
 									<label>dt: <span id="dr-dt-value">0.022</span> s</label>
 									<input type="range" id="dr-dt-slider" min="0.002" max="0.05" step="0.002" value="0.022" />
 								</div>
-								<div class="control-group">
+								<div class="control-group dr-advanced-controls" style="display: none;">
 									<label>Air Density ρ: <span id="dr-rho-value">1.22</span> kg/m³</label>
 									<input type="range" id="dr-rho-slider" min="0.5" max="1.5" step="0.01" value="1.22" />
 								</div>
-								<div class="control-group">
+								<div class="control-group dr-advanced-controls" style="display: none;">
 									<label>Drag Coeff Cd: <span id="dr-cd-value">0.47</span></label>
 									<input type="range" id="dr-cd-slider" min="0.10" max="1.20" step="0.01" value="0.47" />
 								</div>
-								<div class="control-group">
+								<div class="control-group dr-advanced-controls" style="display: none;">
 									<label>Radius: <span id="dr-radius-value">0.0366</span> m</label>
 									<input type="range" id="dr-radius-slider" min="0.02" max="0.06" step="0.0005" value="0.0366" />
 								</div>
-								<div class="control-group">
+								<div class="control-group dr-advanced-controls" style="display: none;">
 									<label>Mass: <span id="dr-mass-value">0.145</span> kg</label>
 									<input type="range" id="dr-mass-slider" min="0.03" max="0.2" step="0.001" value="0.145" />
 								</div>
-								<div class="control-group">
+								<div class="control-group dr-advanced-controls" style="display: none;">
 									<label>Wind Speed: <span id="dr-wind-value">5.0</span> m/s</label>
 									<input type="range" id="dr-wind-slider" min="-15" max="15" step="0.5" value="5" />
 								</div>
 								<div class="control-group">
 									<label>Wind Direction: <span id="dr-winddir-value">180</span>°</label>
 									<input type="range" id="dr-winddir-slider" min="0" max="360" step="1" value="180" />
+								</div>
+								<div class="control-group">
+									<button id="dr-show-advanced" class="control-toggle-btn">Show Advanced Controls</button>
 								</div>
 								<div class="control-group">
 									<button id="dr-fire-button">Fire Projectile</button>
@@ -1466,6 +1493,38 @@
 					document.getElementById('cp-reset-simulation').addEventListener('click', () => {
 						this.resetSimulation();
 					});
+
+					// Advanced controls toggle
+					document.getElementById('cp-show-advanced').addEventListener('click', () => {
+						this.toggleAdvancedControls();
+					});
+				}
+
+				toggleAdvancedControls() {
+					const advancedControls = document.querySelectorAll('.cp-advanced-controls');
+					const toggleBtn = document.getElementById('cp-show-advanced');
+					let isVisible = false;
+
+					// Check if controls are currently visible
+					advancedControls.forEach(control => {
+						if (control.style.display !== 'none') {
+							isVisible = true;
+						}
+					});
+
+					if (isVisible) {
+						// Hide advanced controls
+						advancedControls.forEach(control => {
+							control.style.display = 'none';
+						});
+						toggleBtn.textContent = 'Show Advanced';
+					} else {
+						// Show advanced controls
+						advancedControls.forEach(control => {
+							control.style.display = 'block';
+						});
+						toggleBtn.textContent = 'Hide Advanced';
+					}
 				}
 
 				paint(x, y) {
@@ -1915,6 +1974,38 @@
 						document.getElementById('rc-reset-simulation').addEventListener('click', () => {
 							this.resetSimulation();
 						});
+
+						// Advanced controls toggle
+						document.getElementById('rc-show-advanced').addEventListener('click', () => {
+							this.toggleAdvancedControls();
+						});
+					}
+
+					toggleAdvancedControls() {
+						const advancedControls = document.querySelectorAll('.rc-advanced-controls');
+						const toggleBtn = document.getElementById('rc-show-advanced');
+						let isVisible = false;
+
+						// Check if controls are currently visible
+						advancedControls.forEach(control => {
+							if (control.style.display !== 'none') {
+								isVisible = true;
+							}
+						});
+
+						if (isVisible) {
+							// Hide advanced controls
+							advancedControls.forEach(control => {
+								control.style.display = 'none';
+							});
+							toggleBtn.textContent = 'Show Advanced';
+						} else {
+							// Show advanced controls
+							advancedControls.forEach(control => {
+								control.style.display = 'block';
+							});
+							toggleBtn.textContent = 'Hide Advanced';
+						}
 					}
 
 					updateWaveSpeed() {
@@ -2754,6 +2845,11 @@
 							this.fireKey++;
 						});
 
+						// Advanced controls toggle
+						document.getElementById('dr-show-advanced').addEventListener('click', () => {
+							this.toggleAdvancedControls();
+						});
+
 						// Fullscreen functionality
 						document.getElementById('drag-fullscreen').addEventListener('click', () => {
 							this.toggleFullscreen();
@@ -2986,6 +3082,33 @@
 							controls.style.right = '2rem';
 							controls.style.maxHeight = '70vh';
 							controls.style.overflowY = 'auto';
+						}
+					}
+
+					toggleAdvancedControls() {
+						const advancedControls = document.querySelectorAll('.dr-advanced-controls');
+						const toggleBtn = document.getElementById('dr-show-advanced');
+						let isVisible = false;
+
+						// Check if controls are currently visible
+						advancedControls.forEach(control => {
+							if (control.style.display !== 'none') {
+								isVisible = true;
+							}
+						});
+
+						if (isVisible) {
+							// Hide advanced controls
+							advancedControls.forEach(control => {
+								control.style.display = 'none';
+							});
+							toggleBtn.textContent = 'Show Advanced Controls';
+						} else {
+							// Show advanced controls
+							advancedControls.forEach(control => {
+								control.style.display = 'block';
+							});
+							toggleBtn.textContent = 'Hide Advanced Controls';
 						}
 					}
 
