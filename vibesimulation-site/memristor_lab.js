@@ -72,7 +72,7 @@
   }
 
   // ----- UI Card -----
-  const host=document.querySelector("#gallery, main, .cards, .container")||document.body;
+  const host=document.querySelector("#memristor-container") || document.querySelector("#gallery, main, .cards, .container") || document.body;
   const card=el("section",{id:"memristor-lab", class:"physics-card"});
   const title=el("h2",null,"Memristor Pathfinder — Glass Labyrinth Live");
   const controls=el("div",{class:"physics-controls"});
