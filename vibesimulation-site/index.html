@@ -508,7 +508,6 @@
 					<a href="#fluid-dynamics" class="nav-link">Fluid Dynamics</a>
 					<a href="#electrostatics" class="nav-link">Electrostatics</a>
 					<a href="#wave-physics" class="nav-link">Wave Physics</a>
-					<a href="#shallow-water" class="nav-link">Shallow Water</a>
 					<a href="#about" class="nav-link">About</a>
 				</div>
 			</div>
@@ -762,83 +761,7 @@
 			</section>
 
 					<!-- Shallow Water Dynamics Card -->
-					<div id="shallow-water" class="physics-card">
-						<div class="physics-header">
-							<h3 class="physics-title">
-								<div class="physics-icon water-icon">🌊</div>
-								Shallow Water Dynamics
-							</h3>
-							<p class="physics-description">
-								Explore flood dynamics and tsunami propagation with the Saint-Venant equations. Paint terrain obstacles
-								and watch realistic water flow with momentum conservation, pressure gradients, and wave interactions.
-							</p>
-						</div>
-						<div class="physics-simulation">
-							<div class="physics-canvas">
-								<canvas id="waveforge-canvas" width="1400" height="700"></canvas>
-							</div>
-							<div class="physics-controls">
-								<div class="control-group">
-									<label>USER_SEED</label>
-									<input type="number" id="wf-seed-input" value="20250827" />
-								</div>
-								<div class="control-group">
-									<label>Paint Mode</label>
-									<select id="wf-mode-select">
-										<option value="Splash">Water Splash</option>
-										<option value="Walls">Basin Walls</option>
-									</select>
-								</div>
-								<div class="control-group">
-									<label>Brush Radius: <span id="wf-radius-value">10</span></label>
-									<input type="range" id="wf-radius-slider" min="3" max="24" step="1" value="10" />
-								</div>
-								<div class="control-group">
-									<label>Gravity g: <span id="wf-gravity-value">9.81</span></label>
-									<input type="range" id="wf-gravity-slider" min="1.0" max="20.0" step="0.1" value="9.81" />
-								</div>
-								<div class="control-group">
-									<label>Friction μ: <span id="wf-friction-value">0.005</span></label>
-									<input type="range" id="wf-friction-slider" min="0.0" max="0.05" step="0.001" value="0.005" />
-								</div>
-								<div class="control-group">
-									<label>CFL Target: <span id="wf-cfl-value">0.70</span></label>
-									<input type="range" id="wf-cfl-slider" min="0.2" max="0.95" step="0.01" value="0.7" />
-								</div>
-								<div class="control-group">
-									<label>Grid Scale Δx: <span id="wf-dx-value">1.00</span></label>
-									<input type="range" id="wf-dx-slider" min="0.5" max="2.0" step="0.05" value="1.0" />
-								</div>
-								<div class="control-group">
-									<label>Color Palette</label>
-									<select id="wf-palette-select">
-										<option value="Ocean">Ocean</option>
-										<option value="Icefire">Icefire</option>
-										<option value="Magma">Magma</option>
-									</select>
-								</div>
-								<div class="control-group">
-									<label><input type="checkbox" id="wf-vectors-checkbox" /> Show Velocity Vectors</label>
-								</div>
-								<div class="control-group">
-									<label>Stability Status</label>
-									<div id="wf-stability-status" class="status-indicator status-stable">Stable</div>
-								</div>
-								<div class="control-group">
-									<label>Live CFL: <span id="wf-cfl-live-value">0.00</span></label>
-								</div>
-								<div class="control-group">
-									<label>Mass Drift: <span id="wf-mass-value">0.0 ppm</span></label>
-								</div>
-								<div class="control-group">
-									<button id="wf-reset-simulation">Reset Simulation</button>
-								</div>
-								<div class="control-group">
-									<button id="water-fullscreen" class="fullscreen-btn" title="Fullscreen">⛶</button>
-								</div>
-							</div>
-						</div>
-					</div>
+
 
 					<!-- Drag Rangefinder Card -->
 					<div id="drag-rangefinder" class="physics-card">
@@ -2279,124 +2202,13 @@
 				// Initialize simulation when DOM is loaded
 				document.addEventListener('DOMContentLoaded', () => {
 					window.resonantCanvasSim = new ResonantCanvasSimulation();
-					window.waveForgeSim = new WaveForgeSimulation();
 				});
 			</script>
 
-			<!-- WaveForge Simulation Script -->
-			<script>
-				class WaveForgeSimulation {
-					constructor() {
-						this.W = 1400;
-						this.H = 700;
-						this.NX = 180; // Optimized for performance
-						this.NY = 100; // Optimized for performance
-						this.canvas = document.getElementById('waveforge-canvas');
-						this.ctx = this.canvas.getContext('2d');
 
-						// Parameters
-						this.seed = 20250827;
-						this.mode = "Splash";
-						this.brushR = 12;
-						this.grav = 9.81;
-						this.fric = 0.001;
-						this.cflTarget = 0.85;
-						this.dxScale = 1.0;
-						this.palette = "Ocean";
-						this.showVec = false;
-						this.interactionStrength = 0.4;
 
-						// Computed values
-						this.dx = 1.0;
-						this.cflLive = 0;
-						this.massPpm = 0;
-						this.dt = 0.012;
 
-						// Simulation arrays - shallow water equations with proper separation
-						this.size = this.NX * this.NY;
-						this.h = new Float32Array(this.size);     // water depth
-						this.hu = new Float32Array(this.size);    // momentum x
-						this.hv = new Float32Array(this.size);    // momentum y
-						this.h_prev = new Float32Array(this.size);
-						this.hu_prev = new Float32Array(this.size);
-						this.hv_prev = new Float32Array(this.size);
-						this.terrain = new Float32Array(this.size); // bottom topography
-						this.solid = new Uint8Array(this.size);
 
-						// For smooth interaction
-						this.raf = 0;
-						this.pointerDown = false;
-						this.pointerX = 0;
-						this.pointerY = 0;
-						this.scaleX = this.NX / this.W;
-						this.scaleY = this.NY / this.H;
-						this.lastInteractionTime = 0;
-						this.interactionRadius = 15;
-
-						this.init();
-					}
-
-					init() {
-						this.setupCanvasSizing();
-						this.setupEventListeners();
-						this.initializeSimulation();
-						this.startAnimation();
-					}
-
-					setupCanvasSizing() {
-						const resizeCanvas = () => {
-							const container = this.canvas.parentElement;
-							const containerWidth = container.offsetWidth;
-							const containerHeight = Math.min(containerWidth * 0.5625, 630);
-
-							this.canvas.style.width = containerWidth + 'px';
-							this.canvas.style.height = containerHeight + 'px';
-							this.scaleX = this.NX / containerWidth;
-							this.scaleY = this.NY / containerHeight;
-						};
-
-						resizeCanvas();
-						window.addEventListener('resize', resizeCanvas);
-					}
-
-					setupEventListeners() {
-						// Mouse events
-						this.canvas.onpointerdown = (e) => {
-							this.pointerDown = true;
-							const r = this.canvas.getBoundingClientRect();
-							this.pointerX = (e.clientX - r.left) * this.scaleX;
-							this.pointerY = (e.clientY - r.top) * this.scaleY;
-							this.applyInteraction(this.pointerX, this.pointerY);
-						};
-
-						this.canvas.onpointermove = (e) => {
-							if (!this.pointerDown) return;
-							const r = this.canvas.getBoundingClientRect();
-							this.pointerX = (e.clientX - r.left) * this.scaleX;
-							this.pointerY = (e.clientY - r.top) * this.scaleY;
-							this.applyInteraction(this.pointerX, this.pointerY);
-						};
-
-						this.canvas.onpointerup = () => { this.pointerDown = false; };
-						this.canvas.onpointerleave = () => { this.pointerDown = false; };
-
-						this.canvas.oncontextmenu = (e) => {
-							e.preventDefault();
-							return false;
-						};
-
-						// Control events
-						document.getElementById('wf-seed-input').addEventListener('change', (e) => {
-							this.seed = parseInt(e.target.value);
-							this.resetSimulation();
-						});
-
-						document.getElementById('wf-mode-select').addEventListener('change', (e) => {
-							this.mode = e.target.value;
-						});
-
-						document.getElementById('wf-radius-slider').addEventListener('input', (e) => {
-							this.brushR = parseInt(e.target.value);
 							document.getElementById('wf-radius-value').textContent = this.brushR.toString();
 						});
 
@@ -2646,97 +2458,7 @@
 						}
 					}
 
-					// Draw streamlines showing wave propagation
-					drawStreamlines() {
-						const streamlineCount = 8;
-						const steps = 15;
-						const stepSize = 0.8;
 
-						this.ctx.save();
-						this.ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
-						this.ctx.lineWidth = 1.5;
-						this.ctx.lineCap = "round";
-
-						for (let s = 0; s < streamlineCount; s++) {
-							// Start from different positions across the domain
-							let x = (s + 0.5) / streamlineCount * (this.NX - 2) + 1;
-							let y = Math.sin(Date.now() * 0.001 + s) * 0.3 * this.NY + this.NY * 0.5;
-
-							this.ctx.beginPath();
-							this.ctx.moveTo(x / (this.NX - 1) * this.W, y / (this.NY - 1) * this.H);
-
-							// Trace streamline
-							for (let step = 0; step < steps; step++) {
-								const ix = Math.floor(x);
-								const iy = Math.floor(y);
-
-								if (ix < 1 || ix >= this.NX - 1 || iy < 1 || iy >= this.NY - 1) break;
-
-								const idx = this.idx(ix, iy);
-								const h = this.h[idx];
-
-								if (h < 0.05) break; // Stop at dry areas
-
-								// Get velocity components
-								const u = this.hu[idx] / (h + 1e-6);
-								const v = this.hv[idx] / (h + 1e-6);
-
-								// Move particle along velocity field
-								x += u * stepSize;
-								y += v * stepSize;
-
-								// Convert to screen coordinates
-								const screenX = x / (this.NX - 1) * this.W;
-								const screenY = y / (this.NY - 1) * this.H;
-
-								this.ctx.lineTo(screenX, screenY);
-
-								// Add some visual flair with varying opacity based on speed
-								const speed = Math.sqrt(u * u + v * v);
-								const opacity = Math.min(0.8, speed * 2);
-								this.ctx.globalAlpha = opacity;
-							}
-
-							this.ctx.stroke();
-							this.ctx.globalAlpha = 1;
-						}
-
-						// Draw particle dots along streamlines
-						this.ctx.fillStyle = "rgba(100, 200, 255, 0.8)";
-						for (let s = 0; s < streamlineCount; s++) {
-							let x = (s + 0.5) / streamlineCount * (this.NX - 2) + 1;
-							let y = Math.sin(Date.now() * 0.001 + s) * 0.3 * this.NY + this.NY * 0.5;
-
-							for (let step = 0; step < steps; step += 3) {
-								const ix = Math.floor(x);
-								const iy = Math.floor(y);
-
-								if (ix < 1 || ix >= this.NX - 1 || iy < 1 || iy >= this.NY - 1) break;
-
-								const idx = this.idx(ix, iy);
-								const h = this.h[idx];
-
-								if (h < 0.05) break;
-
-								const u = this.hu[idx] / (h + 1e-6);
-								const v = this.hv[idx] / (h + 1e-6);
-								const speed = Math.sqrt(u * u + v * v);
-
-								const screenX = x / (this.NX - 1) * this.W;
-								const screenY = y / (this.NY - 1) * this.H;
-
-								const dotSize = Math.max(1, Math.min(4, speed * 8));
-								this.ctx.beginPath();
-								this.ctx.arc(screenX, screenY, dotSize, 0, Math.PI * 2);
-								this.ctx.fill();
-
-								x += u * stepSize * 3;
-								y += v * stepSize * 3;
-							}
-						}
-
-						this.ctx.restore();
-					}
 
 					// High-quality visualization following SAX Perceptual Integrity principle
 					render() {
@@ -2872,8 +2594,7 @@
 						// Status overlay
 						this.ctx.fillStyle = "rgba(255,255,255,0.9)";
 						this.ctx.font = "bold 13px ui-monospace, SFMono-Regular, Menlo, monospace";
-						// Draw streamlines to show wave propagation
-						this.drawStreamlines();
+
 
 						this.ctx.fillText(`CFL: ${this.cflLive.toFixed(2)} | Depth: ${(hmax-hmin).toFixed(3)} | Mode: ${this.mode}`, 12, 20);
 						this.ctx.fillText(`g: ${this.grav.toFixed(2)} | Friction: ${this.fric.toExponential(1)}`, 12, 40);
@@ -3024,10 +2745,7 @@
 					}
 				}
 
-				// Initialize simulation when DOM is loaded
-				document.addEventListener('DOMContentLoaded', () => {
-					window.waveForgeSim = new WaveForgeSimulation();
-				});
+
 			</script>
 
 			<!-- Drag Rangefinder Simulation Script -->
@@ -3388,10 +3106,7 @@
 						toggleFullscreen('wave-physics');
 					});
 
-					// Shallow Water fullscreen
-					document.getElementById('water-fullscreen').addEventListener('click', () => {
-						toggleFullscreen('shallow-water');
-					});
+
 
 					function toggleFullscreen(cardId) {
 						const card = document.getElementById(cardId);
