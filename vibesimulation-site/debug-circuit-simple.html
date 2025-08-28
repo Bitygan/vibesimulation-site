@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Circuit Lab Simple Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .debug { background: white; padding: 20px; border-radius: 8px; margin: 10px 0; }
+        .success { border-left: 4px solid #10b981; }
+        .error { border-left: 4px solid #ef4444; }
+        .info { border-left: 4px solid #3b82f6; }
+    </style>
+</head>
+<body>
+    <h1>🚀 Circuit Lab Debug</h1>
+
+    <div class="debug info">
+        <h3>🔍 Step-by-Step Debug</h3>
+        <ol>
+            <li>Clear browser cache (Ctrl+Shift+R or Cmd+Shift+R)</li>
+            <li>Open browser console (F12 → Console tab)</li>
+            <li>Navigate to: <a href="http://localhost:8081/" target="_blank">http://localhost:8081/</a></li>
+            <li>Look for JavaScript errors in console</li>
+            <li>Scroll to the bottom of the page to see if Circuit Lab appears</li>
+        </ol>
+    </div>
+
+    <div class="debug info">
+        <h3>🎯 Quick Tests</h3>
+        <p>Run these commands in browser console:</p>
+        <code>console.log('Circuit Lab loaded:', typeof InteractiveCircuitLab);</code><br>
+        <code>console.log('Instance:', window.interactiveCircuitLab);</code><br>
+        <code>console.log('DOM element:', document.getElementById('circuit-lab'));</code>
+    </div>
+
+    <div class="debug success">
+        <h3>✅ What Should Happen</h3>
+        <ul>
+            <li>Circuit Lab should appear as the second-to-last simulation</li>
+            <li>You should see a canvas with component palette</li>
+            <li>Buttons for Battery, Resistor, Light Bulb, Switch, Wire</li>
+            <li>Example circuits dropdown</li>
+            <li>Real-time voltage/resistance sliders</li>
+        </ul>
+    </div>
+
+    <div class="debug info">
+        <h3>🔧 Manual Fix (if needed)</h3>
+        <p>If Circuit Lab still doesn't appear, try:</p>
+        <ol>
+            <li>Stop the server (Ctrl+C in terminal)</li>
+            <li>Restart server: <code>python -m http.server 8081</code></li>
+            <li>Hard refresh browser: Ctrl+F5</li>
+        </ol>
+    </div>
+
+    <script>
+        // Auto-check when page loads
+        window.addEventListener('load', () => {
+            console.log('🔍 Debug page loaded');
+            console.log('Circuit Lab script loaded:', typeof InteractiveCircuitLab !== 'undefined');
+        });
+    </script>
+</body>
+</html>

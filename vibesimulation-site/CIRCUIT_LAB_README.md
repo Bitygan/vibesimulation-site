@@ -68,12 +68,32 @@
 
 ## 📁 **Files**
 
+- `circuit-lab.html` — Dedicated page for the Interactive Circuit Lab
 - `circuit_lab.js` — Interactive drag-and-drop circuit simulator with SAX SOP v2.2 compliance
 - `recorder_circuit_patch.js` — Optional patch for existing Reasoning Reels setup
 - `test-circuit-lab.html` — Test suite to verify functionality
+- `debug-circuit.html` — Debug tools for troubleshooting
+- `debug-circuit-simple.html` — Simple debug guide
 - (Assumes `verify.html` exists for reel verification)
 
-## 🚀 **Installation**
+## 🚀 **Installation & Usage**
+
+### **Option 1: Separate Page (Recommended for Performance)**
+
+1. **Copy files** to your website root:
+   - `circuit-lab.html` (main page)
+   - `circuit_lab.js` (simulation engine)
+   - `recorder.js` (reasoning reels)
+   - `recorder_circuit_patch.js` (optional)
+
+2. **Add navigation link** to your main site:
+   ```html
+   <a href="circuit-lab.html" class="nav-link">Circuit Lab</a>
+   ```
+
+3. **Access the Circuit Lab** by clicking the navigation link
+
+### **Option 2: Embedded in Main Page**
 
 1. Copy files next to your `index.html`
 2. Add to the end of your HTML:
@@ -81,6 +101,31 @@
    <script src="circuit_lab.js"></script>
    <script src="recorder_circuit_patch.js"></script>
    ```
+
+## ⚡ **Performance Benefits**
+
+### **Separate Page Approach:**
+- **Faster Main Page Load** — No heavy circuit simulation on homepage
+- **Better User Experience** — Dedicated space for complex interaction
+- **Reduced Memory Usage** — Circuit Lab loads only when needed
+- **Improved SEO** — Main page focuses on core simulations
+- **Progressive Enhancement** — Users can explore circuits at their own pace
+
+### **When to Use Each Approach:**
+
+| Approach | Best For | Performance Impact |
+|----------|----------|-------------------|
+| **Separate Page** | Production sites, large audiences | ✅ Excellent |
+| **Embedded** | Small demos, single-page apps | ⚠️ Higher load time |
+
+## 🎯 **Quick Start**
+
+1. **Navigate to Circuit Lab** from your main site
+2. **Choose an example circuit** from the dropdown
+3. **Drag components** onto the canvas
+4. **Connect with wires** by clicking terminals
+5. **Toggle switches** to control circuits
+6. **Watch light bulbs glow** based on current!
 
 ## 🎮 **User Experience**
 

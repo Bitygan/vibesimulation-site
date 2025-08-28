@@ -1119,19 +1119,26 @@
       `;
       document.head.appendChild(style);
 
-      // Insert as second-to-last simulation (before footer)
-      const simulations = document.querySelectorAll('.physics-card');
-      if (simulations.length > 0) {
-        // Insert before the last simulation (second-to-last position)
-        const lastSim = simulations[simulations.length - 1];
-        lastSim.parentNode.insertBefore(card, lastSim);
+      // Insert circuit lab card - handle both main page and separate page
+      const mainContent = document.getElementById('main-content');
+      if (mainContent) {
+        // We're on the separate circuit lab page
+        mainContent.appendChild(card);
       } else {
-        // Fallback: insert after hero section
-        const hero = document.querySelector('.physics-hero') || document.querySelector('#physics-hero');
-        if(hero && hero.nextElementSibling){
-          hero.parentNode.insertBefore(card, hero.nextElementSibling);
+        // We're on the main page - insert as second-to-last simulation
+        const simulations = document.querySelectorAll('.physics-card');
+        if (simulations.length > 0) {
+          // Insert before the last simulation (second-to-last position)
+          const lastSim = simulations[simulations.length - 1];
+          lastSim.parentNode.insertBefore(card, lastSim);
         } else {
-          document.body.appendChild(card);
+          // Fallback: insert after hero section
+          const hero = document.querySelector('.physics-hero') || document.querySelector('#physics-hero');
+          if(hero && hero.nextElementSibling){
+            hero.parentNode.insertBefore(card, hero.nextElementSibling);
+          } else {
+            document.body.appendChild(card);
+          }
         }
       }
 
@@ -2054,12 +2061,17 @@
   }
 
   // SAX SOP v2.2: Initialize the Interactive Circuit Lab
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', () => {
+  function initCircuitLab() {
+    if (!window.interactiveCircuitLab) {
       window.interactiveCircuitLab = new InteractiveCircuitLab();
-    });
+    }
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initCircuitLab);
   } else {
-    window.interactiveCircuitLab = new InteractiveCircuitLab();
+    // Small delay to ensure page is fully set up
+    setTimeout(initCircuitLab, 100);
   }
 
 })();

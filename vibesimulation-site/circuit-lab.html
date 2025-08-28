@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Interactive Circuit Lab - VibeSimulation</title>
+    <meta name="description" content="Build and simulate interactive electrical circuits with realistic components. Learn Ohm's Law through hands-on experimentation.">
+    <meta name="keywords" content="circuit simulation, electricity, ohm's law, interactive learning, electrical engineering">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicons/favicon-16x16.png">
+
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
+
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/video.css" />
+    <link rel="stylesheet" href="assets/css/cookie-consent.css" />
+
+    <!-- Circuit Lab Specific Styles -->
+    <style>
+        body {
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #1a1a2e 100%);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .circuit-lab-header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .circuit-lab-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff, #e0e7ff, #ddd6fe, #fce7f3, #ecfdf5);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .circuit-lab-subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-weight: 300;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .circuit-lab-features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            min-width: 2rem;
+            text-align: center;
+        }
+
+        .feature-text {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .back-link {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(79, 70, 229, 0.3);
+            z-index: 1000;
+        }
+
+        .back-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(79, 70, 229, 0.4);
+        }
+
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            color: white;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top: 3px solid #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hide main content initially */
+        .main-content {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .main-content.loaded {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="is-preload">
+    <!-- Navigation -->
+    <a href="index.html" class="back-link">
+        <span>←</span> Back to Simulations
+    </a>
+
+    <!-- Header -->
+    <header class="circuit-lab-header">
+        <h1 class="circuit-lab-title">Interactive Circuit Lab</h1>
+        <p class="circuit-lab-subtitle">
+            Build and simulate realistic electrical circuits. Drag components, connect wires, and watch physics come to life with real-time circuit analysis.
+        </p>
+
+        <div class="circuit-lab-features">
+            <div class="feature-item">
+                <span class="feature-icon">🔋</span>
+                <span class="feature-text">Realistic Battery</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">💡</span>
+                <span class="feature-text">Glowing Light Bulb</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🔘</span>
+                <span class="feature-text">Toggle Switch</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">⚡</span>
+                <span class="feature-text">Live Simulation</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🎓</span>
+                <span class="feature-text">Educational</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading">
+        <div class="loading-spinner"></div>
+        <h3>Loading Circuit Lab...</h3>
+        <p>Setting up interactive components</p>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="main-content">
+        <!-- Circuit Lab will be inserted here -->
+    </div>
+
+    <!-- Scripts -->
+    <script src="recorder.js"></script>
+    <script src="circuit_lab.js"></script>
+
+    <script>
+        // Show loading screen initially
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Circuit Lab page loaded');
+
+            // Initialize Circuit Lab after a short delay
+            setTimeout(function() {
+                try {
+                    console.log('Initializing Circuit Lab...');
+                    window.interactiveCircuitLab = new InteractiveCircuitLab();
+
+                    // Move the circuit lab card to our page
+                    setTimeout(function() {
+                        const circuitCard = document.getElementById('circuit-lab');
+                        if (circuitCard) {
+                            const mainContent = document.getElementById('main-content');
+                            mainContent.appendChild(circuitCard);
+
+                            // Hide loading screen
+                            document.getElementById('loading-screen').style.display = 'none';
+
+                            // Show main content
+                            mainContent.classList.add('loaded');
+
+                            console.log('Circuit Lab successfully loaded!');
+                        } else {
+                            console.error('Circuit Lab card not found');
+                            document.getElementById('loading-screen').innerHTML = `
+                                <h3>❌ Error Loading Circuit Lab</h3>
+                                <p>Circuit Lab component could not be loaded.</p>
+                                <p>Please check the console for errors.</p>
+                                <a href="index.html" style="color: #4f46e5;">← Back to Main Site</a>
+                            `;
+                        }
+                    }, 1000);
+
+                } catch (error) {
+                    console.error('Error initializing Circuit Lab:', error);
+                    document.getElementById('loading-screen').innerHTML = `
+                        <h3>❌ Error Loading Circuit Lab</h3>
+                        <p>${error.message}</p>
+                        <a href="index.html" style="color: #4f46e5;">← Back to Main Site</a>
+                    `;
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>
