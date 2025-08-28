@@ -119,11 +119,18 @@
         try { rows.push(JSON.parse(line)); } catch {}
       }
 
+      console.log('Verifier: Processing', rows.length, 'events');
+      console.log('Verifier: First few events:', rows.slice(0, 3));
+      console.log('Verifier: Expected root:', parsedMeta.event_root);
+
       const recomputed = await computeEventRoot(rows);
+      console.log('Verifier: Computed root:', recomputed);
 
       let rootMatch = (parsedMeta.event_root === recomputed);
       let sigOk = null;
       let sigErr = null;
+
+      console.log('Verifier: Root match?', rootMatch);
 
       if (parsedMeta.sig_alg && parsedMeta.sig_alg.toLowerCase() === "ed25519" && parsedMeta.pub && parsedMeta.sig) {
         const {sig, pub, sig_alg, ...metaMinusSig} = parsedMeta;

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Debug Reasoning Reels</title>
+    <style>
+        body { font-family: monospace; margin: 20px; }
+        .debug-section { margin: 20px 0; padding: 10px; border: 1px solid #ccc; }
+        .error { color: red; }
+        .success { color: green; }
+        button { padding: 10px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Reasoning Reels Debug</h1>
+
+    <div class="debug-section">
+        <h3>Test Hash Functions</h3>
+        <button onclick="testHashFunctions()">Test Hash Functions</button>
+        <div id="hash-test-results"></div>
+    </div>
+
+    <div class="debug-section">
+        <h3>Test Event Processing</h3>
+        <button onclick="testEventProcessing()">Test Event Processing</button>
+        <div id="event-test-results"></div>
+    </div>
+
+    <div class="debug-section">
+        <h3>Compare Recorder vs Verifier</h3>
+        <button onclick="compareImplementations()">Compare Implementations</button>
+        <div id="compare-results"></div>
+    </div>
+
+    <script>
+        // Include the same utilities as the recorder
+        const enc = new TextEncoder();
+
+        function canonicalize(obj) {
+            if (obj === null || typeof obj !== 'object') return obj;
+            if (Array.isArray(obj)) return obj.map(canonicalize);
+            const out = {};
+            Object.keys(obj).sort().forEach(k => {
+                const v = obj[k];
+                out[k] = canonicalize(v);
+            });
+            return out;
+        }
+
+        function canonicalString(obj) {
+            return JSON.stringify(canonicalize(obj));
+        }
+
+        function concatBytes(a, b) {
+            const out = new Uint8Array(a.length + b.length);
+            out.set(a, 0);
+            out.set(b, a.length);
+            return out;
+        }
+
+        function hex(buf) {
+            const v = new Uint8Array(buf);
+            let s = "";
+            for (let i = 0; i < v.length; i++) s += v[i].toString(16).padStart(2, "0");
+            return s;
+        }
+
+        async function computeEventRoot(rows) {
+            let prev = new Uint8Array(32);
+            for (const ev of rows) {
+                const s = canonicalString(ev);
+                const data = concatBytes(prev, enc.encode(s));
+                prev = new Uint8Array(await crypto.subtle.digest('SHA-256', data));
+            }
+            return "sha256-" + hex(prev);
+        }
+
+        function testHashFunctions() {
+            const results = document.getElementById('hash-test-results');
+            results.innerHTML = '<p>Testing hash functions...</p>';
+
+            const testEvent = { t: 1.234, type: "param", name: "test", value: 42 };
+            const canonical = canonicalString(testEvent);
+
+            results.innerHTML += `<p>Original: ${JSON.stringify(testEvent)}</p>`;
+            results.innerHTML += `<p>Canonical: ${canonical}</p>`;
+            results.innerHTML += `<p>Length: ${canonical.length}</p>`;
+        }
+
+        async function testEventProcessing() {
+            const results = document.getElementById('event-test-results');
+            results.innerHTML = '<p>Testing event processing...</p>';
+
+            const testEvents = [
+                { t: 1.234, type: "param", name: "seed", value: 20250827 },
+                { t: 2.345, type: "pointer", op: "down", x: 123, y: 456 },
+                { t: 3.456, type: "measure", name: "cfl", value: 0.85 }
+            ];
+
+            try {
+                const root = await computeEventRoot(testEvents);
+                results.innerHTML += `<p class="success">✅ Root computed: ${root}</p>`;
+                results.innerHTML += `<p>Events processed: ${testEvents.length}</p>`;
+            } catch (error) {
+                results.innerHTML += `<p class="error">❌ Error: ${error.message}</p>`;
+            }
+        }
+
+        async function compareImplementations() {
+            const results = document.getElementById('compare-results');
+            results.innerHTML = '<p>Comparing implementations...</p>';
+
+            // Test the same computation multiple times
+            const testEvents = [
+                { t: 1.000, type: "param", name: "test", value: 123 },
+                { t: 2.000, type: "pointer", op: "down", x: 100, y: 200 }
+            ];
+
+            const roots = [];
+            for (let i = 0; i < 3; i++) {
+                const root = await computeEventRoot([...testEvents]);
+                roots.push(root);
+            }
+
+            const allSame = roots.every(r => r === roots[0]);
+            results.innerHTML += `<p>Roots: ${roots.join(', ')}</p>`;
+            results.innerHTML += `<p class="${allSame ? 'success' : 'error'}">${allSame ? '✅' : '❌'} Consistent: ${allSame}</p>`;
+        }
+
+        // Auto-run tests
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                testHashFunctions();
+                testEventProcessing();
+                compareImplementations();
+            }, 100);
+        });
+    </script>
+</body>
+</html>

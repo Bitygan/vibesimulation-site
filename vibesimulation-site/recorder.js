@@ -181,6 +181,7 @@ function makeRecorder(simName) {
 
   function log(type, obj) {
     const event = { t: Number((now() - t0).toFixed(3)), type, ...obj };
+    console.log('[Reels] Logging event:', event);
     rows.push(event);
 
     // Send to background worker if enabled (use add_event for guaranteed ordering)
@@ -274,7 +275,10 @@ function makeRecorder(simName) {
       }
     } else {
       // Traditional recompute for all events
+      console.log('[Reels] Computing root from', rows.length, 'events');
+      console.log('[Reels] First few events:', rows.slice(0, 3));
       event_root = await computeEventRoot(rows);
+      console.log('[Reels] Computed root:', event_root);
     }
 
     const sigPack = await signMetaEd25519(meta, event_root);
