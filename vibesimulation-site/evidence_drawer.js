@@ -19,23 +19,44 @@
   function h(tag, attrs={}, ...kids){ const el=document.createElement(tag); for(const[k,v] of Object.entries(attrs||{})){ if(k==="style"&&typeof v==="object"){ Object.assign(el.style,v); } else if(k==="class") el.className=v; else el.setAttribute(k,v); } kids.flat().forEach(k=>{ if(k==null) return; if(typeof k==="string") el.appendChild(document.createTextNode(k)); else el.appendChild(k); }); return el; }
   function clamp(x,a,b){ return Math.max(a, Math.min(b,x)); }
 
-  // ---------- Parsing & canonicalization ----------
-  function canonicalize(obj){
-    if (obj===null || typeof obj!=="object") return obj;
+  // ---------- Parsing & canonicalization (matches recorder exactly) ----------
+  function canonicalize(obj) {
+    if (obj === null || typeof obj !== 'object') return obj;
     if (Array.isArray(obj)) return obj.map(canonicalize);
-    const out={}; Object.keys(obj).sort().forEach(k=> out[k]=canonicalize(obj[k])); return out;
+    const out = {};
+    Object.keys(obj).sort().forEach(k => {
+      const v = obj[k];
+      out[k] = canonicalize(v);
+    });
+    return out;
   }
-  function canonicalString(obj){ return JSON.stringify(canonicalize(obj)); }
+
+  function canonicalString(obj) {
+    return JSON.stringify(canonicalize(obj));
+  }
+
+  function concatBytes(a, b) {
+    const out = new Uint8Array(a.length + b.length);
+    out.set(a, 0);
+    out.set(b, a.length);
+    return out;
+  }
+
+  function hex(buf) {
+    const v = new Uint8Array(buf);
+    let s = "";
+    for (let i = 0; i < v.length; i++) s += v[i].toString(16).padStart(2, "0");
+    return s;
+  }
 
   async function computeEventRoot(rows){
     let prev = new Uint8Array(32);
     for(const ev of rows){
       const s = canonicalString(ev);
-      const data = new Uint8Array(prev.length + (new TextEncoder()).encode(s).length);
-      data.set(prev,0); data.set((new TextEncoder()).encode(s), prev.length);
+      const data = concatBytes(prev, enc.encode(s));
       prev = new Uint8Array(await crypto.subtle.digest("SHA-256", data));
     }
-    return "sha256-"+[...prev].map(b=>b.toString(16).padStart(2,"0")).join("");
+    return "sha256-" + hex(prev);
   }
 
   // ---------- Digest helpers (same logic as recorder) ----------
@@ -578,11 +599,19 @@
         fontSize: "24px", cursor: "pointer", zIndex: 1000,
         boxShadow: "0 4px 12px rgba(96, 165, 250, 0.3)",
         transition: "all 0.2s"
-      },
-      onmouseover: (e)=> e.target.style.transform = "scale(1.1)",
-      onmouseout: (e)=> e.target.style.transform = "scale(1)",
-      onclick: ()=> showDrawer()
+      }
     }, "🧪");
+
+    // Add event listeners properly
+    btn.addEventListener('mouseover', function(e) {
+      e.target.style.transform = "scale(1.1)";
+    });
+    btn.addEventListener('mouseout', function(e) {
+      e.target.style.transform = "scale(1)";
+    });
+    btn.addEventListener('click', function() {
+      showDrawer();
+    });
 
     document.body.append(btn);
   }
