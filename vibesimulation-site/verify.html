@@ -52,6 +52,13 @@
     }
     function canonicalString(obj) { return JSON.stringify(canonicalize(obj)); }
 
+    function concatBytes(a, b) {
+      const out = new Uint8Array(a.length + b.length);
+      out.set(a, 0);
+      out.set(b, a.length);
+      return out;
+    }
+
     function hex(buf) {
       const v = new Uint8Array(buf);
       let s = ""; for (let i=0;i<v.length;i++) s += v[i].toString(16).padStart(2,"0");
@@ -62,9 +69,7 @@
       let prev = new Uint8Array(32);
       for (const ev of rows) {
         const s = canonicalString(ev);
-        const data = new Uint8Array(prev.length + enc.encode(s).length);
-        data.set(prev, 0);
-        data.set(enc.encode(s), prev.length);
+        const data = concatBytes(prev, enc.encode(s));
         prev = new Uint8Array(await crypto.subtle.digest('SHA-256', data));
       }
       return "sha256-" + hex(prev);

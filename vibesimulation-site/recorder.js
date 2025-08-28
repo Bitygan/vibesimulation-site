@@ -126,6 +126,7 @@ async function signMetaEd25519(metaWithoutSig, event_root) {
 // ---------- Background Hashing Worker ----------
 let hashWorker = null;
 let backgroundHashingEnabled = false;
+let workerEventCount = 0;
 
 function initHashWorker() {
   if (hashWorker) return hashWorker;
@@ -134,7 +135,9 @@ function initHashWorker() {
     hashWorker = new Worker('recorder_worker.js');
     hashWorker.onmessage = function(e) {
       const { type, data } = e.data;
-      // Handle worker messages if needed
+      if (type === 'event_added') {
+        workerEventCount = data.eventCount;
+      }
       console.log(`[HashWorker] ${type}`, data);
     };
     return hashWorker;
@@ -151,7 +154,23 @@ function toggleBackgroundHashing(enabled) {
   }
   if (hashWorker) {
     hashWorker.postMessage({ type: enabled ? 'ping' : 'reset' });
+    if (!enabled) {
+      workerEventCount = 0;
+    }
   }
+}
+
+async function ensureWorkerSynced(mainEventCount) {
+  if (!hashWorker || !backgroundHashingEnabled) return false;
+
+  // Wait for worker to catch up
+  let attempts = 0;
+  while (workerEventCount < mainEventCount && attempts < 50) {
+    await new Promise(resolve => setTimeout(resolve, 10));
+    attempts++;
+  }
+
+  return workerEventCount >= mainEventCount;
 }
 
 // ---------- Recorder core ----------
@@ -164,15 +183,9 @@ function makeRecorder(simName) {
     const event = { t: Number((now() - t0).toFixed(3)), type, ...obj };
     rows.push(event);
 
-    // Send to background worker if enabled
+    // Send to background worker if enabled (use add_event for guaranteed ordering)
     if (backgroundHashingEnabled && hashWorker) {
-      if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => {
-          hashWorker.postMessage({ type: 'queue_event', data: event });
-        });
-      } else {
-        hashWorker.postMessage({ type: 'queue_event', data: event });
-      }
+      hashWorker.postMessage({ type: 'add_event', data: event });
     }
   }
 
@@ -224,24 +237,37 @@ function makeRecorder(simName) {
     // Use worker's incremental hash if background hashing enabled
     if (backgroundHashingEnabled && hashWorker) {
       try {
-        const rootPromise = new Promise((resolve, reject) => {
-          const timeout = setTimeout(() => reject(new Error('Worker timeout')), 5000);
+        // Ensure worker has processed all events
+        const synced = await ensureWorkerSynced(rows.length);
+        if (!synced) {
+          console.warn('[Reels] Worker not synced, falling back to recompute');
+          event_root = await computeEventRoot(rows);
+        } else {
+          const rootPromise = new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => reject(new Error('Worker timeout')), 5000);
 
-          hashWorker.onmessage = function(e) {
-            if (e.data.type === 'root_result') {
-              clearTimeout(timeout);
-              resolve(e.data.root);
-            } else if (e.data.type === 'error') {
-              clearTimeout(timeout);
-              reject(new Error(e.data.error));
-            }
-          };
+            const originalHandler = hashWorker.onmessage;
+            hashWorker.onmessage = function(e) {
+              if (e.data.type === 'root_result') {
+                clearTimeout(timeout);
+                hashWorker.onmessage = originalHandler;
+                resolve(e.data.root);
+              } else if (e.data.type === 'error') {
+                clearTimeout(timeout);
+                hashWorker.onmessage = originalHandler;
+                reject(new Error(e.data.error));
+              } else {
+                // Call original handler for other messages
+                originalHandler.call(this, e);
+              }
+            };
 
-          hashWorker.postMessage({ type: 'get_root' });
-        });
+            hashWorker.postMessage({ type: 'get_root' });
+          });
 
-        event_root = await rootPromise;
-        console.log(`[Reels] Using background hash: ${event_root}`);
+          event_root = await rootPromise;
+          console.log(`[Reels] Using background hash: ${event_root}`);
+        }
       } catch (error) {
         console.warn('[Reels] Background hash failed, falling back to recompute:', error);
         event_root = await computeEventRoot(rows);
