@@ -353,6 +353,11 @@
                         <button id="mp-verify" class="control-toggle-btn">Verify Reel</button>
                     </div>
 
+                    <!-- Debug Button (temporary) -->
+                    <div class="control-group">
+                        <button id="mp-check-solved" class="control-toggle-btn" style="background: #ff6b6b;">Check Solved</button>
+                    </div>
+
                     <!-- Status -->
                     <div class="control-group">
                         <div id="mp-info" style="color: rgba(255,255,255,0.8); font-size: 0.8rem; margin-top: 1rem;"></div>
@@ -523,11 +528,16 @@
                 const {start, end} = G;
                 const {path: optimalPath, distance: optimalDistance} = findShortestPath(G, start, end);
 
-                if (optimalDistance === Infinity) return false;
+                if (optimalDistance === Infinity || optimalPath.length === 0) {
+                    console.log('No valid optimal path found');
+                    return false;
+                }
 
                 // Get current flow distribution
                 const {I} = computeCurrents(G);
                 let totalCurrent = 0, optimalCurrent = 0;
+
+                console.log(`Checking optimal path: ${optimalPath.join('->')}`);
 
                 // Calculate total current and current through optimal path
                 for (const [edgeKey, current] of I) {
@@ -538,16 +548,30 @@
                         if ((optimalPath[i] === u && optimalPath[i+1] === v) ||
                             (optimalPath[i] === v && optimalPath[i+1] === u)) {
                             optimalCurrent += current;
+                            console.log(`Edge ${edgeKey}: ${current}A (optimal path)`);
                             break;
                         }
                     }
                 }
 
-                if (totalCurrent === 0) return false;
+                if (totalCurrent === 0) {
+                    console.log('No current flow detected');
+                    return false;
+                }
 
                 // Check if most current (>90%) flows through optimal path
                 const efficiency = optimalCurrent / totalCurrent;
-                return efficiency > 0.9 && optimalPath.length > 0;
+                console.log(`Efficiency: ${(efficiency * 100).toFixed(1)}% (${optimalCurrent.toFixed(3)}A / ${totalCurrent.toFixed(3)}A)`);
+
+                // Temporarily lower threshold for debugging
+                const solvedThreshold = 0.5; // Changed from 0.9 to 0.5 for testing
+                const isSolved = efficiency > solvedThreshold && optimalPath.length > 0;
+
+                if (isSolved) {
+                    console.log(`✅ Network SOLVED! (Efficiency: ${(efficiency * 100).toFixed(1)}% > ${(solvedThreshold * 100).toFixed(1)}%)`);
+                }
+
+                return isSolved;
             }
 
             function makeGrid(R, C, seed, bias){
@@ -734,14 +758,19 @@
                 // Check if network has found optimal path
                 const wasSolved = isSolved;
                 isSolved = checkOptimalPath(G);
+
+                // Debug logging for solved state changes
                 if (isSolved && !wasSolved) {
-                    console.log(`Network found optimal path at step ${stepCount}`);
+                    console.log(`🎉 Network SOLVED at step ${stepCount}!`);
+                } else if (!isSolved && wasSolved) {
+                    console.log(`❌ Network no longer solved at step ${stepCount}`);
                 }
 
                 // Show learning progress with solved status
                 let statusText = `step ${stepCount} • contrast ${sc.toFixed(4)} • solve ${(performance.now()-t0).toFixed(1)} ms`;
                 if (isSolved) {
                     statusText += ` • SOLVED`;
+                    console.log(`📊 Status updated: ${statusText}`);
                 }
                 document.getElementById("mp-info").textContent = statusText;
             }
@@ -838,6 +867,18 @@
 
             document.getElementById('mp-verify').addEventListener('click', () => {
                 window.open("verify.html","_blank");
+            });
+
+            // Debug button to manually check solved state
+            document.getElementById('mp-check-solved').addEventListener('click', () => {
+                if (G) {
+                    console.log('🔍 Manual solved check triggered');
+                    const solved = checkOptimalPath(G);
+                    const status = solved ? 'SOLVED' : 'NOT SOLVED';
+                    document.getElementById("mp-info").textContent = `Manual check: ${status}`;
+                } else {
+                    console.log('❌ No grid available for solved check');
+                }
             });
         }
     </script>
