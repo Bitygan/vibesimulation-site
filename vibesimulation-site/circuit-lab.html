@@ -327,44 +327,57 @@
                     console.log('InteractiveCircuitLab ready, initializing...');
 
                     try {
-                        // Use the optimized initialization function
-                        if (typeof window.initCircuitLab === 'function') {
-                            window.initCircuitLab();
-
-                            // Wait for the circuit lab to be created and DOM elements to be ready
-                            setTimeout(function() {
-                                const circuitCard = document.getElementById('circuit-lab');
-                                if (circuitCard) {
-                                    const mainContent = document.getElementById('main-content');
-                                    mainContent.appendChild(circuitCard);
-
-                                    // Hide loading screen with smooth fade
-                                    const loadingScreen = document.getElementById('loading-screen');
-                                    loadingScreen.style.opacity = '0';
-                                    setTimeout(function() {
-                                        loadingScreen.style.display = 'none';
-                                        mainContent.classList.add('loaded');
-                                    }, 300);
-
-                                    console.log('Circuit Lab successfully loaded!');
-                                } else {
-                                    // Try one more time in case it needs more time
-                                    setTimeout(function() {
-                                        const circuitCardRetry = document.getElementById('circuit-lab');
-                                        if (circuitCardRetry) {
-                                            const mainContent = document.getElementById('main-content');
-                                            mainContent.appendChild(circuitCardRetry);
-                                            document.getElementById('loading-screen').style.display = 'none';
-                                            mainContent.classList.add('loaded');
-                                            console.log('Circuit Lab loaded on retry!');
-                                        } else {
-                                            throw new Error('Circuit Lab interface not created after retry');
-                                        }
-                                    }, 500);
-                                }
-                            }, 300);
+                        // Ensure DOM is fully ready before initializing
+                        if (document.readyState === 'loading') {
+                            console.log('DOM still loading, waiting...');
+                            document.addEventListener('DOMContentLoaded', () => {
+                                console.log('DOM loaded, now initializing...');
+                                initializeCircuitLabInstance();
+                            });
                         } else {
-                            throw new Error('Circuit Lab initialization function not available');
+                            initializeCircuitLabInstance();
+                        }
+
+                        function initializeCircuitLabInstance() {
+                            // Use the optimized initialization function
+                            if (typeof window.initCircuitLab === 'function') {
+                                window.initCircuitLab();
+
+                                // Wait for the circuit lab to be created and DOM elements to be ready
+                                setTimeout(function() {
+                                    const circuitCard = document.getElementById('circuit-lab');
+                                    if (circuitCard) {
+                                        const mainContent = document.getElementById('main-content');
+                                        mainContent.appendChild(circuitCard);
+
+                                        // Hide loading screen with smooth fade
+                                        const loadingScreen = document.getElementById('loading-screen');
+                                        loadingScreen.style.opacity = '0';
+                                        setTimeout(function() {
+                                            loadingScreen.style.display = 'none';
+                                            mainContent.classList.add('loaded');
+                                        }, 300);
+
+                                        console.log('Circuit Lab successfully loaded!');
+                                    } else {
+                                        // Try one more time in case it needs more time
+                                        setTimeout(function() {
+                                            const circuitCardRetry = document.getElementById('circuit-lab');
+                                            if (circuitCardRetry) {
+                                                const mainContent = document.getElementById('main-content');
+                                                mainContent.appendChild(circuitCardRetry);
+                                                document.getElementById('loading-screen').style.display = 'none';
+                                                mainContent.classList.add('loaded');
+                                                console.log('Circuit Lab loaded on retry!');
+                                            } else {
+                                                throw new Error('Circuit Lab interface not created after retry');
+                                            }
+                                        }, 500);
+                                    }
+                                }, 300);
+                            } else {
+                                throw new Error('Circuit Lab initialization function not available');
+                            }
                         }
 
                     } catch (error) {

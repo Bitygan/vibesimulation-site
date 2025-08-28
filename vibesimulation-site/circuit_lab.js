@@ -804,17 +804,6 @@
       this.ctx = this.canvas.getContext("2d");
     }
 
-    setupCanvas(){
-      this.canvas = document.createElement("canvas");
-      this.canvas.width = this.W;
-      this.canvas.height = this.H;
-      this.canvas.style.width = "100%";
-      this.canvas.style.height = "auto";
-      this.canvas.style.border = "1px solid #333";
-      this.canvas.style.borderRadius = "8px";
-      this.ctx = this.canvas.getContext("2d");
-    }
-
     setupUI(){
       // Create the card structure
       const card = document.createElement("div");
@@ -2068,12 +2057,33 @@
   function initCircuitLab() {
     if (!window.interactiveCircuitLab) {
       try {
-        console.log('Creating InteractiveCircuitLab instance...');
+        console.log('🔧 Creating InteractiveCircuitLab instance...');
+        console.log('📋 DOM Ready State:', document.readyState);
+        console.log('🏠 Body exists:', !!document.body);
+        console.log('🎯 Main content exists:', !!document.getElementById('main-content'));
+
+        // Check if required DOM elements exist
+        const mainContent = document.getElementById('main-content');
+        if (!mainContent) {
+          console.error('❌ Main content area not found in DOM');
+          throw new Error('Main content area not found');
+        }
+
+        // Check if required global functions exist
+        if (typeof makeReel === 'undefined') {
+          console.error('❌ makeReel function not available globally');
+          throw new Error('makeReel function not available');
+        }
+
+        console.log('✅ All prerequisites met, creating instance...');
         window.interactiveCircuitLab = new InteractiveCircuitLab();
-        console.log('InteractiveCircuitLab instance created successfully');
+        console.log('🎉 InteractiveCircuitLab instance created successfully');
+
       } catch (error) {
-        console.error('Failed to create InteractiveCircuitLab:', error);
-        // Don't throw here - let the page handle it
+        console.error('💥 Failed to create InteractiveCircuitLab:', error);
+        console.error('📊 Error stack:', error.stack);
+        // Re-throw to let the page handle it with better error messaging
+        throw error;
       }
     }
   }
