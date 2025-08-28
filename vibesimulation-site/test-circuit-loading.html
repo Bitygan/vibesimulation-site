@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Circuit Lab Loading Test</title>
+    <title>VibeSimulation Performance Test</title>
     <style>
         body { font-family: monospace; margin: 20px; background: #111; color: #fff; }
         .test-result { margin: 10px 0; padding: 10px; border-left: 4px solid #4f46e5; background: #1a1a1a; }
@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-    <h1>🚀 Circuit Lab Performance Test</h1>
+    <h1>🚀 VibeSimulation Performance Test</h1>
 
     <div class="test-result metric">
         <h3>📊 Performance Metrics</h3>
@@ -25,8 +25,19 @@
         <div id="results"></div>
     </div>
 
-    <button onclick="runPerformanceTest()">Run Loading Test</button>
-    <button onclick="testCircuitLabPage()">Test Circuit Lab Page</button>
+    <div class="test-result" style="border-left-color: #f59e0b;">
+        <h3>📋 Active Simulations</h3>
+        <ul>
+            <li><strong>Fluid Dynamics</strong> - Navier-Stokes real-time simulation</li>
+            <li><strong>Electrostatics</strong> - Electric field visualization</li>
+            <li><strong>Wave Physics</strong> - String and membrane wave equations</li>
+            <li><strong>Drag Rangefinder</strong> - Projectile motion with air resistance</li>
+        </ul>
+        <p><em>Note: Circuit Lab has been deprecated and moved to /deprecated/ folder</em></p>
+    </div>
+
+    <button onclick="runPerformanceTest()">Test Main Page Loading</button>
+    <button onclick="testDragRangefinder()">Test Drag Rangefinder</button>
     <button onclick="clearResults()">Clear Results</button>
 
     <script>
@@ -52,32 +63,32 @@
         }
 
         async function runPerformanceTest() {
-            log('Starting performance test...', 'info');
+            log('Testing main page loading performance...', 'info');
 
             const startTime = performance.now();
 
             try {
-                // Test script loading times
+                // Test main page load time
+                const pageLoadTime = performance.getEntriesByType('navigation')[0]?.loadEventEnd || 0;
+
+                // Test critical resource loading
                 const recorderStart = performance.now();
                 await loadScriptTest('recorder.js');
                 const recorderTime = performance.now() - recorderStart;
 
-                const circuitStart = performance.now();
-                await loadScriptTest('circuit_lab.js');
-                const circuitTime = performance.now() - circuitStart;
-
                 const totalTime = performance.now() - startTime;
 
                 updateMetrics({
-                    pageLoadTime: Math.round(performance.getEntriesByType('navigation')[0]?.loadEventEnd || 0),
-                    scriptLoadTime: Math.round(recorderTime + circuitTime),
+                    pageLoadTime: Math.round(pageLoadTime),
+                    scriptLoadTime: Math.round(recorderTime),
                     initTime: 'N/A',
                     totalTime: Math.round(totalTime),
-                    scriptsLoaded: 2,
-                    totalScripts: 2
+                    scriptsLoaded: 1,
+                    totalScripts: 1
                 });
 
-                log(`✅ Performance test completed in ${Math.round(totalTime)}ms`, 'success');
+                log(`✅ Main page performance test completed in ${Math.round(totalTime)}ms`, 'success');
+                log(`📊 Page fully loaded in ${Math.round(pageLoadTime)}ms`, 'success');
 
             } catch (error) {
                 log(`❌ Performance test failed: ${error.message}`, 'error');
@@ -97,29 +108,26 @@
             });
         }
 
-        function testCircuitLabPage() {
-            log('Testing Circuit Lab page...', 'info');
+        function testDragRangefinder() {
+            log('Testing Drag Rangefinder functionality...', 'info');
 
-            // Check if classes are available
-            setTimeout(() => {
-                if (typeof InteractiveCircuitLab !== 'undefined') {
-                    log('✅ InteractiveCircuitLab class available', 'success');
-                } else {
-                    log('❌ InteractiveCircuitLab class not found', 'error');
-                }
+            // Simulate loading drag-rangefinder.html in a new window
+            const testWindow = window.open('drag-rangefinder.html', '_blank', 'width=1200,height=800');
 
-                if (typeof CircuitComponent !== 'undefined') {
-                    log('✅ CircuitComponent class available', 'success');
-                } else {
-                    log('❌ CircuitComponent class not found', 'error');
-                }
+            if (testWindow) {
+                log('✅ Drag Rangefinder page opened successfully', 'success');
 
-                if (typeof window.initCircuitLab === 'function') {
-                    log('✅ initCircuitLab function available', 'success');
-                } else {
-                    log('❌ initCircuitLab function not found', 'error');
-                }
-            }, 1000);
+                // Check if the page loads properly
+                testWindow.onload = function() {
+                    log('✅ Drag Rangefinder page loaded', 'success');
+                };
+
+                testWindow.onerror = function() {
+                    log('❌ Error loading Drag Rangefinder page', 'error');
+                };
+            } else {
+                log('❌ Could not open Drag Rangefinder page (popup blocked?)', 'error');
+            }
         }
 
         function clearResults() {
