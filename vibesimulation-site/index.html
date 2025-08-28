@@ -11,6 +11,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<meta name="description" content="Experience four domains of physics through interactive simulations: fluid dynamics, electrostatics, wave physics, and shallow water dynamics. Real-time, beautiful, educational.">
     	<meta name="keywords" content="physics simulations, fluid dynamics, electrostatics, wave physics, shallow water, interactive science, computational physics">
+		<meta name="google-adsense-account" content="ca-pub-1357596091010556">
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<link rel="stylesheet" href="assets/css/video.css" />
 		<link rel="stylesheet" href="assets/css/cookie-consent.css" />
@@ -568,7 +569,7 @@
 					<a href="#fluid-dynamics" class="nav-link">Fluid Dynamics</a>
 					<a href="#electrostatics" class="nav-link">Electrostatics</a>
 					<a href="#wave-physics" class="nav-link">Wave Physics</a>
-					<a href="#about" class="nav-link">About</a>
+					<a href="about.html" class="nav-link">About</a>
 				</div>
 			</div>
 		</nav>
@@ -939,77 +940,6 @@
 				</div>
 			</section>
 
-
-
-
-						<div class="col-6 col-12-medium">
-							<section class="box style1">
-								<a class="image fit video-thumbnail" data-video-id="W8nWJ_bsVlM"><img src="images/lesson-01-thumbnail.png" alt="Thumbnail for Physics Lesson" /></a>
-								<header>
-									<h3>Physics Track</h3>
-								</header>
-								<p>Build a strong foundation with core concepts of classical mechanics, thermodynamics, and more.</p>
-								<ul class="actions">
-									<li><a href="basics.html" class="button">Explore Physics</a></li>
-								</ul>
-							</section>
-						</div>
-						<div class="col-6 col-12-medium">
-							<section class="box style1">
-								<a class="image fit video-thumbnail" data-video-id="Tvx3wep7-DU"><img src="images/lesson-ai-01-thumbnail.png" alt="Thumbnail for AI Lesson" /></a>
-								<header>
-									<h3>AI Track</h3>
-								</header>
-								<p>Discover how massive AI models are made fast and efficient for real-world applications.</p>
-								<ul class="actions">
-									<li><a href="ai.html" class="button">Explore AI</a></li>
-								</ul>
-							</section>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			<!-- Four -->
-				<section id="four" class="wrapper style1 special fade-up">
-					<div class="container">
-						<header class="major">
-							<h2>Ready to start learning?</h2>
-							<p>Explore our video library or get in touch if you have any questions.</p>
-						</header>
-						<ul class="actions special">
-							<li><a href="basics.html" class="button primary">Explore Videos</a></li>
-							<li><a href="contact.html" class="button">Contact Us</a></li>
-						</ul>
-					</div>
-				</section>
-
-			<!-- Footer -->
-				<footer id="footer">
-					<ul class="icons">
-						<li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
-						<li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
-						<li><a href="#" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
-						<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
-						<li><a href="https://www.youtube.com/@VibeSimulationhd" class="icon brands alt fa-youtube"><span class="label">YouTube</span></a></li>
-					</ul>
-					<ul class="copyright">
-						<li>&copy; VibeSimulation. All rights reserved.</li>
-						<li><a href="privacy-policy.html">Privacy Policy</a></li>
-						<li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-					</ul>
-				</footer>
-
-		</div>
-
-		<!-- Video Modal -->
-		<div id="video-modal" class="video-modal">
-			<div class="video-modal-content">
-				<span class="video-modal-close">&times;</span>
-				<div id="video-player-container"></div>
-			</div>
-		</div>
-
 		<!-- Simulation Script -->
 		<script>
 			class PaintedSkySimulation {
@@ -1359,7 +1289,6 @@
 			// Initialize simulation when DOM is loaded
 			document.addEventListener('DOMContentLoaded', () => {
 				window.paintedSkySim = new PaintedSkySimulation();
-				window.chargePainterSim = new ChargePainterSimulation();
 			});
 		</script>
 
@@ -1809,6 +1738,11 @@
 					if (this.raf) cancelAnimationFrame(this.raf);
 				}
 			}
+
+			// Initialize ChargePainterSimulation when DOM is loaded
+			document.addEventListener('DOMContentLoaded', () => {
+				window.chargePainterSim = new ChargePainterSimulation();
+			});
 		</script>
 
 		<!-- Scripts -->
@@ -2361,388 +2295,46 @@
 
 
 
-						// Store previous state
-						this.h_prev.set(this.h);
-						this.hu_prev.set(this.hu);
-						this.hv_prev.set(this.hv);
 
-						// Adaptive time step based on CFL condition
-						let maxSpeed = 1e-6;
-						for (let j = 1; j < this.NY - 1; j++) {
-							for (let i = 1; i < this.NX - 1; i++) {
-								const idx = this.idx(i, j);
-								const h = this.h[idx];
-								if (h > 0.01) {
-									const u = this.hu[idx] / h;
-									const v = this.hv[idx] / h;
-									const speed = Math.abs(u) + Math.abs(v) + Math.sqrt(this.grav * h);
-									if (speed > maxSpeed) maxSpeed = speed;
-								}
-							}
-						}
 
-						this.dt = Math.min(0.02, Math.max(0.001, (this.cflTarget * this.dx) / maxSpeed));
-						this.cflLive = (maxSpeed * this.dt) / this.dx;
-
-						// Semi-implicit update using operator splitting
-						this.advectionStep();
-						this.gravityStep();
-						this.frictionStep();
-						this.enforceBoundaries();
 					}
 
-					advectionStep() {
-						// Simple semi-Lagrangian advection for momentum
-						const dt = this.dt;
-						for (let j = 2; j < this.NY - 2; j++) {
-							for (let i = 2; i < this.NX - 2; i++) {
-								const idx = this.idx(i, j);
-								const h = this.h[idx];
-								if (h < 0.01) continue;
+	</body>
+</html>
 
-								const u = this.hu[idx] / h;
-								const v = this.hv[idx] / h;
 
-								// Trace back
-								const x_back = i - dt * u / this.dx;
-								const y_back = j - dt * v / this.dx;
 
-								// Bilinear interpolation
-								const i0 = Math.floor(x_back);
-								const j0 = Math.floor(y_back);
-								const fx = x_back - i0;
-								const fy = y_back - j0;
 
-								if (i0 >= 0 && i0 < this.NX - 1 && j0 >= 0 && j0 < this.NY - 1) {
-									const idx00 = this.idx(i0, j0);
-									const idx10 = this.idx(i0 + 1, j0);
-									const idx01 = this.idx(i0, j0 + 1);
-									const idx11 = this.idx(i0 + 1, j0 + 1);
 
-									const hu_interp = this.lerp(
-										this.lerp(this.hu_prev[idx00], this.hu_prev[idx10], fx),
-										this.lerp(this.hu_prev[idx01], this.hu_prev[idx11], fx),
-										fy
-									);
 
-									const hv_interp = this.lerp(
-										this.lerp(this.hv_prev[idx00], this.hv_prev[idx10], fx),
-										this.lerp(this.hv_prev[idx01], this.hv_prev[idx11], fx),
-										fy
-									);
 
-									this.hu[idx] = hu_interp;
-									this.hv[idx] = hv_interp;
-								}
+
+
+
+
+
+
+
+
 							}
-						}
-					}
-
-					gravityStep() {
-						// Fast gravity and pressure forces - optimized for performance
-						const dt = this.dt;
-						const dx = this.dx;
-						const g = this.grav;
-
-						for (let j = 1; j < this.NY - 1; j++) {
-							for (let i = 1; i < this.NX - 1; i++) {
-								const idx = this.idx(i, j);
-								const h = this.h[idx];
-								if (h < 0.01) continue;
-
-								// Simple pressure gradient
-								const dh_dx = (this.h[this.idx(i + 1, j)] - this.h[this.idx(i - 1, j)]) / (2 * dx);
-								const dh_dy = (this.h[this.idx(i, j + 1)] - this.h[this.idx(i, j - 1)]) / (2 * dx);
-
-								// Update momentum
-								this.hu[idx] -= g * h * dh_dx * dt;
-								this.hv[idx] -= g * h * dh_dy * dt;
-							}
-						}
-					}
-
-					frictionStep() {
-						// Bottom friction
-						const dt = this.dt;
-						const friction = Math.exp(-this.fric * dt);
-
-						for (let j = 0; j < this.NY; j++) {
-							for (let i = 0; i < this.NX; i++) {
-								const idx = this.idx(i, j);
-								const h = this.h[idx];
-								if (h > 0.01) {
-									this.hu[idx] *= friction;
-									this.hv[idx] *= friction;
-								}
-							}
-						}
-					}
-
-					enforceBoundaries() {
-						// Reflecting boundaries
-						for (let i = 0; i < this.NX; i++) {
-							// Top and bottom
-							this.h[this.idx(i, 0)] = this.h[this.idx(i, 1)];
-							this.h[this.idx(i, this.NY - 1)] = this.h[this.idx(i, this.NY - 2)];
-							this.hu[this.idx(i, 0)] = this.hu[this.idx(i, 1)];
-							this.hu[this.idx(i, this.NY - 1)] = this.hu[this.idx(i, this.NY - 2)];
-							this.hv[this.idx(i, 0)] = -this.hv[this.idx(i, 1)]; // Reflect
-							this.hv[this.idx(i, this.NY - 1)] = -this.hv[this.idx(i, this.NY - 2)];
-						}
-
-						for (let j = 0; j < this.NY; j++) {
-							// Left and right
-							this.h[this.idx(0, j)] = this.h[this.idx(1, j)];
-							this.h[this.idx(this.NX - 1, j)] = this.h[this.idx(this.NX - 2, j)];
-							this.hv[this.idx(0, j)] = this.hv[this.idx(1, j)];
-							this.hv[this.idx(this.NX - 1, j)] = this.hv[this.idx(this.NX - 2, j)];
-							this.hu[this.idx(0, j)] = -this.hu[this.idx(1, j)]; // Reflect
-							this.hu[this.idx(this.NX - 1, j)] = -this.hu[this.idx(this.NX - 2, j)];
-						}
-
-						// Solid obstacles
-						for (let j = 0; j < this.NY; j++) {
-							for (let i = 0; i < this.NX; i++) {
-								const idx = this.idx(i, j);
-								if (this.solid[idx]) {
-									this.h[idx] = 0.05;
-									this.hu[idx] = 0;
-									this.hv[idx] = 0;
-								}
-							}
-						}
-					}
+												}
 
 
 
-					// High-quality visualization following SAX Perceptual Integrity principle
-					render() {
-						this.ctx.clearRect(0, 0, this.W, this.H);
-						this.ctx.fillStyle = "#0b0f16";
-						this.ctx.fillRect(0, 0, this.W, this.H);
-
-						const img = this.ctx.createImageData(this.W, this.H);
-
-						// Smooth interpolation for high-quality rendering
-						let hmin = 1e9, hmax = -1e9;
-						for (let j = 0; j < this.NY; j++) {
-							for (let i = 0; i < this.NX; i++) {
-								const h = this.h[this.idx(i, j)];
-								if (h < hmin) hmin = h;
-								if (h > hmax) hmax = h;
-							}
-						}
-
-						const range = Math.max(1e-3, hmax - hmin);
-
-						// High-quality bilinear interpolation
-						for (let Y = 0; Y < this.H; Y++) {
-							const gy = Y / this.H * (this.NY - 1);
-							const j0 = Math.floor(gy);
-							const j1 = Math.min(this.NY - 1, j0 + 1);
-							const ty = gy - j0;
-
-							for (let X = 0; X < this.W; X++) {
-								const gx = X / this.W * (this.NX - 1);
-								const i0 = Math.floor(gx);
-								const i1 = Math.min(this.NX - 1, i0 + 1);
-								const tx = gx - i0;
-
-								// Bilinear interpolation of height
-								const h00 = this.h[this.idx(i0, j0)];
-								const h10 = this.h[this.idx(i1, j0)];
-								const h01 = this.h[this.idx(i0, j1)];
-								const h11 = this.h[this.idx(i1, j1)];
-
-								const h = this.lerp(
-									this.lerp(h00, h10, tx),
-									this.lerp(h01, h11, tx),
-									ty
-								);
-
-								// Fast, fluid liquid visualization - optimized for performance
-								let r, g, b;
-								const t = this.clamp((h - hmin) / range, 0, 1);
-
-								// Simple but effective color palettes
-								if (this.palette === "Ocean") {
-									r = Math.floor(30 + 225 * Math.pow(t, 1.2));
-									g = Math.floor(60 + 190 * t);
-									b = Math.floor(120 + 135 * t);
-								} else if (this.palette === "Icefire") {
-									if (t < 0.5) {
-										const coldT = t * 2;
-										r = Math.floor(40 + 60 * coldT);
-										g = Math.floor(80 + 120 * coldT);
-										b = Math.floor(150 + 105 * coldT);
-									} else {
-										const hotT = (t - 0.5) * 2;
-										r = Math.floor(255 * hotT);
-										g = Math.floor(200 * hotT);
-										b = Math.floor(60 * hotT);
-									}
-								} else { // Magma
-									r = Math.floor(60 + 195 * Math.pow(t, 1.1));
-									g = Math.floor(40 + 160 * t);
-									b = Math.floor(30 + 40 * t);
-								}
-
-								// Simple lighting for fluidity - only when needed
-								if (i0 > 0 && i0 < this.NX - 1 && j0 > 0 && j0 < this.NY - 1) {
-									const hx = (this.h[this.idx(i0 + 1, j0)] - this.h[this.idx(i0 - 1, j0)]) * 0.5;
-									const hy = (this.h[this.idx(i0, j0 + 1)] - this.h[this.idx(i0, j0 - 1)]) * 0.5;
-									const light = 0.7 + 0.3 * this.clamp((-hx * 0.2 + hy * 0.3) / Math.sqrt(hx*hx + hy*hy + 1), 0, 1);
-
-									r = Math.floor(r * light);
-									g = Math.floor(g * light);
-									b = Math.floor(b * light);
-								}
-
-								const p = (Y * this.W + X) * 4;
-								img.data[p] = this.clamp(r, 0, 255);
-								img.data[p + 1] = this.clamp(g, 0, 255);
-								img.data[p + 2] = this.clamp(b, 0, 255);
-								img.data[p + 3] = 255;
-							}
-						}
-
-						this.ctx.putImageData(img, 0, 0);
-
-						// Render solid walls
-						this.ctx.fillStyle = "rgba(64,64,74,255)";
-						for (let j = 0; j < this.NY; j++) {
-							for (let i = 0; i < this.NX; i++) {
-								if (this.solid[this.idx(i, j)]) {
-									const x = i / (this.NX - 1) * this.W;
-									const y = j / (this.NY - 1) * this.H;
-									const w = this.W / (this.NX - 1);
-									const h = this.H / (this.NY - 1);
-									this.ctx.fillRect(x - w/2, y - h/2, w, h);
-								}
-							}
-						}
-
-						// Velocity vectors
-						if (this.showVec) {
-							this.ctx.strokeStyle = "rgba(255,255,255,0.6)";
-							this.ctx.lineWidth = 1.5;
-							const skip = 12;
-							for (let j = skip; j < this.NY - skip; j += skip) {
-								for (let i = skip; i < this.NX - skip; i += skip) {
-									const idx = this.idx(i, j);
-									const h = this.h[idx];
-									if (h > 0.1) {
-										const u = this.hu[idx] / h;
-										const v = this.hv[idx] / h;
-										const x = i / (this.NX - 1) * this.W;
-										const y = j / (this.NY - 1) * this.H;
-										const scale = 8;
-										this.ctx.beginPath();
-										this.ctx.moveTo(x, y);
-										this.ctx.lineTo(x + u * scale, y + v * scale);
-										this.ctx.stroke();
-									}
-								}
-							}
-						}
-
-						// Status overlay
-						this.ctx.fillStyle = "rgba(255,255,255,0.9)";
-						this.ctx.font = "bold 13px ui-monospace, SFMono-Regular, Menlo, monospace";
-
-
-						this.ctx.fillText(`CFL: ${this.cflLive.toFixed(2)} | Depth: ${(hmax-hmin).toFixed(3)} | Mode: ${this.mode}`, 12, 20);
-						this.ctx.fillText(`g: ${this.grav.toFixed(2)} | Friction: ${this.fric.toExponential(1)}`, 12, 40);
 					}
 
 
 
 
 
-						this.solid.fill(0);
-						this.massPpm = 0;
-					}
 
-					addInitialLiquidFeatures() {
-						const time = performance.now() * 0.001;
 
-						// Add some initial ripples for liquid-like appearance
-						const numRipples = 4;
-						for (let r = 0; r < numRipples; r++) {
-							const centerX = Math.floor(this.NX * (0.2 + Math.random() * 0.6));
-							const centerY = Math.floor(this.NY * (0.2 + Math.random() * 0.6));
-							const radius = 15 + Math.random() * 25;
-							const amplitude = 0.05 + Math.random() * 0.08;
 
-							for (let j = -radius; j <= radius; j++) {
-								for (let i = -radius; i <= radius; i++) {
-									const x = centerX + i;
-									const y = centerY + j;
-									if (x < 0 || x >= this.NX || y < 0 || y >= this.NY) continue;
 
-									const dist = Math.sqrt(i * i + j * j);
-									if (dist > radius) continue;
 
-									const idx = this.idx(x, y);
-									const falloff = Math.exp(-dist * dist / (radius * radius * 0.5));
-
-									// Create ripple effect
-									const ripple = Math.sin(dist * 4 / radius + time * 3 + r) * amplitude * falloff;
-									this.h[idx] += ripple;
-
-									// Add some radial velocity for liquid motion
-									if (dist > 0) {
-										const radialSpeed = 0.01 * falloff;
-										this.hu[idx] += (i / dist) * radialSpeed;
-										this.hv[idx] += (j / dist) * radialSpeed;
-									}
-								}
-							}
 						}
 
-						// Add some initial foam-like features near the surface
-						const numFoam = 6;
-						for (let f = 0; f < numFoam; f++) {
-							const x = Math.floor(Math.random() * this.NX);
-							const y = Math.floor(Math.random() * this.NY);
-							const size = 3 + Math.random() * 5;
 
-							for (let j = -size; j <= size; j++) {
-								for (let i = -size; i <= size; i++) {
-									const px = x + i;
-									const py = y + j;
-									if (px < 0 || px >= this.NX || py < 0 || py >= this.NY) continue;
-
-									const dist = Math.sqrt(i * i + j * j);
-									if (dist > size) continue;
-
-									const idx = this.idx(px, py);
-									const foamFalloff = Math.exp(-dist * dist / (size * size * 0.3));
-
-									// Add subtle foam-like height variation
-									this.h[idx] += 0.02 * foamFalloff * (Math.sin(time * 5 + f) * 0.5 + 0.5);
-								}
-							}
-						}
-					}
-
-					resetSimulation() {
-						this.h.fill(0);
-						this.hu.fill(0);
-						this.hv.fill(0);
-						this.solid.fill(0);
-						this.initializeSimulation();
-					}
-
-					startAnimation() {
-						if (this.raf) cancelAnimationFrame(this.raf);
-						const animate = () => {
-							this.step();
-							this.updateUI();
-							this.render();
-							this.raf = requestAnimationFrame(animate);
-						};
-						animate();
 					}
 
 				}
