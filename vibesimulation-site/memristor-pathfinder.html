@@ -333,6 +333,9 @@
                         <button id="mp-start" class="control-toggle-btn">Start</button>
                     </div>
                     <div class="control-group">
+                        <button id="mp-stop" class="control-toggle-btn">Stop</button>
+                    </div>
+                    <div class="control-group">
                         <button id="mp-pause" class="control-toggle-btn">Pause</button>
                     </div>
                     <div class="control-group">
@@ -424,7 +427,9 @@
             let G = null; // graph object
             let stepCount = 0;
 
-            // Learning progress tracking
+            // Learning progress and solved detection
+            let isSolved = false;
+            let optimalPathFound = false;
 
             // Utility functions
             function RNG(seed){ let state=BigInt(seed||1); return ()=>{ state=(6364136223846793005n*state+1442695040888963407n)&((1n<<64n)-1n); const x=Number(state>>32n)&0xffffffff; return (x>>>0)/4294967296; }; }
@@ -464,6 +469,85 @@
                 if (!parent.has(end)) return [];
                 const path=[]; let cur=end; while (cur!==-1){ path.push(cur); cur=parent.get(cur)??-1; }
                 return path.reverse();
+            }
+
+            // Find shortest path using Dijkstra's algorithm with resistances as weights
+            function findShortestPath(G, start, end) {
+                const {R, C, res, adj} = G;
+                const nodes = R * C;
+                const dist = new Array(nodes).fill(Infinity);
+                const parent = new Array(nodes).fill(-1);
+                const visited = new Array(nodes).fill(false);
+
+                dist[start] = 0;
+
+                for (let i = 0; i < nodes; i++) {
+                    // Find unvisited node with minimum distance
+                    let minDist = Infinity, u = -1;
+                    for (let j = 0; j < nodes; j++) {
+                        if (!visited[j] && dist[j] < minDist) {
+                            minDist = dist[j];
+                            u = j;
+                        }
+                    }
+
+                    if (u === -1 || u === end) break;
+                    visited[u] = true;
+
+                    // Update distances to neighbors
+                    for (const v of adj[u]) {
+                        const key = (u < v) ? `${u}-${v}` : `${v}-${u}`;
+                        const weight = res.get(key) || 1.0;
+                        if (!visited[v] && dist[u] + weight < dist[v]) {
+                            dist[v] = dist[u] + weight;
+                            parent[v] = u;
+                        }
+                    }
+                }
+
+                // Reconstruct path
+                if (dist[end] === Infinity) return {path: [], distance: Infinity};
+
+                const path = [];
+                let current = end;
+                while (current !== -1) {
+                    path.unshift(current);
+                    current = parent[current];
+                }
+
+                return {path, distance: dist[end]};
+            }
+
+            // Check if the network has found an optimal path
+            function checkOptimalPath(G) {
+                const {start, end} = G;
+                const {path: optimalPath, distance: optimalDistance} = findShortestPath(G, start, end);
+
+                if (optimalDistance === Infinity) return false;
+
+                // Get current flow distribution
+                const {I} = computeCurrents(G);
+                let totalCurrent = 0, optimalCurrent = 0;
+
+                // Calculate total current and current through optimal path
+                for (const [edgeKey, current] of I) {
+                    totalCurrent += current;
+                    // Check if this edge is part of the optimal path
+                    const [u, v] = edgeKey.split('-').map(Number);
+                    for (let i = 0; i < optimalPath.length - 1; i++) {
+                        if ((optimalPath[i] === u && optimalPath[i+1] === v) ||
+                            (optimalPath[i] === v && optimalPath[i+1] === u)) {
+                            optimalCurrent += current;
+                            break;
+                        }
+                    }
+                }
+
+                if (totalCurrent === 0) return false;
+
+                // Check if most current (>90%) flows through optimal path
+                const efficiency = optimalCurrent / totalCurrent;
+                return efficiency > 0.9 && optimalPath.length > 0;
             }
 
             function makeGrid(R, C, seed, bias){
@@ -581,6 +665,15 @@
                     let width = 2 + 4*t;
                     let r = Math.floor(42 + t*213), g = Math.floor(55 + t*200), b = Math.floor(70 + t*185);
 
+                    // Subtle highlighting for solved state - just increase line width
+                    if (isSolved) {
+                        const Iuv = I.get(key)||0;
+                        const maxI = Math.max(...I.values());
+                        if (Iuv > maxI * 0.5) { // Highlight high-current paths
+                            width *= 1.2; // Subtle increase, not dramatic
+                        }
+                    }
+
 
 
                     ctx.strokeStyle=`rgb(${r},${g},${b})`; ctx.lineWidth=width;
@@ -621,6 +714,8 @@
             function init(){
                 G = makeGrid(rows, cols, seed, backbone);
                 stepCount = 0;
+                isSolved = false;
+                optimalPathFound = false;
                 draw();
                 const sc = score(G, computeCurrents(G).I);
                 document.getElementById("mp-info").textContent = `Ready - contrast ${sc.toFixed(4)}`;
@@ -636,9 +731,19 @@
                 draw(I);
                 const sc = score(G, I);
 
-                // Show authentic learning progress
-                document.getElementById("mp-info").textContent =
-                    `step ${stepCount} • contrast ${sc.toFixed(4)} • solve ${(performance.now()-t0).toFixed(1)} ms`;
+                // Check if network has found optimal path
+                const wasSolved = isSolved;
+                isSolved = checkOptimalPath(G);
+                if (isSolved && !wasSolved) {
+                    console.log(`Network found optimal path at step ${stepCount}`);
+                }
+
+                // Show learning progress with solved status
+                let statusText = `step ${stepCount} • contrast ${sc.toFixed(4)} • solve ${(performance.now()-t0).toFixed(1)} ms`;
+                if (isSolved) {
+                    statusText += ` • SOLVED`;
+                }
+                document.getElementById("mp-info").textContent = statusText;
             }
 
             function loop(){
@@ -701,8 +806,16 @@
                 if (!running){ running=true; loop(); }
             });
 
+            document.getElementById('mp-stop').addEventListener('click', () => {
+                running = false;
+                if (raf) {
+                    cancelAnimationFrame(raf);
+                    raf = null;
+                }
+            });
+
             document.getElementById('mp-pause').addEventListener('click', () => {
-                running=false;
+                running = false;
             });
 
             document.getElementById('mp-step').addEventListener('click', () => {
@@ -710,7 +823,11 @@
             });
 
             document.getElementById('mp-reset').addEventListener('click', () => {
-                running=false;
+                running = false;
+                if (raf) {
+                    cancelAnimationFrame(raf);
+                    raf = null;
+                }
                 init();
             });
 
