@@ -2305,9 +2305,9 @@
 					}
 				}
 
-						// High-quality bilinear interpolation
-						for (let Y = 0; Y < this.H; Y++) {
-							const gy = Y / this.H * (this.NY - 1);
+						this.ctx.fillText(`CFL: ${this.cflLive.toFixed(2)} | Depth: ${(hmax-hmin).toFixed(3)} | Mode: ${this.mode}`, 12, 20);
+						this.ctx.fillText(`g: ${this.grav.toFixed(2)} | Friction: ${this.fric.toExponential(1)}`, 12, 40);
+					}
 							const j0 = Math.floor(gy);
 							const j1 = Math.min(this.NY - 1, j0 + 1);
 							const ty = gy - j0;
