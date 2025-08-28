@@ -36,10 +36,10 @@
     return out;
   }
 
-  // SAX SOP v2.2: Agent-First Paradigm - Enhanced Component Agents (PhET-Inspired)
+  // SAX SOP v2.2: Agent-First Paradigm - Enhanced Component Agents (Realistic Design)
   class CircuitComponent {
     constructor(type, x, y, value = 0) {
-      this.type = type; // 'battery', 'resistor', 'wire'
+      this.type = type; // 'battery', 'resistor', 'wire', 'lightbulb', 'switch'
       this.x = x;
       this.y = y;
       this.value = value;
@@ -48,11 +48,15 @@
       this.dragging = false;
       this.terminals = this.getTerminals();
 
-      // PhET-inspired educational properties
+      // Electrical properties
       this.voltage = 0;
       this.current = 0;
       this.temperature = 20; // Celsius
       this.power = 0; // Watts (P = I²R)
+
+      // Component-specific properties
+      this.isOn = true; // For switches
+      this.brightness = 0; // For light bulbs (0-1)
 
       // Electron flow animation
       this.electrons = [];
@@ -64,6 +68,10 @@
       this.showElectrons = true;
       this.showTemperature = false;
       this.showBatteryChemistry = false;
+
+      // Cartoon/realistic visual properties
+      this.glowIntensity = 0;
+      this.animationPhase = 0;
     }
 
     getTerminals() {
@@ -88,13 +96,17 @@
       ctx.save();
       ctx.translate(this.x, this.y);
 
-      // Draw component body
+      // Draw component body with realistic/cartoon styling
       if (this.type === 'battery') {
-        this.drawBattery(ctx);
+        this.drawRealisticBattery(ctx);
       } else if (this.type === 'resistor') {
-        this.drawResistor(ctx);
+        this.drawRealisticResistor(ctx);
       } else if (this.type === 'wire') {
-        this.drawWire(ctx);
+        this.drawRealisticWire(ctx);
+      } else if (this.type === 'lightbulb') {
+        this.drawLightBulb(ctx);
+      } else if (this.type === 'switch') {
+        this.drawSwitch(ctx);
       }
 
       // Draw terminals
@@ -130,71 +142,155 @@
       });
     }
 
-    drawBattery(ctx) {
+    drawRealisticBattery(ctx) {
       const ctxX = this.x;
       const ctxY = this.y;
 
-      // Battery symbol
-      ctx.strokeStyle = '#059669';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(ctxX - 15, ctxY);
-      ctx.lineTo(ctxX - 5, ctxY);
-      ctx.moveTo(ctxX - 5, ctxY - 8);
-      ctx.lineTo(ctxX - 5, ctxY + 8);
-      ctx.moveTo(ctxX + 5, ctxY - 5);
-      ctx.lineTo(ctxX + 5, ctxY + 5);
-      ctx.moveTo(ctxX + 5, ctxY);
-      ctx.lineTo(ctxX + 15, ctxY);
-      ctx.stroke();
+      // Realistic AA battery design
+      // Battery body
+      ctx.fillStyle = '#2d3748';
+      ctx.fillRect(ctxX - 8, ctxY - 15, 16, 30);
 
-      // Show battery chemistry (PhET-inspired)
-      if (this.showBatteryChemistry) {
-        // Chemical reaction visualization
-        ctx.fillStyle = 'rgba(5, 150, 105, 0.2)';
-        ctx.fillRect(ctxX - 12, ctxY - 6, 24, 12);
+      // Battery top (positive terminal)
+      ctx.fillStyle = '#4a5568';
+      ctx.fillRect(ctxX - 6, ctxY - 18, 12, 3);
 
-        // Positive electrode (cathode)
-        ctx.fillStyle = '#dc2626';
-        ctx.fillRect(ctxX - 10, ctxY - 4, 6, 8);
+      // Battery bottom (negative terminal - flat)
+      ctx.fillStyle = '#1a202c';
+      ctx.fillRect(ctxX - 6, ctxY + 15, 12, 2);
 
-        // Negative electrode (anode)
-        ctx.fillStyle = '#2563eb';
-        ctx.fillRect(ctxX + 4, ctxY - 4, 6, 8);
-
-        // Electrolyte
-        ctx.fillStyle = '#fbbf24';
-        ctx.fillRect(ctxX - 2, ctxY - 2, 4, 4);
-
-        // Ion flow animation
-        if (this.current > 0) {
-          const time = Date.now() * 0.002;
-          const ionX = ctxX - 8 + Math.sin(time) * 4;
-          const ionY = ctxY + Math.cos(time) * 2;
-
-          ctx.fillStyle = '#f59e0b';
-          ctx.beginPath();
-          ctx.arc(ionX, ionY, 1.5, 0, 2 * Math.PI);
-          ctx.fill();
-        }
-      }
-
-      // Voltage label
-      ctx.fillStyle = '#059669';
-      ctx.font = '10px monospace';
+      // Battery label
+      ctx.fillStyle = '#fbbf24';
+      ctx.font = '8px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(`${this.value}V`, ctxX, ctxY - 18);
+      ctx.fillText('9V', ctxX, ctxY - 5);
+
+      // Voltage indicator
+      ctx.fillStyle = '#10b981';
+      ctx.font = '8px monospace';
+      ctx.fillText(`${this.value.toFixed(1)}V`, ctxX, ctxY + 8);
 
       // Current display
       if (this.current > 0) {
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '8px monospace';
-        ctx.fillText(`${this.current.toFixed(3)}A`, ctxX, ctxY + 18);
+        ctx.fillStyle = '#60a5fa';
+        ctx.font = '7px monospace';
+        ctx.fillText(`${this.current.toFixed(3)}A`, ctxX, ctxY + 22);
       }
 
-      // Electron flow from battery (PhET-inspired)
+      // Battery "chemistry" visualization (simplified)
+      if (this.showBatteryChemistry) {
+        // Simple chemical symbols
+        ctx.fillStyle = '#dc2626';
+        ctx.font = '6px monospace';
+        ctx.fillText('Zn', ctxX - 4, ctxY - 8); // Zinc anode
+
+        ctx.fillStyle = '#2563eb';
+        ctx.font = '6px monospace';
+        ctx.fillText('Cu', ctxX + 2, ctxY + 5); // Copper cathode
+
+        // Simple electrolyte indicator
+        ctx.fillStyle = '#fbbf24';
+        ctx.fillRect(ctxX - 1, ctxY - 2, 2, 4);
+      }
+
+      // Electron flow from battery
       if (this.showElectrons && this.current > 0) {
         this.updateBatteryElectronFlow(ctx);
+      }
+    }
+
+    drawRealisticResistor(ctx) {
+      const ctxX = this.x;
+      const ctxY = this.y;
+
+      // Realistic ceramic resistor design
+      // Resistor body
+      ctx.fillStyle = '#8b5cf6'; // Purple ceramic body
+      ctx.fillRect(ctxX - 12, ctxY - 6, 24, 12);
+
+      // Wire leads
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(ctxX - 15, ctxY);
+      ctx.lineTo(ctxX - 12, ctxY);
+      ctx.moveTo(ctxX + 12, ctxY);
+      ctx.lineTo(ctxX + 15, ctxY);
+      ctx.stroke();
+
+      // Color bands (resistance coding)
+      const bands = this.getResistorBands();
+      for (let i = 0; i < bands.length; i++) {
+        ctx.fillStyle = bands[i];
+        ctx.fillRect(ctxX - 10 + i * 4, ctxY - 5, 3, 10);
+      }
+
+      // Value label
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '7px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${this.value}Ω`, ctxX, ctxY + 15);
+
+      // Temperature indicator
+      if (this.showTemperature && this.temperature > 25) {
+        const tempColor = this.temperature > 40 ? '#ef4444' : '#f59e0b';
+        ctx.fillStyle = tempColor;
+        ctx.font = '6px monospace';
+        ctx.fillText(`${this.temperature.toFixed(0)}°C`, ctxX, ctxY - 12);
+      }
+
+      // Current display
+      if (this.current > 0) {
+        ctx.fillStyle = '#10b981';
+        ctx.font = '6px monospace';
+        ctx.fillText(`${this.current.toFixed(3)}A`, ctxX, ctxY + 8);
+      }
+
+      // Electron flow animation
+      if (this.showElectrons && this.current > 0) {
+        this.updateElectronFlow(ctx);
+      }
+    }
+
+    getResistorBands() {
+      // Simple 4-band resistor color coding
+      const bands = ['#000000', '#8b5cf6', '#dc2626', '#fbbf24']; // Black, Purple, Red, Gold
+      return bands;
+    }
+
+    drawRealisticWire(ctx) {
+      const ctxX = this.x;
+      const ctxY = this.y;
+
+      // Realistic insulated wire
+      // Outer insulation
+      ctx.strokeStyle = this.current > 0 ? '#10b981' : '#6b7280';
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(ctxX - 15, ctxY);
+      ctx.lineTo(ctxX + 15, ctxY);
+      ctx.stroke();
+
+      // Inner conductor
+      ctx.strokeStyle = '#fbbf24'; // Copper color
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(ctxX - 13, ctxY);
+      ctx.lineTo(ctxX + 13, ctxY);
+      ctx.stroke();
+
+      // Current display
+      if (this.current > 0) {
+        ctx.fillStyle = '#60a5fa';
+        ctx.font = '6px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${this.current.toFixed(3)}A`, ctxX, ctxY - 8);
+      }
+
+      // Electron flow animation
+      if (this.showElectrons && this.current > 0) {
+        this.updateWireElectronFlow(ctx);
       }
     }
 
@@ -361,6 +457,116 @@
       // Electron flow animation (PhET-inspired)
       if (this.showElectrons && this.current > 0) {
         this.updateWireElectronFlow(ctx);
+      }
+    }
+
+    drawLightBulb(ctx) {
+      const ctxX = this.x;
+      const ctxY = this.y;
+
+      // Calculate brightness based on current
+      this.brightness = Math.min(1, Math.max(0, this.current / 0.1)); // Max brightness at 0.1A
+      this.glowIntensity = this.brightness;
+
+      // Light bulb glow effect
+      if (this.glowIntensity > 0) {
+        const glowRadius = 25 + this.glowIntensity * 15;
+        const gradient = ctx.createRadialGradient(ctxX, ctxY, 0, ctxX, ctxY, glowRadius);
+        gradient.addColorStop(0, `rgba(255, 255, 100, ${this.glowIntensity * 0.3})`);
+        gradient.addColorStop(0.7, `rgba(255, 200, 50, ${this.glowIntensity * 0.2})`);
+        gradient.addColorStop(1, 'rgba(255, 255, 100, 0)');
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(ctxX, ctxY, glowRadius, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+
+      // Light bulb body (glass)
+      ctx.fillStyle = `rgba(200, 220, 255, ${0.3 + this.brightness * 0.7})`;
+      ctx.strokeStyle = '#666';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(ctxX, ctxY, 12, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.stroke();
+
+      // Light bulb filament (glowing when current flows)
+      if (this.current > 0) {
+        ctx.strokeStyle = `rgba(255, 150, 50, ${0.5 + this.brightness * 0.5})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(ctxX - 8, ctxY - 3);
+        ctx.lineTo(ctxX - 3, ctxY + 2);
+        ctx.lineTo(ctxX + 3, ctxY - 2);
+        ctx.lineTo(ctxX + 8, ctxY + 3);
+        ctx.stroke();
+      }
+
+      // Light bulb base
+      ctx.fillStyle = '#333';
+      ctx.fillRect(ctxX - 3, ctxY + 12, 6, 8);
+
+      // Brightness indicator
+      ctx.fillStyle = '#fff';
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${(this.brightness * 100).toFixed(0)}%`, ctxX, ctxY + 30);
+
+      // Current display
+      if (this.current > 0) {
+        ctx.fillStyle = '#10b981';
+        ctx.font = '8px monospace';
+        ctx.fillText(`${this.current.toFixed(3)}A`, ctxX, ctxY + 18);
+      }
+    }
+
+    drawSwitch(ctx) {
+      const ctxX = this.x;
+      const ctxY = this.y;
+
+      // Switch base
+      ctx.fillStyle = '#444';
+      ctx.fillRect(ctxX - 15, ctxY - 8, 30, 16);
+
+      // Switch toggle
+      const toggleX = this.isOn ? ctxX + 8 : ctxX - 8;
+      ctx.fillStyle = this.isOn ? '#10b981' : '#666';
+      ctx.fillRect(toggleX - 4, ctxY - 6, 8, 12);
+
+      // Switch label
+      ctx.fillStyle = '#fff';
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(this.isOn ? 'ON' : 'OFF', ctxX, ctxY + 20);
+
+      // Connection indicator
+      if (this.isOn) {
+        ctx.strokeStyle = '#10b981';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(ctxX - 12, ctxY);
+        ctx.lineTo(ctxX + 12, ctxY);
+        ctx.stroke();
+      } else {
+        // Show break in connection
+        ctx.strokeStyle = '#666';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.moveTo(ctxX - 12, ctxY);
+        ctx.lineTo(ctxX - 3, ctxY);
+        ctx.moveTo(ctxX + 3, ctxY);
+        ctx.lineTo(ctxX + 12, ctxY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Click to toggle hint
+      if (this.selected) {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.font = '8px monospace';
+        ctx.fillText('Click to toggle', ctxX, ctxY - 15);
       }
     }
 
@@ -629,13 +835,15 @@
         <div class="physics-simulation">
           <div class="physics-canvas"></div>
           <div class="physics-controls">
-            <!-- Beginner Circuit Presets -->
+            <!-- Circuit Presets -->
             <div class="control-group">
-              <label>Beginner Circuits:</label>
+              <label>Example Circuits:</label>
               <div class="preset-buttons">
-                <button class="preset-btn" data-preset="simple-series">Simple Series</button>
-                <button class="preset-btn" data-preset="parallel-resistors">Parallel</button>
+                <button class="preset-btn" data-preset="simple-series">Battery + Resistor</button>
+                <button class="preset-btn" data-preset="parallel-resistors">Parallel Circuit</button>
                 <button class="preset-btn" data-preset="voltage-divider">Voltage Divider</button>
+                <button class="preset-btn" data-preset="light-bulb-circuit">Light Bulb</button>
+                <button class="preset-btn" data-preset="switch-circuit">Switch + Light</button>
                 <button class="preset-btn" data-preset="empty">Empty Canvas</button>
               </div>
             </div>
@@ -646,6 +854,8 @@
               <div class="component-palette">
                 <button class="palette-btn" data-type="battery" title="Battery (9V)">🔋</button>
                 <button class="palette-btn" data-type="resistor" title="Resistor (1000Ω)">🌀</button>
+                <button class="palette-btn" data-type="lightbulb" title="Light Bulb">💡</button>
+                <button class="palette-btn" data-type="switch" title="Toggle Switch">🔘</button>
                 <button class="palette-btn" data-type="wire" title="Wire">⚡</button>
               </div>
             </div>
@@ -814,12 +1024,115 @@
       `;
       document.head.appendChild(style);
 
-      // Insert after hero section, before other simulations
-      const hero = document.querySelector('.physics-hero') || document.querySelector('#physics-hero');
-      if(hero && hero.nextElementSibling){
-        hero.parentNode.insertBefore(card, hero.nextElementSibling);
+      // Add enhanced CSS for cartoon-like, approachable components
+      const style = document.createElement('style');
+      style.textContent = `
+        /* Cartoon-style component buttons */
+        .component-palette button {
+          background: linear-gradient(135deg, #4f46e5, #7c3aed);
+          border: none;
+          border-radius: 12px;
+          padding: 8px 12px;
+          margin: 2px;
+          color: white;
+          font-weight: bold;
+          font-size: 11px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .component-palette button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(79, 70, 229, 0.5);
+          background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        }
+
+        .component-palette button:active {
+          transform: translateY(0);
+          box-shadow: 0 1px 4px rgba(79, 70, 229, 0.3);
+        }
+
+        /* Fun preset buttons */
+        .preset-buttons button {
+          background: linear-gradient(135deg, #059669, #10b981);
+          border: none;
+          border-radius: 10px;
+          padding: 6px 10px;
+          margin: 2px;
+          color: white;
+          font-size: 10px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3);
+          font-weight: 600;
+        }
+
+        .preset-buttons button:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 3px 8px rgba(5, 150, 105, 0.4);
+          background: linear-gradient(135deg, #10b981, #34d399);
+        }
+
+        /* Light bulb glow animation */
+        .lightbulb-glow {
+          animation: bulb-glow 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes bulb-glow {
+          from { filter: drop-shadow(0 0 5px rgba(255, 255, 100, 0.3)); }
+          to { filter: drop-shadow(0 0 15px rgba(255, 255, 100, 0.8)); }
+        }
+
+        /* Switch toggle animation */
+        .switch-toggle {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Canvas background enhancement */
+        #circuit-lab .physics-canvas {
+          background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+          position: relative;
+        }
+
+        #circuit-lab .physics-canvas::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background:
+            radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.05) 0%, transparent 50%);
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        #circuit-lab .physics-canvas canvas {
+          position: relative;
+          z-index: 1;
+        }
+      `;
+      document.head.appendChild(style);
+
+      // Insert as second-to-last simulation (before footer)
+      const simulations = document.querySelectorAll('.physics-card');
+      if (simulations.length > 0) {
+        // Insert before the last simulation (second-to-last position)
+        const lastSim = simulations[simulations.length - 1];
+        lastSim.parentNode.insertBefore(card, lastSim);
       } else {
-        document.body.appendChild(card);
+        // Fallback: insert after hero section
+        const hero = document.querySelector('.physics-hero') || document.querySelector('#physics-hero');
+        if(hero && hero.nextElementSibling){
+          hero.parentNode.insertBefore(card, hero.nextElementSibling);
+        } else {
+          document.body.appendChild(card);
+        }
       }
 
       // Add canvas to the canvas container
@@ -1175,7 +1488,16 @@
       // Check if double-clicking on a component
       for (const comp of this.components) {
         if (comp.containsPoint(x, y)) {
-          this.editComponentValue(comp);
+          if (comp.type === 'switch') {
+            // Toggle switch on/off
+            comp.isOn = !comp.isOn;
+            this.reel.add({ type: "switch_toggle", id: comp.id, is_on: comp.isOn });
+            if (this.isRunning) {
+              this.solveCircuit();
+            }
+          } else {
+            this.editComponentValue(comp);
+          }
           return;
         }
       }
@@ -1266,6 +1588,50 @@
           });
           break;
 
+        case 'light-bulb-circuit':
+          // Battery + light bulb circuit
+          const battery4 = new CircuitComponent('battery', centerX - 150, centerY, 9.0);
+          const lightbulb = new CircuitComponent('lightbulb', centerX + 50, centerY, 0);
+          const wireD = new CircuitComponent('wire', centerX - 50, centerY, 0);
+          const wireE = new CircuitComponent('wire', centerX + 150, centerY, 0);
+
+          this.components.push(battery4, lightbulb, wireD, wireE);
+
+          // Connect: Battery -> Wire -> Light Bulb -> Wire
+          this.wires.push(new WireConnection(battery4, wireD, battery4.terminals[1], wireD.terminals[0]));
+          this.wires.push(new WireConnection(wireD, lightbulb, wireD.terminals[1], lightbulb.terminals[0]));
+          this.wires.push(new WireConnection(lightbulb, wireE, lightbulb.terminals[1], wireE.terminals[0]));
+
+          // Mark terminals as connected
+          [battery4, lightbulb, wireD, wireE].forEach(comp => {
+            comp.terminals.forEach(t => t.connected = true);
+          });
+          break;
+
+        case 'switch-circuit':
+          // Battery + switch + light bulb circuit
+          const battery5 = new CircuitComponent('battery', centerX - 200, centerY, 9.0);
+          const switchComp = new CircuitComponent('switch', centerX - 50, centerY, 0);
+          const lightbulb2 = new CircuitComponent('lightbulb', centerX + 100, centerY, 0);
+          const wireF = new CircuitComponent('wire', centerX - 125, centerY, 0);
+          const wireG = new CircuitComponent('wire', centerX + 25, centerY, 0);
+          const wireH = new CircuitComponent('wire', centerX + 175, centerY, 0);
+
+          this.components.push(battery5, switchComp, lightbulb2, wireF, wireG, wireH);
+
+          // Connect: Battery -> Wire -> Switch -> Wire -> Light Bulb -> Wire
+          this.wires.push(new WireConnection(battery5, wireF, battery5.terminals[1], wireF.terminals[0]));
+          this.wires.push(new WireConnection(wireF, switchComp, wireF.terminals[1], switchComp.terminals[0]));
+          this.wires.push(new WireConnection(switchComp, wireG, switchComp.terminals[1], wireG.terminals[0]));
+          this.wires.push(new WireConnection(wireG, lightbulb2, wireG.terminals[1], lightbulb2.terminals[0]));
+          this.wires.push(new WireConnection(lightbulb2, wireH, lightbulb2.terminals[1], wireH.terminals[0]));
+
+          // Mark terminals as connected
+          [battery5, switchComp, lightbulb2, wireF, wireG, wireH].forEach(comp => {
+            comp.terminals.forEach(t => t.connected = true);
+          });
+          break;
+
         case 'empty':
           // Empty canvas for advanced users
           break;
@@ -1278,11 +1644,14 @@
     }
 
     startDraggingComponent(type) {
-      const defaultValues = { battery: 9.0, resistor: 1000, wire: 0 };
-      const comp = new CircuitComponent(type, 100, 100, defaultValues[type]);
+      const defaultValues = { battery: 9.0, resistor: 1000, wire: 0, lightbulb: 0, switch: 0 };
+      // Position in center of canvas for better visibility
+      const centerX = this.W / 2;
+      const centerY = this.H / 2;
+      const comp = new CircuitComponent(type, centerX, centerY, defaultValues[type]);
       this.components.push(comp);
       this.draggedComponent = comp;
-      this.dragOffset = { x: 25, y: 25 }; // Center of component
+      this.dragOffset = { x: 0, y: 0 }; // Start at center
       this.reel.add({ type: "component_add", component_type: type, id: comp.id, value: defaultValues[type] });
     }
 
@@ -1373,21 +1742,44 @@
     }
 
     solveCircuit() {
-      // Simple circuit analysis for series circuits
+      // Enhanced circuit analysis with switches and light bulbs
       this.voltages.clear();
       this.currents.clear();
 
-      // Find batteries and calculate total voltage
+      // Find all components
       const batteries = this.components.filter(c => c.type === 'battery');
       const resistors = this.components.filter(c => c.type === 'resistor');
+      const lightbulbs = this.components.filter(c => c.type === 'lightbulb');
+      const switches = this.components.filter(c => c.type === 'switch');
 
       if (batteries.length === 0) {
         this.updateStatus("No battery found");
         return;
       }
 
+      // Check if any switches are off (breaks circuit)
+      const circuitComplete = switches.every(s => s.isOn);
+      if (!circuitComplete) {
+        // Circuit is broken - no current flows
+        this.components.forEach(comp => {
+          comp.current = 0;
+          comp.voltage = 0;
+          if (comp.type === 'lightbulb') {
+            comp.brightness = 0;
+          }
+        });
+        this.updateStatus("Circuit open (switch off)");
+        return;
+      }
+
       const totalVoltage = batteries.reduce((sum, b) => sum + b.value, 0);
-      const totalResistance = resistors.reduce((sum, r) => sum + r.value, 0);
+
+      // Calculate total resistance (resistors + light bulbs act as resistors)
+      const totalResistance = [...resistors, ...lightbulbs].reduce((sum, comp) => {
+        // Light bulbs have resistance based on their design (assume ~100Ω for filament)
+        const resistance = comp.type === 'lightbulb' ? 100 : comp.value;
+        return sum + resistance;
+      }, 0);
 
       if (totalResistance === 0) {
         this.updateStatus("Short circuit!");
@@ -1398,15 +1790,18 @@
 
       // Distribute voltages and currents
       let voltageDrop = 0;
-      batteries.forEach((battery, i) => {
+      batteries.forEach(battery => {
         this.voltages.set(battery.id, battery.value);
         battery.voltage = battery.value;
+        battery.current = totalCurrent;
+        battery.power = battery.value * totalCurrent;
       });
 
-      resistors.forEach((resistor, i) => {
+      // Process resistors
+      resistors.forEach(resistor => {
         const current = totalCurrent;
         const voltage = current * resistor.value;
-        const power = voltage * current; // P = V * I
+        const power = voltage * current;
 
         this.voltages.set(resistor.id, voltage);
         this.currents.set(resistor.id, current);
@@ -1414,9 +1809,8 @@
         resistor.current = current;
         resistor.power = power;
 
-        // Calculate temperature based on power dissipation (PhET-inspired)
-        // Temperature = ambient + (power * thermal_resistance)
-        const thermalResistance = 50; // °C/W (typical for small resistor)
+        // Calculate temperature based on power dissipation
+        const thermalResistance = 50; // °C/W
         resistor.temperature = 20 + (power * thermalResistance);
 
         // Update terminals
@@ -1426,15 +1820,49 @@
         voltageDrop += voltage;
       });
 
-      // Update battery current and power
-      batteries.forEach(battery => {
-        battery.current = totalCurrent;
-        battery.power = battery.value * totalCurrent; // P = V * I (battery supplies power)
+      // Process light bulbs
+      lightbulbs.forEach(lightbulb => {
+        const current = totalCurrent;
+        const voltage = current * 100; // Assume 100Ω filament resistance
+        const power = voltage * current;
+
+        this.voltages.set(lightbulb.id, voltage);
+        this.currents.set(lightbulb.id, current);
+        lightbulb.voltage = voltage;
+        lightbulb.current = current;
+        lightbulb.power = power;
+
+        // Calculate brightness (0-1 scale)
+        lightbulb.brightness = Math.min(1, current / 0.1); // Full brightness at 0.1A
+
+        // Update terminals
+        lightbulb.terminals.forEach(term => {
+          term.voltage = term.type === 'input' ? voltageDrop : voltageDrop + voltage;
+        });
+        voltageDrop += voltage;
+      });
+
+      // Process switches (they don't consume power, just pass current)
+      switches.forEach(switchComp => {
+        if (switchComp.isOn) {
+          switchComp.current = totalCurrent;
+          switchComp.voltage = 0; // Ideal switch has no voltage drop
+        } else {
+          switchComp.current = 0;
+          switchComp.voltage = 0;
+        }
       });
 
       this.updateStatus(`Solved: ${totalVoltage.toFixed(1)}V, ${totalCurrent.toFixed(3)}A`);
       this.reel.th('circuit_solve', 1, () => {
-        this.reel.add({ type: "circuit_solve", total_voltage: totalVoltage, total_current: totalCurrent, component_count: this.components.length });
+        this.reel.add({
+          type: "circuit_solve",
+          total_voltage: totalVoltage,
+          total_current: totalCurrent,
+          component_count: this.components.length,
+          switches_on: switches.filter(s => s.isOn).length,
+          lightbulbs_lit: lightbulbs.filter(l => l.brightness > 0).length
+        });
       });
     }
 

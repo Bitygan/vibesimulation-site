@@ -6,14 +6,15 @@
 - **Real-time Collaborative Simulation:** Live circuit analysis with visual feedback
 - **Tamper-evident Recording:** SHA-256 hash-chain + Ed25519 signatures
 
-## 🎯 **Interactive Features (PhET-Inspired)**
+## 🎯 **Interactive Features (Cartoon-Realistic Design)**
 
 ### **Drag-and-Drop Interface**
-- **Component Palette:** Drag batteries, resistors, and wires onto the canvas
+- **Component Palette:** Drag batteries, resistors, light bulbs, switches, and wires onto the canvas
 - **Visual Connections:** Click component terminals to create wire connections with auto-snap
 - **Real-time Movement:** Drag components around with stretchable wires
 - **Interactive Editing:** Double-click components to edit values
 - **Grid Snapping:** Optional magnetic grid alignment (20px grid)
+- **Centered Placement:** Components appear in the middle of the canvas for optimal visibility
 
 ### **Live Circuit Simulation**
 - **Real-time Analysis:** Instant voltage and current calculations using Kirchhoff's laws
@@ -21,19 +22,27 @@
 - **Circuit Validation:** Automatic detection of short/open circuits
 - **Temperature Effects:** Resistor heating based on power dissipation
 - **Ammeter Display:** Real-time current measurement with color coding
+- **Switch Logic:** Toggle switches break/complete circuits dynamically
 
-### **PhET-Inspired Educational Views**
-- **Electron Flow:** Animated particle-level current visualization
-- **Battery Chemistry:** Internal electrode and electrolyte visualization
-- **Resistor Cores:** Purple internal structure representation
-- **Voltage Mathematics:** Live Ohm's Law calculations overlay
-- **Temperature Display:** Color-coded heating effects
+### **Cartoon-Realistic Visual Design**
+- **Realistic Battery:** AA battery design with terminals and labeling
+- **Ceramic Resistor:** Purple ceramic body with color bands and wire leads
+- **Glowing Light Bulb:** Animated filament with brightness-based glow effects
+- **Toggle Switch:** Mechanical switch with ON/OFF indicator
+- **Insulated Wires:** Realistic insulated conductors with current flow
 
-### **Real-time Controls (PhET Style)**
-- **Voltage Slider:** 0-15V battery voltage control
+### **Interactive Components**
+- **Light Bulb:** Glows based on current (0-100% brightness)
+- **Toggle Switch:** Double-click to turn ON/OFF, breaks circuit when OFF
+- **Battery:** Realistic 9V battery with voltage/current display
+- **Resistor:** Temperature-dependent color with resistance bands
+- **Wire:** Current-responsive styling with electron flow animation
+
+### **Real-time Controls (Professional Style)**
+- **Voltage Slider:** 0-15V battery voltage control with live display
 - **Resistance Slider:** 100-5000Ω resistor value control
-- **Ammeter:** Professional-style current measurement display
-- **Temperature Toggle:** Show resistor heating effects
+- **Ammeter:** Professional-style current measurement with color coding
+- **Educational Views:** Toggle electron flow, voltage math, temperature display
 
 ### **Reasoning Reels Integration**
 - **Tamper-evident Recording:** Every interaction cryptographically signed
@@ -41,10 +50,27 @@
 - **Educational Assessment:** Track learning patterns and problem-solving
 - **Scientific Reproducibility:** Deterministic replay capabilities
 
+## 🔧 **Example Circuits**
+
+### **Beginner Circuits**
+1. **Battery + Resistor** - Basic Ohm's Law demonstration
+2. **Parallel Circuit** - Current division concepts
+3. **Voltage Divider** - Thevenin equivalent circuits
+4. **Light Bulb** - Filament resistance and brightness
+5. **Switch + Light** - Circuit control and power switching
+6. **Empty Canvas** - Advanced experimentation
+
+### **Circuit Building Tutorial**
+1. **Start Simple:** Try "Battery + Resistor" to see basic voltage/current
+2. **Add Control:** Use "Switch + Light" to learn about circuit breaking
+3. **Explore Parallel:** Build parallel circuits to understand current division
+4. **Advanced:** Create custom circuits with multiple components
+
 ## 📁 **Files**
 
 - `circuit_lab.js` — Interactive drag-and-drop circuit simulator with SAX SOP v2.2 compliance
 - `recorder_circuit_patch.js` — Optional patch for existing Reasoning Reels setup
+- `test-circuit-lab.html` — Test suite to verify functionality
 - (Assumes `verify.html` exists for reel verification)
 
 ## 🚀 **Installation**
