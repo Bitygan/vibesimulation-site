@@ -113,3 +113,4 @@
 - [ ] Change frequencies are realistic
 
 **Your sitemap is now active and ready for search engine indexing!** 🚀
+

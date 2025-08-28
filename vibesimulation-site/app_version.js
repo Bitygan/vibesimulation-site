@@ -7,3 +7,4 @@ window.APP_CODE_HASH = "sha256-index-bb9027c3.js-SRI-hash-placeholder";
 
 // Note: APP_CODE_HASH should match the SRI integrity hash of your main bundle
 // Run stamp-version.mjs to generate the correct hash from your built bundle
+

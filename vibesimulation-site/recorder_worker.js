@@ -177,3 +177,4 @@ self.onmessage = async function(e) {
 self.postMessage({
   type: 'worker_ready'
 });
+

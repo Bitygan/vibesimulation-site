@@ -287,3 +287,4 @@ button { font-weight: 600; }
 ---
 
 *These guidelines ensure consistent, professional representation of VibeSimulation across all platforms and touchpoints.*
+

@@ -158,3 +158,4 @@ Educational projects benefit from:
 console.log('🔒 Obfuscation example loaded');
 console.log('📊 Compare: FluidSimulation vs. class a');
 console.log('💡 For production: Use terser or similar tools');
+

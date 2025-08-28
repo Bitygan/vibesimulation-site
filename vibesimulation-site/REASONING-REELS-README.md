@@ -249,3 +249,4 @@ The system maintains **minimal performance impact** during interaction while pro
 **Ready to create verifiable physics experiments?** Try interacting with any simulation and clicking "Export Reel"! 🎉
 
 *Reasoning Reels v1.0 - Making Physics Simulations Scientifically Reproducible*
+

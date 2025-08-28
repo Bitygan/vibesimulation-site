@@ -118,3 +118,4 @@ Write-Host "- All changes pushed to remote repository" -ForegroundColor White
 
 Write-Host ""
 Write-Host "🌐 Your website is ready! Visit: https://vibesimulation.com" -ForegroundColor Green
+
