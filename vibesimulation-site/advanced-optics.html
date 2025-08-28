@@ -672,6 +672,8 @@
             let rays = [];
             let elements = [];
             let diffractionData = [];
+            let animationTime = 0;
+            let ambientParticles = [];
 
             // Initialize with default setup
             function initializeSimulation() {
@@ -682,12 +684,95 @@
                 // Add a default convex lens
                 elements.push(new OpticalElement('convex-lens', elementPosition, focalLength));
 
-                // Create incident rays
-                for (let i = 0; i < rayCount; i++) {
-                    const y = incidentHeight + (i - (rayCount - 1) / 2) * 2;
-                    const ray = new Ray(-20, y, Math.cos(rad(rayAngle)), Math.sin(rad(rayAngle)));
+                // Create incident rays with some variety
+                const baseRayCount = Math.max(3, Math.min(rayCount, 5)); // Start with 3-5 rays
+                for (let i = 0; i < baseRayCount; i++) {
+                    const y = incidentHeight + (i - (baseRayCount - 1) / 2) * 1.5;
+                    const ray = new Ray(-25, y, Math.cos(rad(rayAngle)), Math.sin(rad(rayAngle)));
                     rays.push(ray);
                 }
+
+                // Immediately propagate rays through elements
+                propagateRays();
+
+                // Add some dynamic diffraction pattern
+                if (mode === 'diffraction') {
+                    updateDiffractionPattern();
+                }
+
+                // Initialize ambient particles for dynamic effect
+                initializeAmbientParticles();
+            }
+
+            // Separate function to propagate rays through elements
+            function propagateRays() {
+                const stepSize = 0.5;
+                const maxSteps = 80; // Shorter for better performance
+
+                rays.forEach(ray => {
+                    for (let step = 0; step < maxSteps; step++) {
+                        ray.advance(stepSize);
+
+                        // Check interactions with elements
+                        for (const element of elements) {
+                            const dx = ray.x - element.position;
+                            if (Math.abs(dx) < element.radius * 0.1) {
+                                element.interact(ray);
+                                break;
+                            }
+                        }
+
+                        // Stop if ray goes too far
+                        if (Math.abs(ray.x) > 60) break;
+                    }
+                });
+            }
+
+            // Update diffraction pattern
+            function updateDiffractionPattern() {
+                diffractionData = [];
+                for (let x = -30; x <= 30; x += 0.3) {
+                    const intensity = calculateDiffractionPattern(x, wavelength, slitWidth, slitCount, screenDistance);
+                    diffractionData.push({x, intensity});
+                }
+            }
+
+            // Initialize ambient light particles
+            function initializeAmbientParticles() {
+                ambientParticles = [];
+                for (let i = 0; i < 8; i++) {
+                    ambientParticles.push({
+                        x: -30 + Math.random() * 20,
+                        y: -10 + Math.random() * 20,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        life: Math.random() * 2 + 1,
+                        maxLife: Math.random() * 2 + 1,
+                        size: Math.random() * 2 + 1
+                    });
+                }
+            }
+
+            // Update ambient particles
+            function updateAmbientParticles(dt) {
+                ambientParticles.forEach(particle => {
+                    particle.x += particle.vx * dt;
+                    particle.y += particle.vy * dt;
+                    particle.life -= dt;
+
+                    // Respawn particle when it dies
+                    if (particle.life <= 0) {
+                        particle.x = -30 + Math.random() * 20;
+                        particle.y = -10 + Math.random() * 20;
+                        particle.vx = (Math.random() - 0.5) * 0.5;
+                        particle.vy = (Math.random() - 0.5) * 0.5;
+                        particle.life = particle.maxLife;
+                    }
+
+                    // Bounce off boundaries
+                    if (particle.x < -35 || particle.x > -10) particle.vx *= -1;
+                    if (particle.y < -15 || particle.y > 15) particle.vy *= -1;
+                });
             }
 
             function updateSimulation() {
@@ -735,10 +820,13 @@
             }
 
             function drawBackground() {
-                const g = ctx.createLinearGradient(0, 0, 0, H);
-                g.addColorStop(0, hsl(210, 90, 12));
-                g.addColorStop(0.4, hsl(250, 80, 18));
-                g.addColorStop(1, hsl(245, 65, 8));
+                // Dynamic animated background
+                const timeOffset = animationTime * 0.5;
+                const g = ctx.createLinearGradient(0, 0, W, H);
+                g.addColorStop(0, hsl(210 + Math.sin(timeOffset) * 10, 90, 12));
+                g.addColorStop(0.3, hsl(250 + Math.sin(timeOffset + 1) * 5, 80, 18));
+                g.addColorStop(0.7, hsl(245 + Math.sin(timeOffset + 2) * 3, 70, 15));
+                g.addColorStop(1, hsl(245 + Math.sin(timeOffset + 3) * 2, 65, 8));
                 ctx.fillStyle = g;
                 ctx.fillRect(0, 0, W, H);
 
@@ -766,10 +854,12 @@
             function drawRays() {
                 rays.forEach((ray, index) => {
                     const hue = (wavelength - 400) / 300 * 360; // Color based on wavelength
-                    const alpha = ray.intensity;
+                    const baseAlpha = ray.intensity;
+                    const pulse = 0.8 + 0.2 * Math.sin(animationTime * 2 + index * 0.5); // Subtle pulsing
+                    const alpha = baseAlpha * pulse;
 
                     ctx.strokeStyle = `hsla(${hue}, 80%, 60%, ${alpha})`;
-                    ctx.lineWidth = 2;
+                    ctx.lineWidth = 2 + Math.sin(animationTime * 1.5 + index) * 0.5; // Dynamic line width
                     ctx.beginPath();
 
                     for (let i = 1; i < ray.path.length; i++) {
@@ -779,6 +869,18 @@
                         ctx.lineTo(p2.x, p2.y);
                     }
                     ctx.stroke();
+
+                    // Add energy dots at ray intersections
+                    if (ray.path.length > 2) {
+                        const midPoint = ray.path[Math.floor(ray.path.length / 2)];
+                        const screenMid = physicsToScreen(midPoint.x, midPoint.y);
+                        const energyPulse = 0.5 + 0.5 * Math.sin(animationTime * 3 + index);
+
+                        ctx.fillStyle = `hsla(${hue}, 90%, 70%, ${alpha * energyPulse})`;
+                        ctx.beginPath();
+                        ctx.arc(screenMid.x, screenMid.y, 2 + energyPulse, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
 
                     // Draw ray direction arrows
                     if (ray.path.length > 1) {
@@ -809,12 +911,17 @@
             }
 
             function drawElements() {
-                elements.forEach(element => {
+                elements.forEach((element, index) => {
                     const center = physicsToScreen(element.position, 0);
+                    const glowPulse = 0.7 + 0.3 * Math.sin(animationTime * 1.2 + index * 2);
+
+                    // Add glow effect
+                    ctx.shadowColor = "hsla(240, 80%, 60%, 0.5)";
+                    ctx.shadowBlur = 8 * glowPulse;
 
                     ctx.strokeStyle = hsl(240, 80, 60);
                     ctx.lineWidth = 3;
-                    ctx.fillStyle = "hsla(240, 60%, 30%, 0.3)";
+                    ctx.fillStyle = `hsla(240, 60%, 30%, ${0.3 * glowPulse})`;
 
                     if (element.type.includes('lens')) {
                         // Draw lens as two curved surfaces
@@ -822,6 +929,9 @@
                         ctx.ellipse(center.x, center.y, element.radius * 10, element.radius * 10 * 0.8, 0, 0, Math.PI * 2);
                         ctx.fill();
                         ctx.stroke();
+
+                        // Reset shadow for focal points
+                        ctx.shadowBlur = 0;
 
                         // Draw focal points
                         const focalScreen = physicsToScreen(element.position + element.focalLength, 0);
@@ -840,7 +950,13 @@
                         ctx.moveTo(center.x - element.radius * 10, center.y - element.radius * 10);
                         ctx.lineTo(center.x + element.radius * 10, center.y + element.radius * 10);
                         ctx.stroke();
+
+                        // Reset shadow
+                        ctx.shadowBlur = 0;
                     }
+
+                    // Reset shadow for all elements
+                    ctx.shadowBlur = 0;
                 });
             }
 
@@ -849,13 +965,29 @@
 
                 const maxIntensity = Math.max(...diffractionData.map(d => d.intensity));
 
-                diffractionData.forEach(point => {
+                diffractionData.forEach((point, index) => {
                     const screen = physicsToScreen(point.x + screenDistance, 0);
                     const intensity = point.intensity / maxIntensity;
                     const height = intensity * 100;
 
-                    ctx.fillStyle = `hsla(45, 80%, 60%, ${intensity * 0.8})`;
-                    ctx.fillRect(screen.x - 1, H/2 - height/2, 2, height);
+                    // Add dynamic pulsing to diffraction pattern
+                    const pulse = 0.8 + 0.2 * Math.sin(animationTime * 2 + index * 0.1);
+                    const dynamicIntensity = intensity * pulse;
+
+                    // Create gradient effect
+                    const gradient = ctx.createLinearGradient(0, H/2 - height/2, 0, H/2 + height/2);
+                    gradient.addColorStop(0, `hsla(45, 90%, 70%, ${dynamicIntensity})`);
+                    gradient.addColorStop(0.5, `hsla(45, 80%, 60%, ${dynamicIntensity * 0.8})`);
+                    gradient.addColorStop(1, `hsla(45, 90%, 70%, ${dynamicIntensity})`);
+
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(screen.x - 1.5, H/2 - height/2, 3, height);
+
+                    // Add subtle glow effect
+                    ctx.shadowColor = `hsla(45, 80%, 60%, ${dynamicIntensity * 0.3})`;
+                    ctx.shadowBlur = 2;
+                    ctx.fillRect(screen.x - 1.5, H/2 - height/2, 3, height);
+                    ctx.shadowBlur = 0;
                 });
             }
 
@@ -873,8 +1005,10 @@
             }
 
             function render() {
+                animationTime += 0.016; // ~60fps
                 ctx.clearRect(0, 0, W, H);
                 drawBackground();
+                drawAmbientParticles();
                 drawElements();
 
                 if (mode === 'diffraction') {
@@ -884,6 +1018,27 @@
                 }
 
                 drawHUD();
+                updateAmbientParticles(0.016);
+            }
+
+            // Draw ambient light particles
+            function drawAmbientParticles() {
+                ambientParticles.forEach(particle => {
+                    const screenPos = physicsToScreen(particle.x, particle.y);
+                    const alpha = particle.life / particle.maxLife;
+                    const pulse = 0.5 + 0.5 * Math.sin(animationTime * 3 + particle.x);
+
+                    ctx.fillStyle = `hsla(${wavelength - 400}, 70%, 60%, ${alpha * pulse * 0.3})`;
+                    ctx.beginPath();
+                    ctx.arc(screenPos.x, screenPos.y, particle.size, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Add subtle glow effect
+                    ctx.shadowColor = `hsla(${wavelength - 400}, 70%, 60%, ${alpha * 0.5})`;
+                    ctx.shadowBlur = 3;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                });
             }
 
             // Animation loop
