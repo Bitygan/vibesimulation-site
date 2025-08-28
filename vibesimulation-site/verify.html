@@ -75,15 +75,28 @@
       return "sha256-" + hex(prev);
     }
 
-    async function verifyEd25519(pubB64, sigB64, metaMinusSig) {
+    async function verifySignature(pubB64, sigB64, sigAlg, metaMinusSig) {
       try {
-        const algo = { name: "Ed25519" };
-        const pub = Uint8Array.from(atob(pubB64), c => c.charCodeAt(0));
-        const key = await crypto.subtle.importKey("raw", pub, algo, false, ["verify"]);
         const data = new TextEncoder().encode(JSON.stringify(metaMinusSig));
         const sig = Uint8Array.from(atob(sigB64), c => c.charCodeAt(0));
-        const ok = await crypto.subtle.verify(algo, key, sig, data);
-        return ok;
+
+        if (sigAlg === "ecdsa-sha256") {
+          // Parse JWK from base64
+          const pubJWK = JSON.parse(atob(pubB64));
+          const algo = { name: "ECDSA", namedCurve: "P-256", hash: "SHA-256" };
+          const key = await crypto.subtle.importKey("jwk", pubJWK, algo, false, ["verify"]);
+          const ok = await crypto.subtle.verify(algo, key, sig, data);
+          return ok;
+        } else if (sigAlg === "ed25519") {
+          // Fallback for Ed25519 (if supported in future)
+          const algo = { name: "Ed25519" };
+          const pub = Uint8Array.from(atob(pubB64), c => c.charCodeAt(0));
+          const key = await crypto.subtle.importKey("raw", pub, algo, false, ["verify"]);
+          const ok = await crypto.subtle.verify(algo, key, sig, data);
+          return ok;
+        } else {
+          return { error: `Unsupported signature algorithm: ${sigAlg}` };
+        }
       } catch (err) {
         return { error: String(err) };
       }
@@ -132,10 +145,10 @@
 
       console.log('Verifier: Root match?', rootMatch);
 
-      if (parsedMeta.sig_alg && parsedMeta.sig_alg.toLowerCase() === "ed25519" && parsedMeta.pub && parsedMeta.sig) {
+      if (parsedMeta.sig_alg && parsedMeta.pub && parsedMeta.sig) {
         const {sig, pub, sig_alg, ...metaMinusSig} = parsedMeta;
         metaMinusSig.event_root = parsedMeta.event_root;
-        const v = await verifyEd25519(parsedMeta.pub, parsedMeta.sig, metaMinusSig);
+        const v = await verifySignature(parsedMeta.pub, parsedMeta.sig, parsedMeta.sig_alg, metaMinusSig);
         if (typeof v === "object" && v.error) { sigErr = v.error; sigOk = false; } else sigOk = v;
       }
 

@@ -471,6 +471,51 @@
                 reelEvents.push(event);
             }
 
+            // ECDSA signing for Reasoning Reels (Web Crypto API compatible)
+            let keyPair = null;
+
+            async function generateKeyPair() {
+                if (!keyPair) {
+                    keyPair = await crypto.subtle.generateKey(
+                        {
+                            name: "ECDSA",
+                            namedCurve: "P-256"
+                        },
+                        true, // extractable
+                        ["sign", "verify"]
+                    );
+                }
+                return keyPair;
+            }
+
+            async function signMetadata(metadata) {
+                const keyPair = await generateKeyPair();
+
+                // Export public key as JWK format
+                const pubKeyJWK = await crypto.subtle.exportKey("jwk", keyPair.publicKey);
+                const pubKeyB64 = btoa(JSON.stringify(pubKeyJWK));
+
+                // Create metadata without signature fields for signing
+                const { sig, sig_alg, pub, ...metaToSign } = metadata;
+                metaToSign.event_root = metadata.event_root; // Ensure event_root is included
+
+                // Sign the metadata
+                const dataToSign = new TextEncoder().encode(JSON.stringify(metaToSign));
+                const signature = await crypto.subtle.sign(
+                    { name: "ECDSA", hash: "SHA-256" },
+                    keyPair.privateKey,
+                    dataToSign
+                );
+                const sigB64 = btoa(String.fromCharCode(...new Uint8Array(signature)));
+
+                // Add signature fields to metadata
+                metadata.sig_alg = "ecdsa-sha256";
+                metadata.pub = pubKeyB64;
+                metadata.sig = sigB64;
+
+                return metadata;
+            }
+
             function hashString(str) {
                 let hash = 0;
                 for (let i = 0; i < str.length; i++) {
@@ -521,6 +566,9 @@
                         sessionDuration: Date.now() - sessionStartTime
                     }
                 };
+
+                // Sign the metadata for tamper-evident verification
+                await signMetadata(metaData);
 
                 // Create file content: metadata JSON + each event as separate line
                 const fileContent = JSON.stringify(metaData) + '\n' +
