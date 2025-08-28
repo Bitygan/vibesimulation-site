@@ -355,6 +355,22 @@
 
 
 
+                    <!-- Solved Meter -->
+                    <div class="control-group">
+                        <label>Solution Progress</label>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div style="flex: 1; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                                <div id="mp-efficiency-bar" style="height: 100%; background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcf7f); width: 0%; transition: width 0.3s ease;"></div>
+                            </div>
+                            <span id="mp-efficiency-text" style="font-size: 0.7rem; color: rgba(255,255,255,0.8); min-width: 60px;">0.0%</span>
+                        </div>
+                    </div>
+
+                    <!-- Debug Button -->
+                    <div class="control-group">
+                        <button id="mp-debug-check" class="control-toggle-btn" style="background: #ff6b6b;">Check Status</button>
+                    </div>
+
                     <!-- Status -->
                     <div class="control-group">
                         <div id="mp-info" style="color: rgba(255,255,255,0.8); font-size: 0.8rem; margin-top: 1rem;"></div>
@@ -432,6 +448,7 @@
             // Learning progress and solved detection
             let isSolved = false;
             let optimalPathFound = false;
+            let currentOptimalPath = []; // Store the current optimal path for visualization
 
             // Utility functions
             function RNG(seed){ let state=BigInt(seed||1); return ()=>{ state=(6364136223846793005n*state+1442695040888963407n)&((1n<<64n)-1n); const x=Number(state>>32n)&0xffffffff; return (x>>>0)/4294967296; }; }
@@ -527,14 +544,12 @@
 
                 if (optimalDistance === Infinity || optimalPath.length === 0) {
                     console.log('No valid optimal path found');
-                    return false;
+                    return {solved: false, efficiency: 0, optimalPath: []};
                 }
 
                 // Get current flow distribution
                 const {I} = computeCurrents(G);
                 let totalCurrent = 0, optimalCurrent = 0;
-
-                console.log(`Optimal path: ${optimalPath.join('->')} (distance: ${optimalDistance.toFixed(3)})`);
 
                 // Create set of optimal path edges for efficient lookup
                 const optimalEdges = new Set();
@@ -546,57 +561,63 @@
                     optimalEdges.add(key2);
                 }
 
-                console.log(`Optimal path has ${optimalEdges.size/2} edges`);
-
                 // Calculate total current and current through optimal path
-                let optimalEdgeCount = 0;
-                let maxEdgeCurrent = 0;
-                let maxEdgeKey = '';
-
                 for (const [edgeKey, current] of I) {
                     totalCurrent += Math.abs(current); // Use absolute value for total
                     if (optimalEdges.has(edgeKey)) {
                         optimalCurrent += Math.abs(current); // Use absolute value
-                        optimalEdgeCount++;
-                        console.log(`Edge ${edgeKey}: ${current.toFixed(4)}A (ON optimal path)`);
-                    } else {
-                        console.log(`Edge ${edgeKey}: ${current.toFixed(4)}A (OFF optimal path)`);
-                    }
-
-                    // Track the highest current edge for debugging
-                    if (Math.abs(current) > maxEdgeCurrent) {
-                        maxEdgeCurrent = Math.abs(current);
-                        maxEdgeKey = edgeKey;
                     }
                 }
 
-                console.log(`Max current edge: ${maxEdgeKey} with ${maxEdgeCurrent.toFixed(4)}A`);
-                console.log(`Found ${optimalEdgeCount} optimal path edges out of ${I.size} total edges`);
-
                 if (totalCurrent === 0) {
-                    console.log('No current flow detected');
-                    return false;
+                    return {solved: false, efficiency: 0, optimalPath: []};
                 }
 
                 // Check if most current flows through optimal path
                 const efficiency = optimalCurrent / totalCurrent;
-                console.log(`Current efficiency: ${(efficiency * 100).toFixed(2)}%`);
-                console.log(`Optimal current: ${optimalCurrent.toFixed(4)}A / Total current: ${totalCurrent.toFixed(4)}A`);
 
                 // Use different thresholds based on network type
                 let solvedThreshold;
                 if (bias === 'random') {
-                    solvedThreshold = 0.6; // More lenient for random networks
-                    console.log('Using random network threshold: 60%');
+                    solvedThreshold = 0.5; // More lenient for random networks
                 } else {
-                    solvedThreshold = 0.8; // Stricter for biased networks
-                    console.log('Using biased network threshold: 80%');
+                    solvedThreshold = 0.75; // Stricter for biased networks
                 }
 
                 const isSolved = efficiency > solvedThreshold && optimalPath.length > 0;
-                console.log(`Solved threshold: ${(solvedThreshold * 100).toFixed(1)}%, Result: ${isSolved ? 'SOLVED' : 'NOT SOLVED'}`);
 
-                return isSolved;
+                return {
+                    solved: isSolved,
+                    efficiency: efficiency,
+                    optimalPath: optimalPath,
+                    threshold: solvedThreshold
+                };
+            }
+
+            // Update the efficiency meter
+            function updateEfficiencyMeter(efficiency, isSolved) {
+                const percentage = Math.min(100, efficiency * 100);
+                const bar = document.getElementById('mp-efficiency-bar');
+                const text = document.getElementById('mp-efficiency-text');
+
+                if (bar && text) {
+                    bar.style.width = `${percentage}%`;
+
+                    // Color changes based on progress
+                    if (isSolved) {
+                        bar.style.background = 'linear-gradient(90deg, #6bcf7f, #4ade80)'; // Green when solved
+                        text.textContent = `SOLVED!`;
+                        text.style.color = '#6bcf7f';
+                    } else if (percentage > 70) {
+                        bar.style.background = 'linear-gradient(90deg, #ffd93d, #fbbf24)'; // Yellow when close
+                        text.textContent = `${percentage.toFixed(1)}%`;
+                        text.style.color = '#ffd93d';
+                    } else {
+                        bar.style.background = 'linear-gradient(90deg, #ff6b6b, #ef4444)'; // Red when far
+                        text.textContent = `${percentage.toFixed(1)}%`;
+                        text.style.color = '#ff6b6b';
+                    }
+                }
             }
 
             function makeGrid(R, C, seed, bias){
@@ -715,6 +736,16 @@
                     const Ru=G.res.get(key); const cond = 1/Ru; if (cond>maxCond) maxCond=cond;
                 }
 
+                // Create set of optimal path edges for highlighting
+                const optimalEdges = new Set();
+                for (let i = 0; i < currentOptimalPath.length - 1; i++) {
+                    const u = currentOptimalPath[i], v = currentOptimalPath[i+1];
+                    const key1 = `${u}-${v}`;
+                    const key2 = `${v}-${u}`;
+                    optimalEdges.add(key1);
+                    optimalEdges.add(key2);
+                }
+
                 for (const [u,v,key] of G.edges){
                     const ru = Math.floor(u/C), cu=u% C;
                     const rv = Math.floor(v/C), cv=v% C;
@@ -724,14 +755,24 @@
                     let width = 2 + 4*t;
                     let r = Math.floor(42 + t*213), g = Math.floor(55 + t*200), b = Math.floor(70 + t*185);
 
-                    // Subtle highlighting for solved state - just increase line width
-                    if (isSolved) {
-                        const Iuv = I.get(key)||0;
-                        const maxI = Math.max(...I.values());
-                        if (Iuv > maxI * 0.5) { // Highlight high-current paths
-                            width *= 1.2; // Subtle increase, not dramatic
+                    // Highlight optimal path edges
+                    const isOptimalEdge = optimalEdges.has(key);
+                    if (isOptimalEdge) {
+                        width *= 1.5; // Make optimal path edges thicker
+                        if (isSolved) {
+                            // Golden glow for solved optimal path
+                            r = Math.floor(255 * 0.8);
+                            g = Math.floor(215 * 0.8);
+                            b = Math.floor(0);
+                        } else {
+                            // Bright highlight for current optimal path
+                            r = Math.floor(100 + Math.sin(Date.now() * 0.003) * 50);
+                            g = Math.floor(150 + Math.sin(Date.now() * 0.003 + 2) * 50);
+                            b = Math.floor(255);
                         }
                     }
+
+
 
 
 
@@ -775,9 +816,13 @@
                 stepCount = 0;
                 isSolved = false;
                 optimalPathFound = false;
+                currentOptimalPath = [];
                 draw();
                 const sc = score(G, computeCurrents(G).I);
                 document.getElementById("mp-info").textContent = `Ready - contrast ${sc.toFixed(4)}`;
+
+                // Initialize efficiency meter
+                updateEfficiencyMeter(0, false);
             }
 
             function step(){
@@ -791,7 +836,13 @@
                 const sc = score(G, I);
 
                 // Check if network has found optimal path
-                isSolved = checkOptimalPath(G);
+                const solvedResult = checkOptimalPath(G);
+                isSolved = solvedResult.solved;
+                const efficiency = solvedResult.efficiency;
+                currentOptimalPath = solvedResult.optimalPath; // Store for visualization
+
+                // Update efficiency meter
+                updateEfficiencyMeter(efficiency, isSolved);
 
                 // Show learning progress with solved status
                 let statusText = `step ${stepCount} • contrast ${sc.toFixed(4)} • solve ${(performance.now()-t0).toFixed(1)} ms`;
@@ -895,6 +946,20 @@
                 window.open("verify.html","_blank");
             });
 
+            // Debug button to manually check solved state
+            document.getElementById('mp-debug-check').addEventListener('click', () => {
+                if (G) {
+                    console.log('🔍 Manual status check triggered');
+                    const solvedResult = checkOptimalPath(G);
+                    const status = solvedResult.solved ? 'SOLVED' : 'NOT SOLVED';
+                    const efficiency = solvedResult.efficiency;
+                    document.getElementById("mp-info").textContent =
+                        `Manual check: ${status} (${(efficiency * 100).toFixed(1)}% efficiency)`;
+                    console.log(`Efficiency: ${(efficiency * 100).toFixed(2)}%, Threshold: ${(solvedResult.threshold * 100).toFixed(1)}%`);
+                } else {
+                    console.log('❌ No grid available for status check');
+                }
+            });
 
         }
     </script>
