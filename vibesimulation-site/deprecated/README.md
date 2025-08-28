@@ -48,5 +48,54 @@ If you need to restore Circuit Lab in the future:
 
 ---
 
+## Advanced Optics - DEPRECATED
+
+### **Status:** Removed from active build (August 28, 2025)
+
+### **What it was:**
+An advanced optical physics simulation featuring:
+- **Ray Tracing Engine**: Real-time light propagation through optical systems
+- **Lens Systems**: Convex/concave lenses with accurate focal point calculations
+- **Diffraction Patterns**: Single/double/multiple slit interference with intensity visualization
+- **Interactive Controls**: Real-time parameter adjustment (wavelength, focal length, ray count)
+- **Dynamic Visual Effects**: Pulsing rays, glowing elements, animated background
+- **Educational Interface**: Learning panels explaining optical principles
+- **Basic Reasoning Reels**: SHA-256 hash chaining and Ed25519 signatures
+
+### **Why removed:**
+- **❌ SAX SOP v2.2 Non-Compliance**: Fundamental architectural violations
+  - No paradigm declaration (Agent-First vs Simulation-First)
+  - Used custom JavaScript classes instead of canonical `SAX_Simulator`, `SimulatorAgent`
+  - Missing declarative intent and operator-centric ontology
+  - No computational alliance (pure JavaScript instead of specialized libraries)
+  - Incomplete Reasoning Reels integration (missing v2.2 statistical assurance)
+- **Architectural Integrity**: Departure from established IP framework
+- **Methodological Consistency**: Violated core engineering principles
+
+### **Files:**
+- `ADVANCED_OPTICS_README.md` - Complete documentation and compliance analysis
+- `advanced-optics.html` - Main simulation page (removed from production)
+
+### **Compliance Assessment:**
+**Overall Score: 15% (Non-Compliant)**
+- ✅ Systemic Causality: Emergent behavior from optical physics
+- ❌ All other principles: Major architectural violations
+
+### **Recovery:**
+If Advanced Optics is to be re-implemented, it must achieve **full SAX SOP v2.2 compliance** using:
+1. **Simulation-First Paradigm** declaration
+2. **SAX_Simulator** for headless ray tracing physics
+3. **SimulatorAgent** for visual rendering
+4. **Declarative Choreography Layer**
+5. **Complete v2.2 Ledger Integration**
+
+### **Lessons Learned:**
+- Architectural compliance must be prioritized over feature completeness
+- Custom implementations cannot substitute for canonical agent classes
+- Intellectual property integrity requires strict adherence to established protocols
+- Experimental implementations should be clearly documented for future reference
+
+---
+
 **VibeSimulation continues to focus on delivering high-quality, performant physics simulations.** 🌊⚡🎵🎯
 
