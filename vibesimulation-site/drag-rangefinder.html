@@ -408,35 +408,45 @@
     </div>
 
     <!-- Scripts -->
-    <script src="recorder.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Drag Rangefinder page loaded');
 
-            // Wait for recorder.js to load
-            function waitForRecorder() {
-                if (typeof makeReel !== 'undefined') {
-                    console.log('Recorder loaded, initializing Drag Rangefinder...');
+            // Initialize the simulation immediately
+            initDragRangefinder();
 
-                    // Hide loading screen and show content
-                    document.getElementById('loading-screen').style.display = 'none';
-                    document.getElementById('main-content').classList.add('loaded');
+            // Hide loading screen and show content
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loading-screen');
+                const mainContent = document.getElementById('main-content');
 
-                    // Initialize the simulation
-                    initDragRangefinder();
-                    console.log('Drag Rangefinder initialized successfully!');
-                } else {
-                    console.log('Waiting for recorder...');
-                    setTimeout(waitForRecorder, 100);
-                }
-            }
+                if (loadingScreen) loadingScreen.style.display = 'none';
+                if (mainContent) mainContent.classList.add('loaded');
 
-            setTimeout(waitForRecorder, 500);
+                console.log('Drag Rangefinder UI initialized');
+            }, 100);
         });
 
         function initDragRangefinder() {
+            console.log('initDragRangefinder called');
+
             const canvas = document.getElementById('drag-rangefinder-canvas');
+            console.log('Canvas found:', canvas);
+
+            if (!canvas) {
+                console.error('Canvas element not found!');
+                // Try again after a short delay
+                setTimeout(initDragRangefinder, 100);
+                return;
+            }
+
             const ctx = canvas.getContext('2d');
+            console.log('Canvas context:', ctx);
+
+            if (!ctx) {
+                console.error('Could not get canvas context!');
+                return;
+            }
 
             // Simulation parameters
             let seed = 20250827;
@@ -648,6 +658,12 @@
 
             // Start animation
             animate();
+
+            // Test canvas with a simple drawing
+            console.log('Testing canvas drawing...');
+            ctx.fillStyle = 'red';
+            ctx.fillRect(10, 10, 100, 100);
+            console.log('Canvas test drawing completed');
 
             // Event listeners - same pattern as homepage
             document.getElementById('dr-seed-input').addEventListener('input', (e) => {
