@@ -253,6 +253,7 @@
 				grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 				gap: 1.25rem;
 				align-items: start;
+				justify-items: center;
 			}
 
 			.control-group {
@@ -412,11 +413,25 @@
 				left: 0;
 				right: 0;
 				z-index: 1000;
-				background: rgba(0, 0, 0, 0.8);
+				background: linear-gradient(135deg, rgba(12, 12, 12, 0.9) 0%, rgba(26, 26, 46, 0.9) 25%, rgba(22, 33, 62, 0.9) 50%, rgba(15, 52, 96, 0.9) 75%, rgba(26, 26, 46, 0.9) 100%);
 				backdrop-filter: blur(20px);
-				border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+				border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 				padding: 1rem 2rem;
 				transition: all 0.3s ease;
+				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+			}
+
+			.physics-nav::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background:
+					radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 70%),
+					radial-gradient(circle at 80% 50%, rgba(255, 119, 198, 0.1) 0%, transparent 70%);
+				pointer-events: none;
 			}
 
 			.nav-content {
@@ -425,6 +440,8 @@
 				justify-content: space-between;
 				max-width: 1400px;
 				margin: 0 auto;
+				position: relative;
+				z-index: 2;
 			}
 
 			.nav-logo {
@@ -464,6 +481,7 @@
 				height: 2px;
 				background: linear-gradient(135deg, #60a5fa, #a78bfa);
 				transition: width 0.3s ease;
+				border-radius: 1px;
 			}
 
 			.nav-link:hover::after {
@@ -478,6 +496,7 @@
 				text-decoration: none;
 				font-weight: 600;
 				transition: all 0.3s ease;
+				box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 			}
 
 			.nav-cta:hover {
@@ -515,8 +534,267 @@
 				font-size: 1rem;
 			}
 
+			/* ===== WORLD-CLASS FOOTER ===== */
+			.world-footer {
+				background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+				border-top: 1px solid rgba(255, 255, 255, 0.1);
+				margin-top: 4rem;
+				position: relative;
+			}
+
+			.world-footer::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background:
+					radial-gradient(circle at 20% 30%, rgba(120, 119, 198, 0.05) 0%, transparent 50%),
+					radial-gradient(circle at 80% 70%, rgba(255, 119, 198, 0.05) 0%, transparent 50%);
+				pointer-events: none;
+			}
+
+			.footer-container {
+				max-width: 1400px;
+				margin: 0 auto;
+				padding: 0 2rem;
+				position: relative;
+				z-index: 1;
+			}
+
+			.footer-main {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+				gap: 3rem;
+				padding: 4rem 0 2rem;
+			}
+
+			.footer-section {
+				min-width: 0;
+			}
+
+			.footer-brand {
+				margin-bottom: 2rem;
+			}
+
+			.footer-logo {
+				display: flex;
+				align-items: center;
+				gap: 0.75rem;
+				margin-bottom: 1rem;
+			}
+
+			.logo-icon {
+				font-size: 2.5rem;
+				line-height: 1;
+			}
+
+			.footer-brand-name {
+				font-size: 1.5rem;
+				font-weight: 700;
+				color: white;
+				margin: 0;
+				background: linear-gradient(135deg, #60a5fa, #a78bfa);
+				background-clip: text;
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+			}
+
+			.footer-description {
+				color: rgba(255, 255, 255, 0.7);
+				line-height: 1.6;
+				font-size: 0.95rem;
+				margin-bottom: 1.5rem;
+			}
+
+			.footer-social {
+				display: flex;
+				gap: 1rem;
+			}
+
+			.social-link {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 40px;
+				height: 40px;
+				background: rgba(255, 255, 255, 0.05);
+				border-radius: 50%;
+				color: rgba(255, 255, 255, 0.7);
+				text-decoration: none;
+				transition: all 0.3s ease;
+				border: 1px solid rgba(255, 255, 255, 0.1);
+			}
+
+			.social-link:hover {
+				background: rgba(255, 255, 255, 0.1);
+				color: white;
+				transform: translateY(-2px);
+				box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+			}
+
+			.footer-heading {
+				font-size: 1.1rem;
+				font-weight: 600;
+				color: white;
+				margin-bottom: 1.5rem;
+				position: relative;
+			}
+
+			.footer-heading::after {
+				content: '';
+				position: absolute;
+				bottom: -0.5rem;
+				left: 0;
+				width: 30px;
+				height: 2px;
+				background: linear-gradient(135deg, #60a5fa, #a78bfa);
+				border-radius: 1px;
+			}
+
+			.footer-links {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+
+			.footer-links li {
+				margin-bottom: 0.75rem;
+			}
+
+			.footer-links a {
+				color: rgba(255, 255, 255, 0.7);
+				text-decoration: none;
+				font-size: 0.95rem;
+				transition: all 0.3s ease;
+				position: relative;
+			}
+
+			.footer-links a:hover {
+				color: white;
+				transform: translateX(4px);
+			}
+
+			.footer-contact-text {
+				color: rgba(255, 255, 255, 0.7);
+				font-size: 0.9rem;
+				margin-bottom: 1.5rem;
+				line-height: 1.5;
+			}
+
+			.newsletter-signup {
+				margin-bottom: 2rem;
+			}
+
+			.newsletter-input-group {
+				display: flex;
+				gap: 0.5rem;
+				margin-bottom: 1rem;
+			}
+
+			.newsletter-input {
+				flex: 1;
+				padding: 0.75rem 1rem;
+				border: 1px solid rgba(255, 255, 255, 0.2);
+				border-radius: 25px;
+				background: rgba(255, 255, 255, 0.05);
+				color: white;
+				font-size: 0.9rem;
+			}
+
+			.newsletter-input::placeholder {
+				color: rgba(255, 255, 255, 0.5);
+			}
+
+			.newsletter-input:focus {
+				outline: none;
+				border-color: #60a5fa;
+				box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+			}
+
+			.newsletter-btn {
+				padding: 0.75rem 1.5rem;
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				color: white;
+				border: none;
+				border-radius: 25px;
+				font-size: 0.9rem;
+				font-weight: 500;
+				cursor: pointer;
+				transition: all 0.3s ease;
+			}
+
+			.newsletter-btn:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+			}
+
+			.footer-contact {
+				display: flex;
+				flex-direction: column;
+				gap: 1rem;
+			}
+
+			.contact-item {
+				display: flex;
+				align-items: center;
+				gap: 0.75rem;
+				color: rgba(255, 255, 255, 0.7);
+				font-size: 0.9rem;
+			}
+
+			.contact-item svg {
+				flex-shrink: 0;
+				color: rgba(255, 255, 255, 0.5);
+			}
+
+			.footer-bottom {
+				border-top: 1px solid rgba(255, 255, 255, 0.1);
+				padding: 2rem 0;
+			}
+
+			.footer-bottom-content {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				flex-wrap: wrap;
+				gap: 1rem;
+			}
+
+			.footer-bottom .copyright p {
+				color: rgba(255, 255, 255, 0.6);
+				font-size: 0.9rem;
+				margin: 0;
+			}
+
+			.footer-bottom-links {
+				display: flex;
+				gap: 2rem;
+				flex-wrap: wrap;
+			}
+
+			.footer-bottom-links a {
+				color: rgba(255, 255, 255, 0.6);
+				text-decoration: none;
+				font-size: 0.9rem;
+				transition: color 0.3s ease;
+			}
+
+			.footer-bottom-links a:hover {
+				color: white;
+			}
+
 			/* ===== RESPONSIVE ===== */
 			@media (max-width: 768px) {
+				.physics-nav {
+					padding: 0.75rem 1rem;
+				}
+
+				.nav-logo {
+					font-size: 1.25rem;
+				}
+
 				.physics-grid {
 					grid-template-columns: 1fr;
 					gap: 2rem;
@@ -534,6 +812,51 @@
 				.physics-controls {
 					padding: 0.75rem;
 					align-self: stretch;
+					grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+				}
+
+				/* Drag Rangefinder specific adjustments */
+				#drag-rangefinder .physics-controls {
+					grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+					justify-content: center;
+					max-width: 1200px;
+					margin: 0 auto;
+				}
+
+				#drag-rangefinder .control-group {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					text-align: center;
+					width: 100%;
+					max-width: 220px;
+				}
+
+				#drag-rangefinder .control-group input,
+				#drag-rangefinder .control-group select {
+					width: 100%;
+					text-align: center;
+				}
+
+				#drag-rangefinder .control-group button {
+					width: 100%;
+					text-align: center;
+				}
+
+				/* Mobile adjustments for drag rangefinder */
+				@media (max-width: 768px) {
+					#drag-rangefinder .physics-controls {
+						grid-template-columns: 1fr;
+						justify-content: stretch;
+						max-width: none;
+						margin: 0;
+					}
+
+					#drag-rangefinder .control-group {
+						max-width: none;
+						align-items: stretch;
+						text-align: left;
+					}
 				}
 
 				.hero-title {
@@ -542,6 +865,81 @@
 
 				.nav-links {
 					display: none;
+				}
+
+				/* Footer Mobile Styles */
+				.world-footer {
+					margin-top: 2rem;
+				}
+
+				.footer-container {
+					padding: 0 1rem;
+				}
+
+				.footer-main {
+					grid-template-columns: 1fr;
+					gap: 2rem;
+					padding: 3rem 0 2rem;
+				}
+
+				.footer-social {
+					justify-content: center;
+				}
+
+				.footer-logo {
+					justify-content: center;
+					text-align: center;
+				}
+
+				.footer-description {
+					text-align: center;
+				}
+
+				.footer-heading {
+					text-align: center;
+				}
+
+				.footer-heading::after {
+					left: 50%;
+					transform: translateX(-50%);
+				}
+
+				.footer-links {
+					text-align: center;
+				}
+
+				.footer-links li {
+					margin-bottom: 1rem;
+				}
+
+				.footer-links a:hover {
+					transform: none;
+				}
+
+				.newsletter-input-group {
+					flex-direction: column;
+					align-items: stretch;
+				}
+
+				.newsletter-btn {
+					align-self: center;
+					min-width: 120px;
+				}
+
+				.footer-contact {
+					align-items: center;
+					text-align: center;
+				}
+
+				.footer-bottom-content {
+					flex-direction: column;
+					text-align: center;
+					gap: 1.5rem;
+				}
+
+				.footer-bottom-links {
+					justify-content: center;
+					gap: 1.5rem;
 				}
 			}
 		</style>
@@ -565,12 +963,13 @@
 					<span style="font-size: 1.8em;">🌊</span>
 					VibeSimulation
 				</a>
-				<div class="nav-links">
-					<a href="#fluid-dynamics" class="nav-link">Fluid Dynamics</a>
-					<a href="#electrostatics" class="nav-link">Electrostatics</a>
-					<a href="#wave-physics" class="nav-link">Wave Physics</a>
-					<a href="about.html" class="nav-link">About</a>
-				</div>
+				            <div class="nav-links">
+                <a href="#fluid-dynamics" class="nav-link">Fluid Dynamics</a>
+                <a href="#electrostatics" class="nav-link">Electrostatics</a>
+                <a href="#wave-physics" class="nav-link">Wave Physics</a>
+                <a href="blog/" class="nav-link">Blog</a>
+                <a href="about.html" class="nav-link">About</a>
+            </div>
 			</div>
 		</nav>
 
@@ -860,10 +1259,21 @@
 								<canvas id="drag-rangefinder-canvas" width="1400" height="700"></canvas>
 							</div>
 							<div class="physics-controls">
+								<!-- Basic Physics Parameters -->
 								<div class="control-group">
 									<label>USER_SEED</label>
 									<input type="number" id="dr-seed-input" value="20250827" />
 								</div>
+								<div class="control-group">
+									<label>Speed v0: <span id="dr-v0-value">35.5</span> m/s</label>
+									<input type="range" id="dr-v0-slider" min="5" max="80" step="0.5" value="35.5" />
+								</div>
+								<div class="control-group">
+									<label>Angle: <span id="dr-angle-value">34</span>°</label>
+									<input type="range" id="dr-angle-slider" min="5" max="85" step="1" value="34" />
+								</div>
+
+								<!-- Numerical Method -->
 								<div class="control-group">
 									<label>Integrator</label>
 									<select id="dr-integrator-select">
@@ -879,21 +1289,25 @@
 									</select>
 								</div>
 								<div class="control-group">
-									<label>Speed v0: <span id="dr-v0-value">35.5</span> m/s</label>
-									<input type="range" id="dr-v0-slider" min="5" max="80" step="0.5" value="35.5" />
-								</div>
-								<div class="control-group">
-									<label>Angle: <span id="dr-angle-value">34</span>°</label>
-									<input type="range" id="dr-angle-slider" min="5" max="85" step="1" value="34" />
-								</div>
-								<div class="control-group">
 									<label>dt: <span id="dr-dt-value">0.022</span> s</label>
 									<input type="range" id="dr-dt-slider" min="0.002" max="0.05" step="0.002" value="0.022" />
 								</div>
+
+								<!-- Environment Controls -->
 								<div class="control-group dr-advanced-controls" style="display: none;">
 									<label>Air Density ρ: <span id="dr-rho-value">1.22</span> kg/m³</label>
 									<input type="range" id="dr-rho-slider" min="0.5" max="1.5" step="0.01" value="1.22" />
 								</div>
+								<div class="control-group dr-advanced-controls" style="display: none;">
+									<label>Wind Speed: <span id="dr-wind-value">5.0</span> m/s</label>
+									<input type="range" id="dr-wind-slider" min="-15" max="15" step="0.5" value="5" />
+								</div>
+								<div class="control-group dr-advanced-controls" style="display: none;">
+									<label>Wind Direction: <span id="dr-winddir-value">180</span>°</label>
+									<input type="range" id="dr-winddir-slider" min="0" max="360" step="1" value="180" />
+								</div>
+
+								<!-- Projectile Properties -->
 								<div class="control-group dr-advanced-controls" style="display: none;">
 									<label>Drag Coeff Cd: <span id="dr-cd-value">0.47</span></label>
 									<input type="range" id="dr-cd-slider" min="0.10" max="1.20" step="0.01" value="0.47" />
@@ -906,16 +1320,13 @@
 									<label>Mass: <span id="dr-mass-value">0.145</span> kg</label>
 									<input type="range" id="dr-mass-slider" min="0.03" max="0.2" step="0.001" value="0.145" />
 								</div>
-								<div class="control-group dr-advanced-controls" style="display: none;">
-									<label>Wind Speed: <span id="dr-wind-value">5.0</span> m/s</label>
-									<input type="range" id="dr-wind-slider" min="-15" max="15" step="0.5" value="5" />
+
+								<!-- Action Buttons -->
+								<div class="control-group">
+									<button id="dr-show-advanced" class="control-toggle-btn">Show Advanced</button>
 								</div>
 								<div class="control-group">
-									<label>Wind Direction: <span id="dr-winddir-value">180</span>°</label>
-									<input type="range" id="dr-winddir-slider" min="0" max="360" step="1" value="180" />
-								</div>
-								<div class="control-group">
-									<button id="dr-show-advanced" class="control-toggle-btn">Show Advanced Controls</button>
+									<button id="dr-reset-simulation">Reset Simulation</button>
 								</div>
 								<div class="control-group">
 									<button id="dr-fire-button">Fire Projectile</button>
@@ -929,16 +1340,106 @@
 				</div>
 			</section>
 
-			<!-- Footer -->
-			<section class="physics-footer">
-				<div class="footer-content">
-					<h3 class="footer-title">Computational Physics Made Real</h3>
-					<p class="footer-text">
-						These simulations demonstrate the power of numerical methods in revealing the hidden beauty
-						of physical laws. Each pixel represents thousands of calculations, bringing complex mathematics to life.
-					</p>
+			<!-- World-Class Footer -->
+			<footer class="world-footer">
+				<div class="footer-container">
+					<!-- Main Footer Content -->
+					<div class="footer-main">
+						<!-- Company Info -->
+						<div class="footer-section">
+							<div class="footer-brand">
+								<div class="footer-logo">
+									<span class="logo-icon">🌊</span>
+									<h3 class="footer-brand-name">VibeSimulation</h3>
+								</div>
+								<p class="footer-description">
+									Experience computational physics through interactive simulations.
+									Real-time mathematical beauty brought to life through cutting-edge algorithms.
+								</p>
+								<div class="footer-social">
+									<a href="https://twitter.com/vibesimulation" class="social-link" aria-label="X (Twitter)">
+										<svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+											<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+										</svg>
+									</a>
+									<a href="https://www.youtube.com/channel/UCSTDvzH4h6OdIrjv6cOk9dA" class="social-link" aria-label="YouTube">
+										<svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+											<path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+										</svg>
+									</a>
+								</div>
+							</div>
+						</div>
+
+						<!-- Quick Links -->
+						<div class="footer-section">
+							<h4 class="footer-heading">Explore</h4>
+							<ul class="footer-links">
+								<li><a href="#fluid-dynamics">Fluid Dynamics</a></li>
+								<li><a href="#electrostatics">Electrostatics</a></li>
+								<li><a href="#wave-physics">Wave Physics</a></li>
+								<li><a href="#drag-rangefinder">Drag Rangefinder</a></li>
+								<li><a href="blog/">Blog</a></li>
+							</ul>
+						</div>
+
+						<!-- Resources -->
+						<div class="footer-section">
+							<h4 class="footer-heading">Resources</h4>
+							<ul class="footer-links">
+								<li><a href="about.html">About Us</a></li>
+								<li><a href="contact.html">Contact</a></li>
+								<li><a href="privacy-policy.html">Privacy Policy</a></li>
+								<li><a href="terms.html">Terms of Service</a></li>
+							</ul>
+						</div>
+
+						<!-- Contact & Newsletter -->
+						<div class="footer-section">
+							<h4 class="footer-heading">Stay Connected</h4>
+							<p class="footer-contact-text">Get updates on new simulations and physics insights.</p>
+
+							<div class="newsletter-signup">
+								<div class="newsletter-input-group">
+									<input type="email" placeholder="Enter your email" class="newsletter-input">
+									<button type="submit" class="newsletter-btn">Subscribe</button>
+								</div>
+							</div>
+
+							<div class="footer-contact">
+								<div class="contact-item">
+									<svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+										<path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.89 2 1.99 2H20c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+									</svg>
+									<span>vibesimulations@gmail.com</span>
+								</div>
+								<div class="contact-item">
+									<svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+										<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+									</svg>
+									<span>Bristol, UK</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Footer Bottom -->
+					<div class="footer-bottom">
+						<div class="footer-bottom-content">
+							<div class="copyright">
+								<p>&copy; 2024 VibeSimulation. All rights reserved. | Made with ❤️ for science education.</p>
+							</div>
+							<div class="footer-bottom-links">
+								<a href="privacy-policy.html">Privacy</a>
+								<a href="terms.html">Terms</a>
+								<a href="cookies.html">Cookies</a>
+								<a href="sitemap.xml">Sitemap</a>
+								<a href="robots.txt">Robots</a>
+							</div>
+						</div>
+					</div>
 				</div>
-			</section>
+			</footer>
 
 		<!-- Simulation Script -->
 		<script>
@@ -1755,9 +2256,63 @@
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 			<script src="assets/js/video.js"></script>
-			<script src="assets/js/cookie-consent.js"></script>
+					<script src="assets/js/cookie-consent.js"></script>
 
-			<!-- Resonant Canvas Simulation Script -->
+		<!-- Newsletter Signup Script -->
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				const newsletterForm = document.querySelector('.newsletter-signup');
+				if (newsletterForm) {
+					const emailInput = newsletterForm.querySelector('.newsletter-input');
+					const submitBtn = newsletterForm.querySelector('.newsletter-btn');
+
+					function handleNewsletterSubmit(e) {
+						e.preventDefault();
+						const email = emailInput.value.trim();
+
+						if (!email) {
+							alert('Please enter your email address.');
+							return;
+						}
+
+						if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+							alert('Please enter a valid email address.');
+							return;
+						}
+
+						// Here you would typically send the email to your backend
+						alert(`Thank you for subscribing! We'll send updates to ${email}`);
+						emailInput.value = '';
+
+						// Example of what you might do:
+						// fetch('/api/newsletter/subscribe', {
+						//     method: 'POST',
+						//     headers: { 'Content-Type': 'application/json' },
+						//     body: JSON.stringify({ email: email })
+						// })
+						// .then(response => response.json())
+						// .then(data => {
+						//     alert('Successfully subscribed!');
+						//     emailInput.value = '';
+						// })
+						// .catch(error => {
+						//     console.error('Error:', error);
+						//     alert('Sorry, there was an error subscribing. Please try again.');
+						// });
+					}
+
+					submitBtn.addEventListener('click', handleNewsletterSubmit);
+
+					emailInput.addEventListener('keypress', function(e) {
+						if (e.key === 'Enter') {
+							handleNewsletterSubmit(e);
+						}
+					});
+				}
+			});
+		</script>
+
+		<!-- Resonant Canvas Simulation Script -->
 			<script>
 				class ResonantCanvasSimulation {
 					constructor() {
@@ -2437,6 +2992,10 @@
 							this.fireKey++;
 						});
 
+						document.getElementById('dr-reset-simulation').addEventListener('click', () => {
+							this.resetSimulation();
+						});
+
 						// Advanced controls toggle
 						document.getElementById('dr-show-advanced').addEventListener('click', () => {
 							this.toggleAdvancedControls();
@@ -2644,6 +3203,50 @@
 							cancelAnimationFrame(this.raf);
 							this.raf = null;
 						}
+					}
+
+					resetSimulation() {
+						// Reset all parameters to default values
+						this.seed = 20250827;
+						this.integrator = "EulerCromer";
+						this.dragModel = "Quadratic";
+						this.v0 = 35.5;
+						this.angle = 34;
+						this.dt = 0.022;
+						this.rho = 1.22;
+						this.Cd = 0.47;
+						this.radius = 0.0366;
+						this.mass = 0.145;
+						this.wind = 5;
+						this.windDir = 180;
+						this.fireKey = 0;
+
+						// Update UI elements
+						document.getElementById('dr-seed-input').value = this.seed;
+						document.getElementById('dr-integrator-select').value = this.integrator;
+						document.getElementById('dr-drag-select').value = this.dragModel;
+						document.getElementById('dr-v0-slider').value = this.v0;
+						document.getElementById('dr-v0-value').textContent = this.v0.toFixed(1);
+						document.getElementById('dr-angle-slider').value = this.angle;
+						document.getElementById('dr-angle-value').textContent = this.angle;
+						document.getElementById('dr-dt-slider').value = this.dt;
+						document.getElementById('dr-dt-value').textContent = this.dt.toFixed(3);
+						document.getElementById('dr-rho-slider').value = this.rho;
+						document.getElementById('dr-rho-value').textContent = this.rho.toFixed(2);
+						document.getElementById('dr-cd-slider').value = this.Cd;
+						document.getElementById('dr-cd-value').textContent = this.Cd.toFixed(2);
+						document.getElementById('dr-radius-slider').value = this.radius;
+						document.getElementById('dr-radius-value').textContent = this.radius.toFixed(4);
+						document.getElementById('dr-mass-slider').value = this.mass;
+						document.getElementById('dr-mass-value').textContent = this.mass.toFixed(3);
+						document.getElementById('dr-wind-slider').value = this.wind;
+						document.getElementById('dr-wind-value').textContent = this.wind.toFixed(1);
+						document.getElementById('dr-winddir-slider').value = this.windDir;
+						document.getElementById('dr-winddir-value').textContent = this.windDir;
+
+						// Clear canvas
+						this.ctx.clearRect(0, 0, this.W, this.H);
+						this.render(); // Render with default values
 					}
 
 					toggleFullscreen() {
