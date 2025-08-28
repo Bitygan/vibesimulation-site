@@ -743,7 +743,7 @@
                 ctx.fillRect(0, 0, W, H);
 
                 // Draw coordinate system
-                ctx.strokeStyle = rgba(255, 255, 255, 0.2);
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
                 ctx.lineWidth = 1;
                 ctx.beginPath();
                 ctx.moveTo(W/2, 0);
@@ -753,7 +753,7 @@
                 ctx.stroke();
 
                 // Draw scale markers
-                ctx.fillStyle = rgba(255, 255, 255, 0.6);
+                ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
                 ctx.font = '12px monospace';
                 for (let i = -50; i <= 50; i += 10) {
                     const screen = physicsToScreen(i, 0);
@@ -768,7 +768,7 @@
                     const hue = (wavelength - 400) / 300 * 360; // Color based on wavelength
                     const alpha = ray.intensity;
 
-                    ctx.strokeStyle = hsl(hue, 80, 60, alpha);
+                    ctx.strokeStyle = `hsla(${hue}, 80%, 60%, ${alpha})`;
                     ctx.lineWidth = 2;
                     ctx.beginPath();
 
@@ -814,7 +814,7 @@
 
                     ctx.strokeStyle = hsl(240, 80, 60);
                     ctx.lineWidth = 3;
-                    ctx.fillStyle = hsl(240, 60, 30, 0.3);
+                    ctx.fillStyle = "hsla(240, 60%, 30%, 0.3)";
 
                     if (element.type.includes('lens')) {
                         // Draw lens as two curved surfaces
@@ -854,13 +854,13 @@
                     const intensity = point.intensity / maxIntensity;
                     const height = intensity * 100;
 
-                    ctx.fillStyle = hsl(45, 80, 60, intensity * 0.8);
+                    ctx.fillStyle = `hsla(45, 80%, 60%, ${intensity * 0.8})`;
                     ctx.fillRect(screen.x - 1, H/2 - height/2, 2, height);
                 });
             }
 
             function drawHUD() {
-                ctx.fillStyle = rgba(255, 255, 255, 0.9);
+                ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
                 ctx.font = '14px monospace';
                 ctx.fillText(`Mode: ${mode.toUpperCase()}  |  Wavelength: ${wavelength}nm`, 20, 30);
                 ctx.fillText(`Elements: ${elements.length}  |  Rays: ${rayCount}`, 20, 50);
