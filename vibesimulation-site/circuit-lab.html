@@ -10,11 +10,19 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 
-    <!-- Fonts and Icons -->
+    <!-- Preload critical scripts for faster loading -->
+    <link rel="preload" href="recorder.js" as="script">
+    <link rel="preload" href="circuit_lab.js" as="script">
+
+    <!-- Optimized font loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"></noscript>
+
+    <!-- Font Awesome (load after fonts) -->
+    <link rel="preload" href="assets/css/fontawesome-all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="assets/css/fontawesome-all.min.css"></noscript>
 
     <!-- Main Styles -->
     <link rel="stylesheet" href="assets/css/main.css" />
@@ -147,14 +155,51 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Enhanced loading animations */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top: 3px solid #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-progress {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            background: #4f46e5;
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
         /* Hide main content initially */
         .main-content {
             opacity: 0;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.3s ease;
         }
 
         .main-content.loaded {
             opacity: 1;
+        }
+
+        /* Smooth transitions for loading screen */
+        #loading-screen {
+            transition: opacity 0.3s ease;
         }
     </style>
 </head>
@@ -207,61 +252,149 @@
         <!-- Circuit Lab will be inserted here -->
     </div>
 
-    <!-- Scripts -->
-    <script src="recorder.js"></script>
-    <script src="circuit_lab.js"></script>
-
+    <!-- Optimized Script Loading -->
     <script>
-        // Show loading screen initially
+        // Track loading progress
+        let loadedScripts = 0;
+        const totalScripts = 2;
+        const loadingStatus = document.getElementById('loading-screen');
+
+        function updateLoadingProgress(message) {
+            if (loadingStatus) {
+                loadingStatus.innerHTML = `
+                    <div class="loading-spinner"></div>
+                    <h3>Loading Circuit Lab...</h3>
+                    <p>${message}</p>
+                    <div style="width: 200px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin: 20px auto; overflow: hidden;">
+                        <div style="width: ${(loadedScripts / totalScripts) * 100}%; height: 100%; background: #4f46e5; transition: width 0.3s ease;"></div>
+                    </div>
+                `;
+            }
+        }
+
+        // Load scripts asynchronously with better error handling
+        function loadScript(src, callback, errorCallback) {
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
+
+            script.onload = function() {
+                loadedScripts++;
+                updateLoadingProgress(`Loaded ${src} (${loadedScripts}/${totalScripts})`);
+                if (callback) callback();
+            };
+
+            script.onerror = function() {
+                console.error(`Failed to load script: ${src}`);
+                if (errorCallback) errorCallback();
+            };
+
+            document.head.appendChild(script);
+        }
+
+        // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Circuit Lab page loaded');
+            updateLoadingProgress('Initializing...');
 
-            // Wait for circuit_lab.js to load and InteractiveCircuitLab to be defined
-            function waitForCircuitLab() {
+            // Load recorder.js first (dependency)
+            loadScript('recorder.js', function() {
+                updateLoadingProgress('Loading Circuit Lab engine...');
+
+                // Then load circuit_lab.js
+                loadScript('circuit_lab.js', function() {
+                    // Both scripts loaded, now initialize
+                    initializeCircuitLab();
+                }, function() {
+                    showError('Failed to load Circuit Lab engine');
+                });
+            }, function() {
+                showError('Failed to load dependencies');
+            });
+        });
+
+        function initializeCircuitLab() {
+            updateLoadingProgress('Starting Circuit Lab...');
+
+            // Wait for InteractiveCircuitLab to be available
+            let attempts = 0;
+            const maxAttempts = 50; // 5 seconds max wait
+
+            const checkReady = function() {
+                attempts++;
+
                 if (typeof InteractiveCircuitLab !== 'undefined') {
-                    console.log('InteractiveCircuitLab class found, initializing...');
+                    console.log('InteractiveCircuitLab ready, initializing...');
 
                     try {
-                        // Initialize Circuit Lab
-                        window.interactiveCircuitLab = new InteractiveCircuitLab();
+                        // Use the optimized initialization function
+                        if (typeof window.initCircuitLab === 'function') {
+                            window.initCircuitLab();
 
-                        // Wait a bit for the circuit lab to create its DOM elements
-                        setTimeout(function() {
-                            const circuitCard = document.getElementById('circuit-lab');
-                            if (circuitCard) {
-                                const mainContent = document.getElementById('main-content');
-                                mainContent.appendChild(circuitCard);
+                            // Wait for the circuit lab to be created and DOM elements to be ready
+                            setTimeout(function() {
+                                const circuitCard = document.getElementById('circuit-lab');
+                                if (circuitCard) {
+                                    const mainContent = document.getElementById('main-content');
+                                    mainContent.appendChild(circuitCard);
 
-                                // Hide loading screen
-                                document.getElementById('loading-screen').style.display = 'none';
+                                    // Hide loading screen with smooth fade
+                                    const loadingScreen = document.getElementById('loading-screen');
+                                    loadingScreen.style.opacity = '0';
+                                    setTimeout(function() {
+                                        loadingScreen.style.display = 'none';
+                                        mainContent.classList.add('loaded');
+                                    }, 300);
 
-                                // Show main content
-                                mainContent.classList.add('loaded');
-
-                                console.log('Circuit Lab successfully loaded!');
-                            } else {
-                                throw new Error('Circuit Lab card not found in DOM');
-                            }
-                        }, 1000);
+                                    console.log('Circuit Lab successfully loaded!');
+                                } else {
+                                    // Try one more time in case it needs more time
+                                    setTimeout(function() {
+                                        const circuitCardRetry = document.getElementById('circuit-lab');
+                                        if (circuitCardRetry) {
+                                            const mainContent = document.getElementById('main-content');
+                                            mainContent.appendChild(circuitCardRetry);
+                                            document.getElementById('loading-screen').style.display = 'none';
+                                            mainContent.classList.add('loaded');
+                                            console.log('Circuit Lab loaded on retry!');
+                                        } else {
+                                            throw new Error('Circuit Lab interface not created after retry');
+                                        }
+                                    }, 500);
+                                }
+                            }, 300);
+                        } else {
+                            throw new Error('Circuit Lab initialization function not available');
+                        }
 
                     } catch (error) {
                         console.error('Error initializing Circuit Lab:', error);
-                        document.getElementById('loading-screen').innerHTML = `
-                            <h3>❌ Error Loading Circuit Lab</h3>
-                            <p>${error.message}</p>
-                            <p>Please check the browser console for more details.</p>
-                            <a href="index.html" style="color: #4f46e5;">← Back to Main Site</a>
-                        `;
+                        showError(error.message);
                     }
-                } else {
-                    console.log('Waiting for InteractiveCircuitLab class...');
-                    setTimeout(waitForCircuitLab, 100);
-                }
-            }
 
-            // Start waiting for the class to be available
-            setTimeout(waitForCircuitLab, 500);
-        });
+                } else if (attempts < maxAttempts) {
+                    updateLoadingProgress(`Waiting for engine... (${attempts}/${maxAttempts})`);
+                    setTimeout(checkReady, 100);
+                } else {
+                    showError('Circuit Lab engine failed to initialize');
+                }
+            };
+
+            checkReady();
+        }
+
+        function showError(message) {
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) {
+                loadingScreen.innerHTML = `
+                    <h3>❌ Loading Error</h3>
+                    <p>${message}</p>
+                    <p>Please refresh the page or check your connection.</p>
+                    <button onclick="window.location.reload()" style="margin: 10px; padding: 8px 16px; background: #4f46e5; color: white; border: none; border-radius: 4px; cursor: pointer;">Retry</button>
+                    <a href="index.html" style="color: #4f46e5; display: block; margin-top: 10px;">← Back to Main Site</a>
+                `;
+            }
+        }
     </script>
 </body>
 </html>

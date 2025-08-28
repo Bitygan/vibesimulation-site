@@ -2067,15 +2067,19 @@
 
   function initCircuitLab() {
     if (!window.interactiveCircuitLab) {
-      window.interactiveCircuitLab = new InteractiveCircuitLab();
+      try {
+        console.log('Creating InteractiveCircuitLab instance...');
+        window.interactiveCircuitLab = new InteractiveCircuitLab();
+        console.log('InteractiveCircuitLab instance created successfully');
+      } catch (error) {
+        console.error('Failed to create InteractiveCircuitLab:', error);
+        // Don't throw here - let the page handle it
+      }
     }
   }
 
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', initCircuitLab);
-  } else {
-    // Small delay to ensure page is fully set up
-    setTimeout(initCircuitLab, 100);
-  }
+  // Optimized loading - only initialize when specifically requested
+  // The circuit-lab.html page will call this when ready
+  window.initCircuitLab = initCircuitLab;
 
 })();

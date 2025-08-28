@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Circuit Lab Loading Test</title>
+    <style>
+        body { font-family: monospace; margin: 20px; background: #111; color: #fff; }
+        .test-result { margin: 10px 0; padding: 10px; border-left: 4px solid #4f46e5; background: #1a1a1a; }
+        .success { border-left-color: #10b981; }
+        .error { border-left-color: #ef4444; }
+        .metric { border-left-color: #f59e0b; }
+        button { margin: 10px; padding: 10px 20px; background: #4f46e5; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #6366f1; }
+    </style>
+</head>
+<body>
+    <h1>🚀 Circuit Lab Performance Test</h1>
+
+    <div class="test-result metric">
+        <h3>📊 Performance Metrics</h3>
+        <div id="metrics"></div>
+    </div>
+
+    <div class="test-result">
+        <h3>🔍 Test Results</h3>
+        <div id="results"></div>
+    </div>
+
+    <button onclick="runPerformanceTest()">Run Loading Test</button>
+    <button onclick="testCircuitLabPage()">Test Circuit Lab Page</button>
+    <button onclick="clearResults()">Clear Results</button>
+
+    <script>
+        const metricsDiv = document.getElementById('metrics');
+        const resultsDiv = document.getElementById('results');
+
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            resultsDiv.appendChild(div);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        function updateMetrics(data) {
+            metricsDiv.innerHTML = `
+                <div><strong>Page Load Time:</strong> ${data.pageLoadTime || 'N/A'}ms</div>
+                <div><strong>Script Load Time:</strong> ${data.scriptLoadTime || 'N/A'}ms</div>
+                <div><strong>Initialization Time:</strong> ${data.initTime || 'N/A'}ms</div>
+                <div><strong>Total Load Time:</strong> ${data.totalTime || 'N/A'}ms</div>
+                <div><strong>Scripts Loaded:</strong> ${data.scriptsLoaded || 0}/${data.totalScripts || 0}</div>
+            `;
+        }
+
+        async function runPerformanceTest() {
+            log('Starting performance test...', 'info');
+
+            const startTime = performance.now();
+
+            try {
+                // Test script loading times
+                const recorderStart = performance.now();
+                await loadScriptTest('recorder.js');
+                const recorderTime = performance.now() - recorderStart;
+
+                const circuitStart = performance.now();
+                await loadScriptTest('circuit_lab.js');
+                const circuitTime = performance.now() - circuitStart;
+
+                const totalTime = performance.now() - startTime;
+
+                updateMetrics({
+                    pageLoadTime: Math.round(performance.getEntriesByType('navigation')[0]?.loadEventEnd || 0),
+                    scriptLoadTime: Math.round(recorderTime + circuitTime),
+                    initTime: 'N/A',
+                    totalTime: Math.round(totalTime),
+                    scriptsLoaded: 2,
+                    totalScripts: 2
+                });
+
+                log(`✅ Performance test completed in ${Math.round(totalTime)}ms`, 'success');
+
+            } catch (error) {
+                log(`❌ Performance test failed: ${error.message}`, 'error');
+            }
+        }
+
+        function loadScriptTest(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = () => resolve();
+                script.onerror = () => reject(new Error(`Failed to load ${src}`));
+                document.head.appendChild(script);
+
+                // Timeout after 10 seconds
+                setTimeout(() => reject(new Error(`Timeout loading ${src}`)), 10000);
+            });
+        }
+
+        function testCircuitLabPage() {
+            log('Testing Circuit Lab page...', 'info');
+
+            // Check if classes are available
+            setTimeout(() => {
+                if (typeof InteractiveCircuitLab !== 'undefined') {
+                    log('✅ InteractiveCircuitLab class available', 'success');
+                } else {
+                    log('❌ InteractiveCircuitLab class not found', 'error');
+                }
+
+                if (typeof CircuitComponent !== 'undefined') {
+                    log('✅ CircuitComponent class available', 'success');
+                } else {
+                    log('❌ CircuitComponent class not found', 'error');
+                }
+
+                if (typeof window.initCircuitLab === 'function') {
+                    log('✅ initCircuitLab function available', 'success');
+                } else {
+                    log('❌ initCircuitLab function not found', 'error');
+                }
+            }, 1000);
+        }
+
+        function clearResults() {
+            resultsDiv.innerHTML = '';
+            metricsDiv.innerHTML = '';
+        }
+
+        // Auto-run basic checks on page load
+        window.addEventListener('load', () => {
+            log('Test page loaded successfully', 'success');
+
+            // Check basic functionality
+            if (typeof performance !== 'undefined') {
+                log('✅ Performance API available', 'success');
+            }
+
+            if (typeof fetch !== 'undefined') {
+                log('✅ Fetch API available', 'success');
+            }
+        });
+    </script>
+</body>
+</html>
