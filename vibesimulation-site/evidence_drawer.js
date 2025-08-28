@@ -49,6 +49,21 @@
     return s;
   }
 
+  // ---------- Make hash functions globally available ----------
+  // Ensure hash functions are available globally (fallback if recorder.js loads after)
+  if (typeof window.hex === 'undefined') window.hex = hex;
+  if (typeof window.canonicalize === 'undefined') window.canonicalize = canonicalize;
+  if (typeof window.canonicalString === 'undefined') window.canonicalString = canonicalString;
+  if (typeof window.concatBytes === 'undefined') window.concatBytes = concatBytes;
+
+  // Re-assign to ensure they're using our versions
+  window.hex = hex;
+  window.canonicalize = canonicalize;
+  window.canonicalString = canonicalString;
+  window.concatBytes = concatBytes;
+
+  console.log('✅ Evidence Drawer hash functions loaded');
+
   async function computeEventRoot(rows){
     let prev = new Uint8Array(32);
     for(const ev of rows){
@@ -333,11 +348,25 @@
 
   // ---------- Spot-check replayer ----------
   async function spotCheck(){
-    if(!currentReel) { alert("Load a reel first"); return; }
+    console.log('🔍 Starting spot check...');
+
+    if(!currentReel) {
+      console.error('❌ No current reel loaded');
+      alert("Load a reel first");
+      return;
+    }
 
     const simName = currentReel.meta.sim;
+    console.log(`🎮 Checking simulation: ${simName}`);
+
     const ui = SIM_UI[simName];
-    if(!ui) { alert("Spot-check not available for this sim"); return; }
+    if(!ui) {
+      console.error(`❌ No UI mapping for simulation: ${simName}`);
+      alert("Spot-check not available for this sim");
+      return;
+    }
+
+    console.log('✅ UI mapping found, proceeding with spot check');
 
     const checkpoints = 5;
     const step = Math.floor(currentReel.rows.length / checkpoints);
@@ -493,11 +522,21 @@
 
   // ---------- Accreditation mode ----------
   async function accreditationMode(){
+    console.log('🎯 Starting accreditation mode...');
+
     const k = parseInt(prompt("Number of replicates (K):", "3"));
-    if(!k || k < 1) return;
+    if(!k || k < 1) {
+      console.log('❌ Invalid number of replicates');
+      return;
+    }
 
     const baseSeed = parseInt(prompt("Base seed:", "12345"));
-    if(!baseSeed) return;
+    if(!baseSeed) {
+      console.log('❌ Invalid base seed');
+      return;
+    }
+
+    console.log(`📊 Running ${k} replicates with base seed ${baseSeed}`);
 
     const batch = [];
     const allRows = [];
@@ -627,29 +666,52 @@
 
   // ---------- Floating button ----------
   function createFloatingButton(){
-    const btn = h("button", {
-      style: {
-        position: "fixed", bottom: "20px", right: "20px",
-        background: "#60a5fa", border: "none", borderRadius: "50%",
-        width: "60px", height: "60px", color: "white",
-        fontSize: "24px", cursor: "pointer", zIndex: 1000,
-        boxShadow: "0 4px 12px rgba(96, 165, 250, 0.3)",
-        transition: "all 0.2s"
+    // Wait for simulations to be ready
+    const checkSimulations = () => {
+      const sims = [
+        window.paintedSkySim,
+        window.chargePainterSim,
+        window.resonantCanvasSim,
+        window.dragRangefinderSim
+      ];
+
+      const ready = sims.some(sim => sim !== undefined);
+      if (ready) {
+        // Create the button now
+        const btn = h("button", {
+          style: {
+            position: "fixed", bottom: "20px", right: "20px",
+            background: "#60a5fa", border: "none", borderRadius: "50%",
+            width: "60px", height: "60px", color: "white",
+            fontSize: "24px", cursor: "pointer", zIndex: 1000,
+            boxShadow: "0 4px 12px rgba(96, 165, 250, 0.3)",
+            transition: "all 0.2s"
+          }
+        }, "🧪");
+
+        btn.addEventListener('mouseover', function(e) {
+          e.target.style.transform = "scale(1.1)";
+        });
+        btn.addEventListener('mouseout', function(e) {
+          e.target.style.transform = "scale(1)";
+        });
+        btn.addEventListener('click', function() {
+          showDrawer();
+        });
+
+        document.body.append(btn);
+        console.log('✅ Evidence Drawer button created');
+      } else {
+        // Check again in 500ms
+        setTimeout(checkSimulations, 500);
       }
-    }, "🧪");
+    };
 
-    // Add event listeners properly
-    btn.addEventListener('mouseover', function(e) {
-      e.target.style.transform = "scale(1.1)";
-    });
-    btn.addEventListener('mouseout', function(e) {
-      e.target.style.transform = "scale(1)";
-    });
-    btn.addEventListener('click', function() {
-      showDrawer();
-    });
-
-    document.body.append(btn);
+    if(document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', checkSimulations);
+    } else {
+      checkSimulations();
+    }
   }
 
   // ---------- Init ----------

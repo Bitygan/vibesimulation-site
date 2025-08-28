@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fix Loading Order</title>
+    <style>
+        body { font-family: monospace; margin: 20px; background: #f0f0f0; }
+        .fix-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; background: white; }
+        .code { background: #f5f5f5; padding: 10px; border-radius: 5px; font-family: monospace; margin: 10px 0; }
+        .warning { color: orange; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Script Loading Order Fix</h1>
+
+    <div class="fix-section">
+        <h2>📋 Current Issues Identified</h2>
+        <ul>
+            <li><span class="warning">⚠️ Evidence Drawer depends on recorder.js but loads after</span></li>
+            <li><span class="warning">⚠️ Simulations initialize in DOMContentLoaded but Evidence Drawer may load later</span></li>
+            <li><span class="warning">⚠️ Hash functions not available when Evidence Drawer initializes</span></li>
+            <li><span class="error">❌ Missing hash functions in evidence_drawer.js</span></li>
+        </ul>
+    </div>
+
+    <div class="fix-section">
+        <h2>🛠️ Required Fixes</h2>
+
+        <h3>1. Add Missing Hash Functions to evidence_drawer.js</h3>
+        <div class="code">
+// Add these functions to evidence_drawer.js at the top:
+
+function hex(buf) {
+  const v = new Uint8Array(buf);
+  let s = "";
+  for (let i = 0; i &lt; v.length; i++) s += v[i].toString(16).padStart(2, "0");
+  return s;
+}
+
+function canonicalize(obj) {
+  if (obj === null || typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) return obj.map(canonicalize);
+  const out = {};
+  Object.keys(obj).sort().forEach(k => {
+    const v = obj[k];
+    out[k] = canonicalize(v);
+  });
+  return out;
+}
+
+function canonicalString(obj) {
+  return JSON.stringify(canonicalize(obj));
+}
+
+function concatBytes(a, b) {
+  const out = new Uint8Array(a.length + b.length);
+  out.set(a, 0);
+  out.set(b, a.length);
+  return out;
+}
+        </div>
+
+        <h3>2. Fix Script Loading Order in index.html</h3>
+        <div class="code">
+&lt;!-- Current (problematic) order: -->
+&lt;script src="app_version.js">&lt;/script>
+&lt;script src="recorder.js">&lt;/script>
+&lt;script src="evidence_drawer.js">&lt;/script>
+
+&lt;!-- Fixed order: -->
+&lt;script src="app_version.js">&lt;/script>
+&lt;script>
+  // Load hash functions first
+  window.hex = function(buf) {
+    const v = new Uint8Array(buf);
+    let s = "";
+    for (let i = 0; i &lt; v.length; i++) s += v[i].toString(16).padStart(2, "0");
+    return s;
+  };
+
+  window.canonicalize = function(obj) {
+    if (obj === null || typeof obj !== 'object') return obj;
+    if (Array.isArray(obj)) return obj.map(window.canonicalize);
+    const out = {};
+    Object.keys(obj).sort().forEach(k => {
+      const v = obj[k];
+      out[k] = window.canonicalize(v);
+    });
+    return out;
+  };
+
+  window.canonicalString = function(obj) {
+    return JSON.stringify(window.canonicalize(obj));
+  };
+
+  window.concatBytes = function(a, b) {
+    const out = new Uint8Array(a.length + b.length);
+    out.set(a, 0);
+    out.set(b, a.length);
+    return out;
+  };
+&lt;/script>
+&lt;script src="recorder.js">&lt;/script>
+&lt;script src="evidence_drawer.js">&lt;/script>
+        </div>
+
+        <h3>3. Ensure Evidence Drawer Waits for Simulations</h3>
+        <div class="code">
+// In evidence_drawer.js, modify createFloatingButton:
+
+function createFloatingButton(){
+  // Wait for simulations to be ready
+  const checkSimulations = () => {
+    const sims = [
+      window.paintedSkySim,
+      window.chargePainterSim,
+      window.resonantCanvasSim,
+      window.dragRangefinderSim
+    ];
+
+    const ready = sims.some(sim => sim !== undefined);
+    if (ready) {
+      // Create the button now
+      const btn = h("button", {
+        style: {
+          position: "fixed", bottom: "20px", right: "20px",
+          background: "#60a5fa", border: "none", borderRadius: "50%",
+          width: "60px", height: "60px", color: "white",
+          fontSize: "24px", cursor: "pointer", zIndex: 1000,
+          boxShadow: "0 4px 12px rgba(96, 165, 250, 0.3)",
+          transition: "all 0.2s"
+        }
+      }, "🧪");
+
+      btn.addEventListener('mouseover', function(e) {
+        e.target.style.transform = "scale(1.1)";
+      });
+      btn.addEventListener('mouseout', function(e) {
+        e.target.style.transform = "scale(1)";
+      });
+      btn.addEventListener('click', function() {
+        showDrawer();
+      });
+
+      document.body.append(btn);
+    } else {
+      // Check again in 500ms
+      setTimeout(checkSimulations, 500);
+    }
+  };
+
+  if(document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', checkSimulations);
+  } else {
+    checkSimulations();
+  }
+}
+        </div>
+    </div>
+
+    <div class="fix-section">
+        <h2>🎯 Quick Fix Script</h2>
+        <p>Run this in your browser console to temporarily fix the issues:</p>
+        <div class="code">
+// Add missing hash functions globally
+window.hex = function(buf) {
+  const v = new Uint8Array(buf);
+  let s = "";
+  for (let i = 0; i &lt; v.length; i++) s += v[i].toString(16).padStart(2, "0");
+  return s;
+};
+
+window.canonicalize = function(obj) {
+  if (obj === null || typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) return obj.map(window.canonicalize);
+  const out = {};
+  Object.keys(obj).sort().forEach(k => {
+    const v = obj[k];
+    out[k] = window.canonicalize(v);
+  });
+  return out;
+};
+
+window.canonicalString = function(obj) {
+  return JSON.stringify(window.canonicalize(obj));
+};
+
+window.concatBytes = function(a, b) {
+  const out = new Uint8Array(a.length + b.length);
+  out.set(a, 0);
+  out.set(b, a.length);
+  return out;
+};
+
+// Force reload Evidence Drawer
+if (typeof createFloatingButton === 'function') {
+  // Remove existing button if any
+  const existing = document.querySelector('button[style*="fixed"]');
+  if (existing) existing.remove();
+
+  // Recreate
+  createFloatingButton();
+  console.log('✅ Evidence Drawer reloaded');
+} else {
+  console.log('❌ Evidence Drawer functions not loaded');
+}
+        </div>
+        <button onclick="executeQuickFix()">Execute Quick Fix</button>
+    </div>
+
+    <div class="fix-section">
+        <h2>📊 Expected Results After Fix</h2>
+        <ul>
+            <li><span class="success">✅ Hash functions available globally</span></li>
+            <li><span class="success">✅ Evidence Drawer can compute hashes</span></li>
+            <li><span class="success">✅ Floating button appears after simulations load</span></li>
+            <li><span class="success">✅ Spot check and accreditation work</span></li>
+        </ul>
+    </div>
+
+    <script>
+        function executeQuickFix() {
+            // Add missing hash functions globally
+            window.hex = function(buf) {
+                const v = new Uint8Array(buf);
+                let s = "";
+                for (let i = 0; i < v.length; i++) s += v[i].toString(16).padStart(2, "0");
+                return s;
+            };
+
+            window.canonicalize = function(obj) {
+                if (obj === null || typeof obj !== 'object') return obj;
+                if (Array.isArray(obj)) return obj.map(window.canonicalize);
+                const out = {};
+                Object.keys(obj).sort().forEach(k => {
+                    const v = obj[k];
+                    out[k] = window.canonicalize(v);
+                });
+                return out;
+            };
+
+            window.canonicalString = function(obj) {
+                return JSON.stringify(window.canonicalize(obj));
+            };
+
+            window.concatBytes = function(a, b) {
+                const out = new Uint8Array(a.length + b.length);
+                out.set(a, 0);
+                out.set(b, a.length);
+                return out;
+            };
+
+            // Force reload Evidence Drawer
+            if (typeof createFloatingButton === 'function') {
+                // Remove existing button if any
+                const existing = document.querySelector('button[style*="fixed"]');
+                if (existing) existing.remove();
+
+                // Recreate
+                createFloatingButton();
+                alert('✅ Quick fix applied! Refresh the main page to test.');
+            } else {
+                alert('❌ Evidence Drawer functions not loaded. Check script loading.');
+            }
+        }
+    </script>
+</body>
+</html>
