@@ -2261,76 +2261,11 @@
 
 
 
-							document.getElementById('wf-radius-value').textContent = this.brushR.toString();
-						});
 
-						document.getElementById('wf-gravity-slider').addEventListener('input', (e) => {
-							this.grav = parseFloat(e.target.value);
-							document.getElementById('wf-gravity-value').textContent = this.grav.toFixed(2);
-						});
 
-						document.getElementById('wf-friction-slider').addEventListener('input', (e) => {
-							this.fric = parseFloat(e.target.value);
-							document.getElementById('wf-friction-value').textContent = this.fric.toExponential(1);
-						});
 
-						document.getElementById('wf-cfl-slider').addEventListener('input', (e) => {
-							this.cflTarget = parseFloat(e.target.value);
-							document.getElementById('wf-cfl-value').textContent = this.cflTarget.toFixed(2);
-						});
 
-						document.getElementById('wf-dx-slider').addEventListener('input', (e) => {
-							this.dxScale = parseFloat(e.target.value);
-							document.getElementById('wf-dx-value').textContent = this.dxScale.toFixed(2);
-							this.dx = 1.0 * this.dxScale;
-						});
 
-						document.getElementById('wf-palette-select').addEventListener('change', (e) => {
-							this.palette = e.target.value;
-						});
-
-						document.getElementById('wf-vectors-checkbox').addEventListener('change', (e) => {
-							this.showVec = e.target.checked;
-						});
-
-						document.getElementById('wf-reset-simulation').addEventListener('click', () => {
-							this.resetSimulation();
-						});
-					}
-
-					idx(i, j) {
-						return j * this.NX + i;
-					}
-
-					clamp(x, min, max) {
-						return Math.max(min, Math.min(max, x));
-					}
-
-					lerp(a, b, t) {
-						return a + (b - a) * t;
-					}
-
-					// Fast, fluid interaction - optimized for performance
-					applyInteraction(px, py) {
-						const now = performance.now();
-						if (now - this.lastInteractionTime < 16) return; // Balanced responsiveness
-						this.lastInteractionTime = now;
-
-						const R = Math.max(8, this.brushR);
-						const amp = this.interactionStrength * 1.5;
-
-						// Simple, fast liquid interaction
-						for (let j = -R; j <= R; j++) {
-							for (let i = -R; i <= R; i++) {
-								const x = Math.floor(px) + i;
-								const y = Math.floor(py) + j;
-								if (x < 2 || x >= this.NX - 2 || y < 2 || y >= this.NY - 2) continue;
-
-								const r2 = i * i + j * j;
-								if (r2 > R * R) continue;
-
-								const idx = this.idx(x, y);
-								const falloff = Math.exp(-r2 / (R * R * 0.3));
 
 								if (this.mode === "Walls") {
 									if (falloff > 0.3) {
@@ -2356,37 +2291,7 @@
 						}
 					}
 
-					// Shallow water equations with proper numerical methods
-					step() {
-						// Store previous state
-						this.h_prev.set(this.h);
-						this.hu_prev.set(this.hu);
-						this.hv_prev.set(this.hv);
 
-						// Adaptive time step based on CFL condition
-						let maxSpeed = 1e-6;
-						for (let j = 1; j < this.NY - 1; j++) {
-							for (let i = 1; i < this.NX - 1; i++) {
-								const idx = this.idx(i, j);
-								const h = this.h[idx];
-								if (h > 0.01) {
-									const u = this.hu[idx] / h;
-									const v = this.hv[idx] / h;
-									const speed = Math.abs(u) + Math.abs(v) + Math.sqrt(this.grav * h);
-									if (speed > maxSpeed) maxSpeed = speed;
-								}
-							}
-						}
-
-						this.dt = Math.min(0.02, Math.max(0.001, (this.cflTarget * this.dx) / maxSpeed));
-						this.cflLive = (maxSpeed * this.dt) / this.dx;
-
-						// Semi-implicit update using operator splitting
-						this.advectionStep();
-						this.gravityStep();
-						this.frictionStep();
-						this.enforceBoundaries();
-					}
 
 					advectionStep() {
 						// Simple semi-Lagrangian advection for momentum
@@ -2773,24 +2678,7 @@
 						}
 					}
 
-					resetSimulation() {
-						this.h.fill(0);
-						this.hu.fill(0);
-						this.hv.fill(0);
-						this.solid.fill(0);
-						this.initializeSimulation();
-					}
 
-					startAnimation() {
-						if (this.raf) cancelAnimationFrame(this.raf);
-						const animate = () => {
-							this.step();
-							this.updateUI();
-							this.render();
-							this.raf = requestAnimationFrame(animate);
-						};
-						animate();
-					}
 
 					destroy() {
 						if (this.raf) cancelAnimationFrame(this.raf);
