@@ -2060,7 +2060,11 @@
 
   }
 
-  // SAX SOP v2.2: Initialize the Interactive Circuit Lab
+  // SAX SOP v2.2: Expose classes globally and initialize
+  window.InteractiveCircuitLab = InteractiveCircuitLab;
+  window.CircuitComponent = CircuitComponent;
+  window.WireConnection = WireConnection;
+
   function initCircuitLab() {
     if (!window.interactiveCircuitLab) {
       window.interactiveCircuitLab = new InteractiveCircuitLab();
