@@ -188,8 +188,8 @@
 			.physics-simulation {
 				padding: 1.5rem;
 				display: grid;
-				grid-template-columns: 1fr 200px;
-				gap: 1.5rem;
+				grid-template-columns: 1fr 180px;
+				gap: 1rem;
 				align-items: start;
 			}
 
@@ -860,8 +860,8 @@
 								<div class="control-group">
 									<label>Integrator</label>
 									<select id="dr-integrator-select">
-										<option value="RK4">RK4 (4th Order)</option>
 										<option value="EulerCromer">Euler-Cromer</option>
+										<option value="RK4">RK4 (4th Order)</option>
 									</select>
 								</div>
 								<div class="control-group">
@@ -872,20 +872,20 @@
 									</select>
 								</div>
 								<div class="control-group">
-									<label>Speed v0: <span id="dr-v0-value">45.0</span> m/s</label>
-									<input type="range" id="dr-v0-slider" min="5" max="80" step="0.5" value="45" />
+									<label>Speed v0: <span id="dr-v0-value">35.5</span> m/s</label>
+									<input type="range" id="dr-v0-slider" min="5" max="80" step="0.5" value="35.5" />
 								</div>
 								<div class="control-group">
-									<label>Angle: <span id="dr-angle-value">40</span>°</label>
-									<input type="range" id="dr-angle-slider" min="5" max="85" step="1" value="40" />
+									<label>Angle: <span id="dr-angle-value">34</span>°</label>
+									<input type="range" id="dr-angle-slider" min="5" max="85" step="1" value="34" />
 								</div>
 								<div class="control-group">
-									<label>dt: <span id="dr-dt-value">0.020</span> s</label>
-									<input type="range" id="dr-dt-slider" min="0.002" max="0.05" step="0.002" value="0.02" />
+									<label>dt: <span id="dr-dt-value">0.022</span> s</label>
+									<input type="range" id="dr-dt-slider" min="0.002" max="0.05" step="0.002" value="0.022" />
 								</div>
 								<div class="control-group">
-									<label>Air Density ρ: <span id="dr-rho-value">1.20</span> kg/m³</label>
-									<input type="range" id="dr-rho-slider" min="0.5" max="1.5" step="0.01" value="1.2" />
+									<label>Air Density ρ: <span id="dr-rho-value">1.22</span> kg/m³</label>
+									<input type="range" id="dr-rho-slider" min="0.5" max="1.5" step="0.01" value="1.22" />
 								</div>
 								<div class="control-group">
 									<label>Drag Coeff Cd: <span id="dr-cd-value">0.47</span></label>
@@ -2642,6 +2642,98 @@
 						}
 					}
 
+					// Draw streamlines showing wave propagation
+					drawStreamlines() {
+						const streamlineCount = 8;
+						const steps = 15;
+						const stepSize = 0.8;
+
+						this.ctx.save();
+						this.ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+						this.ctx.lineWidth = 1.5;
+						this.ctx.lineCap = "round";
+
+						for (let s = 0; s < streamlineCount; s++) {
+							// Start from different positions across the domain
+							let x = (s + 0.5) / streamlineCount * (this.NX - 2) + 1;
+							let y = Math.sin(Date.now() * 0.001 + s) * 0.3 * this.NY + this.NY * 0.5;
+
+							this.ctx.beginPath();
+							this.ctx.moveTo(x / (this.NX - 1) * this.W, y / (this.NY - 1) * this.H);
+
+							// Trace streamline
+							for (let step = 0; step < steps; step++) {
+								const ix = Math.floor(x);
+								const iy = Math.floor(y);
+
+								if (ix < 1 || ix >= this.NX - 1 || iy < 1 || iy >= this.NY - 1) break;
+
+								const idx = this.idx(ix, iy);
+								const h = this.h[idx];
+
+								if (h < 0.05) break; // Stop at dry areas
+
+								// Get velocity components
+								const u = this.hu[idx] / (h + 1e-6);
+								const v = this.hv[idx] / (h + 1e-6);
+
+								// Move particle along velocity field
+								x += u * stepSize;
+								y += v * stepSize;
+
+								// Convert to screen coordinates
+								const screenX = x / (this.NX - 1) * this.W;
+								const screenY = y / (this.NY - 1) * this.H;
+
+								this.ctx.lineTo(screenX, screenY);
+
+								// Add some visual flair with varying opacity based on speed
+								const speed = Math.sqrt(u * u + v * v);
+								const opacity = Math.min(0.8, speed * 2);
+								this.ctx.globalAlpha = opacity;
+							}
+
+							this.ctx.stroke();
+							this.ctx.globalAlpha = 1;
+						}
+
+						// Draw particle dots along streamlines
+						this.ctx.fillStyle = "rgba(100, 200, 255, 0.8)";
+						for (let s = 0; s < streamlineCount; s++) {
+							let x = (s + 0.5) / streamlineCount * (this.NX - 2) + 1;
+							let y = Math.sin(Date.now() * 0.001 + s) * 0.3 * this.NY + this.NY * 0.5;
+
+							for (let step = 0; step < steps; step += 3) {
+								const ix = Math.floor(x);
+								const iy = Math.floor(y);
+
+								if (ix < 1 || ix >= this.NX - 1 || iy < 1 || iy >= this.NY - 1) break;
+
+								const idx = this.idx(ix, iy);
+								const h = this.h[idx];
+
+								if (h < 0.05) break;
+
+								const u = this.hu[idx] / (h + 1e-6);
+								const v = this.hv[idx] / (h + 1e-6);
+								const speed = Math.sqrt(u * u + v * v);
+
+								const screenX = x / (this.NX - 1) * this.W;
+								const screenY = y / (this.NY - 1) * this.H;
+
+								const dotSize = Math.max(1, Math.min(4, speed * 8));
+								this.ctx.beginPath();
+								this.ctx.arc(screenX, screenY, dotSize, 0, Math.PI * 2);
+								this.ctx.fill();
+
+								x += u * stepSize * 3;
+								y += v * stepSize * 3;
+							}
+						}
+
+						this.ctx.restore();
+					}
+
 					// High-quality visualization following SAX Perceptual Integrity principle
 					render() {
 						this.ctx.clearRect(0, 0, this.W, this.H);
@@ -2776,6 +2868,9 @@
 						// Status overlay
 						this.ctx.fillStyle = "rgba(255,255,255,0.9)";
 						this.ctx.font = "bold 13px ui-monospace, SFMono-Regular, Menlo, monospace";
+						// Draw streamlines to show wave propagation
+						this.drawStreamlines();
+
 						this.ctx.fillText(`CFL: ${this.cflLive.toFixed(2)} | Depth: ${(hmax-hmin).toFixed(3)} | Mode: ${this.mode}`, 12, 20);
 						this.ctx.fillText(`g: ${this.grav.toFixed(2)} | Friction: ${this.fric.toExponential(1)}`, 12, 40);
 					}
@@ -2941,12 +3036,12 @@
 						this.ctx = this.canvas.getContext('2d');
 
 						this.seed = 20250827;
-						this.integrator = "RK4";
+						this.integrator = "EulerCromer";
 						this.dragModel = "Quadratic";
-						this.v0 = 45;
-						this.angle = 40;
-						this.dt = 0.02;
-						this.rho = 1.2;
+						this.v0 = 35.5;
+						this.angle = 34;
+						this.dt = 0.022;
+						this.rho = 1.22;
 						this.Cd = 0.47;
 						this.radius = 0.0366;
 						this.mass = 0.145;
