@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Advanced Optics - Ray Tracing & Diffraction - VibeSimulation</title>
+    <meta name="description" content="Explore advanced optics with interactive ray tracing, lens systems, and diffraction patterns. Study light propagation through optical elements and interference phenomena.">
+    <meta name="keywords" content="ray tracing, optics, lens systems, diffraction, interference patterns, optical physics, light propagation">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
+
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/video.css" />
+    <link rel="stylesheet" href="assets/css/cookie-consent.css" />
+
+    <!-- Simulation Styles -->
+    <style>
+        body {
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #1a1a2e 100%);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .advanced-optics-header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .advanced-optics-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff, #e0e7ff, #ddd6fe, #fce7f3, #ecfdf5);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .advanced-optics-subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-weight: 300;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .back-link {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(79, 70, 229, 0.3);
+            z-index: 1000;
+        }
+
+        .back-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(79, 70, 229, 0.4);
+        }
+
+        /* Simulation Card Styles */
+        .physics-card {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            margin: 2rem auto;
+            max-width: 1400px;
+        }
+
+        .physics-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .physics-header {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .physics-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .physics-icon {
+            font-size: 2.5rem;
+            width: 4rem;
+            height: 4rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .physics-description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .physics-simulation {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
+        }
+
+        .physics-canvas {
+            border-radius: 0.75rem;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .physics-controls {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .control-group {
+            margin-bottom: 0.75rem;
+        }
+
+        .control-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-group input,
+        .control-group select {
+            width: 100%;
+            padding: 0.375rem;
+            border-radius: 0.375rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.03);
+            color: white;
+            font-size: 0.75rem;
+        }
+
+        .control-group input:focus,
+        .control-group select:focus {
+            outline: none;
+            border-color: rgba(79, 70, 229, 0.5);
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+
+        .control-toggle-btn {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .control-toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+        }
+
+        .fullscreen-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .fullscreen-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .status-indicator {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-stable {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .physics-simulation {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .physics-controls {
+                padding: 0.75rem;
+                align-self: stretch;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+
+        /* Loading screen */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            color: white;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top: 3px solid #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hide main content initially */
+        .main-content {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .main-content.loaded {
+            opacity: 1;
+        }
+
+        /* Educational info panels */
+        .optics-info-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .optics-info-panel h4 {
+            color: #fbbf24;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .optics-info-panel p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        /* Optics-specific styles */
+        .ray-path {
+            stroke-dasharray: 5,5;
+            stroke-linecap: round;
+        }
+
+        .optical-element {
+            fill: rgba(79, 70, 229, 0.2);
+            stroke: rgba(79, 70, 229, 0.8);
+            stroke-width: 2;
+        }
+
+        .diffraction-pattern {
+            fill: rgba(245, 158, 11, 0.3);
+            stroke: rgba(245, 158, 11, 0.8);
+            stroke-width: 1;
+        }
+    </style>
+</head>
+<body class="is-preload">
+    <!-- Navigation -->
+    <a href="index.html" class="back-link">
+        <span>←</span> Back to Simulations
+    </a>
+
+    <!-- Header -->
+    <header class="advanced-optics-header">
+        <h1 class="advanced-optics-title">Advanced Optics</h1>
+        <p class="advanced-optics-subtitle">
+            Explore ray tracing, lens systems, and diffraction patterns. Study how light propagates through optical elements
+            and creates interference phenomena in real-time interactive physics.
+        </p>
+    </header>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading">
+        <div class="loading-spinner"></div>
+        <h3>Loading Advanced Optics...</h3>
+        <p>Setting up optical physics simulation</p>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="main-content">
+        <div id="advanced-optics" class="physics-card">
+            <div class="physics-header">
+                <h3 class="physics-title">
+                    <div class="physics-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🔭</div>
+                    Advanced Optics Simulator
+                </h3>
+                <p class="physics-description">
+                    Interactive exploration of ray tracing through optical systems and diffraction pattern analysis.
+                    Study light propagation, lens focusing, and interference phenomena.
+                </p>
+            </div>
+            <div class="physics-simulation">
+                <!-- Educational Info Panel -->
+                <div class="optics-info-panel">
+                    <h4>📚 Learning Optics</h4>
+                    <p>
+                        <strong>Ray Tracing:</strong> Light rays follow straight lines and reflect/reflect according to optical laws.<br>
+                        <strong>Lens Systems:</strong> Convex lenses focus parallel rays to focal points, concave lenses diverge rays.<br>
+                        <strong>Diffraction:</strong> Light bends around obstacles, creating interference patterns.
+                    </p>
+                </div>
+
+                <div class="physics-canvas">
+                    <canvas id="optics-canvas" width="1400" height="700"></canvas>
+                </div>
+                <div class="physics-controls">
+                    <!-- Basic Simulation Controls -->
+                    <div class="control-group">
+                        <label>USER_SEED</label>
+                        <input type="number" id="ao-seed-input" value="20250828" />
+                    </div>
+                    <div class="control-group">
+                        <label>Simulation Mode</label>
+                        <select id="ao-mode-select">
+                            <option value="ray-tracing">Ray Tracing</option>
+                            <option value="lens-system">Lens System</option>
+                            <option value="diffraction">Diffraction Patterns</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Light Wavelength: <span id="ao-wavelength-value">550</span> nm</label>
+                        <input type="range" id="ao-wavelength-slider" min="400" max="700" step="10" value="550" />
+                    </div>
+
+                    <!-- Ray Tracing Controls -->
+                    <div class="control-group">
+                        <label>Ray Count: <span id="ao-ray-count-value">5</span></label>
+                        <input type="range" id="ao-ray-count-slider" min="1" max="20" step="1" value="5" />
+                    </div>
+                    <div class="control-group">
+                        <label>Ray Angle: <span id="ao-ray-angle-value">0</span>°</label>
+                        <input type="range" id="ao-ray-angle-slider" min="-45" max="45" step="1" value="0" />
+                    </div>
+                    <div class="control-group">
+                        <label>Incident Height: <span id="ao-incident-height-value">0</span> cm</label>
+                        <input type="range" id="ao-incident-height-slider" min="-5" max="5" step="0.1" value="0" />
+                    </div>
+
+                    <!-- Optical Element Controls -->
+                    <div class="control-group">
+                        <label>Element Type</label>
+                        <select id="ao-element-select">
+                            <option value="plane-mirror">Plane Mirror</option>
+                            <option value="curved-mirror">Curved Mirror</option>
+                            <option value="convex-lens">Convex Lens</option>
+                            <option value="concave-lens">Concave Lens</option>
+                            <option value="prism">Prism</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Focal Length: <span id="ao-focal-length-value">10</span> cm</label>
+                        <input type="range" id="ao-focal-length-slider" min="5" max="50" step="1" value="10" />
+                    </div>
+                    <div class="control-group">
+                        <label>Element Position: <span id="ao-element-pos-value">30</span> cm</label>
+                        <input type="range" id="ao-element-pos-slider" min="10" max="50" step="1" value="30" />
+                    </div>
+
+                    <!-- Diffraction Controls -->
+                    <div class="control-group">
+                        <label>Slit Width: <span id="ao-slit-width-value">0.5</span> mm</label>
+                        <input type="range" id="ao-slit-width-slider" min="0.1" max="2.0" step="0.1" value="0.5" />
+                    </div>
+                    <div class="control-group">
+                        <label>Slit Count</label>
+                        <select id="ao-slit-count-select">
+                            <option value="1">Single Slit</option>
+                            <option value="2">Double Slit</option>
+                            <option value="5">Multiple Slits</option>
+                            <option value="circular">Circular Aperture</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Screen Distance: <span id="ao-screen-dist-value">100</span> cm</label>
+                        <input type="range" id="ao-screen-dist-slider" min="50" max="200" step="5" value="100" />
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="control-group">
+                        <button id="ao-reset-simulation">Reset Simulation</button>
+                    </div>
+                    <div class="control-group">
+                        <button id="ao-add-element">Add Element</button>
+                    </div>
+                    <div class="control-group">
+                        <button id="ao-clear-elements">Clear All</button>
+                    </div>
+                    <div class="control-group">
+                        <button id="ao-fullscreen" class="fullscreen-btn" title="Fullscreen">⛶</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Advanced Optics page loaded');
+
+            // Initialize the simulation immediately
+            initAdvancedOptics();
+
+            // Hide loading screen and show content
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loading-screen');
+                const mainContent = document.getElementById('main-content');
+
+                if (loadingScreen) loadingScreen.style.display = 'none';
+                if (mainContent) mainContent.classList.add('loaded');
+
+                console.log('Advanced Optics UI initialized');
+            }, 100);
+        });
+
+        function initAdvancedOptics() {
+            console.log('initAdvancedOptics called');
+
+            const canvas = document.getElementById('optics-canvas');
+            console.log('Canvas found:', canvas);
+
+            if (!canvas) {
+                console.error('Canvas element not found!');
+                setTimeout(initAdvancedOptics, 100);
+                return;
+            }
+
+            const ctx = canvas.getContext('2d');
+            console.log('Canvas context:', ctx);
+
+            if (!ctx) {
+                console.error('Could not get canvas context!');
+                return;
+            }
+
+            // Simulation parameters
+            let seed = 20250828;
+            let mode = "ray-tracing";
+            let wavelength = 550;
+            let rayCount = 5;
+            let rayAngle = 0;
+            let incidentHeight = 0;
+            let elementType = "convex-lens";
+            let focalLength = 10;
+            let elementPosition = 30;
+            let slitWidth = 0.5;
+            let slitCount = 1;
+            let screenDistance = 100;
+
+            const W = canvas.width;
+            const H = canvas.height;
+
+            // Utility functions
+            function clamp(x, lo, hi) { return Math.max(lo, Math.min(hi, x)); }
+            function rad(d) { return d * Math.PI / 180; }
+            function deg(r) { return r * 180 / Math.PI; }
+            function hsl(h, s, l) { return `hsl(${h} ${s}% ${l}%)`; }
+
+            // Physics coordinate system
+            function screenToPhysics(x, y) {
+                return {
+                    x: (x - W/2) * 0.1, // 0.1 cm per pixel
+                    y: (H/2 - y) * 0.1
+                };
+            }
+
+            function physicsToScreen(px, py) {
+                return {
+                    x: W/2 + px / 0.1,
+                    y: H/2 - py / 0.1
+                };
+            }
+
+            // Ray tracing physics
+            class Ray {
+                constructor(x, y, dx, dy) {
+                    this.x = x;
+                    this.y = y;
+                    this.dx = dx;
+                    this.dy = dy;
+                    this.intensity = 1.0;
+                    this.path = [{x, y}];
+                }
+
+                normalize() {
+                    const len = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
+                    if (len > 0) {
+                        this.dx /= len;
+                        this.dy /= len;
+                    }
+                }
+
+                advance(distance) {
+                    this.x += this.dx * distance;
+                    this.y += this.dy * distance;
+                    this.path.push({x: this.x, y: this.y});
+                }
+
+                reflect(nx, ny) {
+                    const dot = this.dx * nx + this.dy * ny;
+                    this.dx = this.dx - 2 * dot * nx;
+                    this.dy = this.dy - 2 * dot * ny;
+                }
+
+                refract(nx, ny, n1, n2) {
+                    const dot = this.dx * nx + this.dy * ny;
+                    const eta = n1 / n2;
+                    const k = 1 - eta * eta * (1 - dot * dot);
+
+                    if (k < 0) {
+                        // Total internal reflection
+                        this.reflect(nx, ny);
+                        return false;
+                    }
+
+                    this.dx = eta * this.dx - (eta * dot + Math.sqrt(k)) * nx;
+                    this.dy = eta * this.dy - (eta * dot + Math.sqrt(k)) * ny;
+                    this.normalize();
+                    return true;
+                }
+            }
+
+            class OpticalElement {
+                constructor(type, position, focalLength = 10) {
+                    this.type = type;
+                    this.position = position;
+                    this.focalLength = focalLength;
+                    this.radius = 5; // cm
+                }
+
+                interact(ray) {
+                    const dx = ray.x - this.position;
+
+                    if (Math.abs(dx) > this.radius) return false;
+
+                    switch (this.type) {
+                        case 'plane-mirror':
+                            ray.reflect(1, 0);
+                            return true;
+                        case 'curved-mirror':
+                            const curvature = 1 / this.focalLength;
+                            const nx = curvature * (ray.x - this.position);
+                            ray.reflect(nx, 0);
+                            return true;
+                        case 'convex-lens':
+                        case 'concave-lens':
+                            const n1 = 1.0, n2 = 1.5; // air to glass
+                            const surface = this.type === 'convex-lens' ? -1 : 1;
+                            ray.refract(surface, 0, n1, n2);
+                            // For simplicity, assume thin lens approximation
+                            const focalPower = 1 / this.focalLength;
+                            ray.y += ray.x * focalPower;
+                            return true;
+                        case 'prism':
+                            const angle = Math.atan2(ray.y, ray.x - this.position);
+                            ray.refract(Math.cos(angle), Math.sin(angle), 1.0, 1.5);
+                            return true;
+                    }
+                    return false;
+                }
+            }
+
+            // Diffraction physics
+            function calculateDiffractionPattern(x, wavelength, slitWidth, slitCount, distance) {
+                const lambda = wavelength * 1e-7; // convert nm to cm
+                const a = slitWidth * 0.1; // convert mm to cm
+                const d = 0.1; // slit separation in cm (for multiple slits)
+
+                if (slitCount === 1) {
+                    // Single slit diffraction
+                    const alpha = Math.PI * a * Math.sin(Math.atan(x / distance)) / lambda;
+                    const intensity = Math.pow(Math.sin(alpha) / alpha, 2);
+                    return intensity;
+                } else if (slitCount === 2) {
+                    // Double slit interference
+                    const theta = Math.atan(x / distance);
+                    const delta = (2 * Math.PI * d * Math.sin(theta)) / lambda;
+                    const intensity = Math.pow(Math.cos(delta / 2), 2);
+                    return intensity;
+                } else {
+                    // Multiple slits
+                    const theta = Math.atan(x / distance);
+                    const beta = (Math.PI * a * Math.sin(theta)) / lambda;
+                    const delta = (2 * Math.PI * d * Math.sin(theta)) / lambda;
+
+                    const envelope = Math.pow(Math.sin(beta) / beta, 2);
+                    const interference = Math.pow(Math.sin(slitCount * delta / 2) / Math.sin(delta / 2), 2) / slitCount / slitCount;
+
+                    return envelope * interference;
+                }
+            }
+
+            // Simulation state
+            let rays = [];
+            let elements = [];
+            let diffractionData = [];
+
+            // Initialize with default setup
+            function initializeSimulation() {
+                rays = [];
+                elements = [];
+                diffractionData = [];
+
+                // Add a default convex lens
+                elements.push(new OpticalElement('convex-lens', elementPosition, focalLength));
+
+                // Create incident rays
+                for (let i = 0; i < rayCount; i++) {
+                    const y = incidentHeight + (i - (rayCount - 1) / 2) * 2;
+                    const ray = new Ray(-20, y, Math.cos(rad(rayAngle)), Math.sin(rad(rayAngle)));
+                    rays.push(ray);
+                }
+            }
+
+            function updateSimulation() {
+                // Reset rays to initial positions
+                rays.forEach((ray, i) => {
+                    const y = incidentHeight + (i - (rayCount - 1) / 2) * 2;
+                    ray.x = -20;
+                    ray.y = y;
+                    ray.dx = Math.cos(rad(rayAngle));
+                    ray.dy = Math.sin(rad(rayAngle));
+                    ray.path = [{x: ray.x, y: ray.y}];
+                    ray.intensity = 1.0;
+                });
+
+                // Propagate rays through elements
+                const stepSize = 0.5;
+                const maxSteps = 100;
+
+                rays.forEach(ray => {
+                    for (let step = 0; step < maxSteps; step++) {
+                        ray.advance(stepSize);
+
+                        // Check interactions with elements
+                        for (const element of elements) {
+                            const dx = ray.x - element.position;
+                            if (Math.abs(dx) < element.radius * 0.1) {
+                                element.interact(ray);
+                                break;
+                            }
+                        }
+
+                        // Stop if ray goes too far
+                        if (Math.abs(ray.x) > 100) break;
+                    }
+                });
+
+                // Calculate diffraction pattern if in diffraction mode
+                if (mode === 'diffraction') {
+                    diffractionData = [];
+                    for (let x = -50; x <= 50; x += 0.5) {
+                        const intensity = calculateDiffractionPattern(x, wavelength, slitWidth, slitCount, screenDistance);
+                        diffractionData.push({x, intensity});
+                    }
+                }
+            }
+
+            function drawBackground() {
+                const g = ctx.createLinearGradient(0, 0, 0, H);
+                g.addColorStop(0, hsl(210, 90, 12));
+                g.addColorStop(0.4, hsl(250, 80, 18));
+                g.addColorStop(1, hsl(245, 65, 8));
+                ctx.fillStyle = g;
+                ctx.fillRect(0, 0, W, H);
+
+                // Draw coordinate system
+                ctx.strokeStyle = rgba(255, 255, 255, 0.2);
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(W/2, 0);
+                ctx.lineTo(W/2, H);
+                ctx.moveTo(0, H/2);
+                ctx.lineTo(W, H/2);
+                ctx.stroke();
+
+                // Draw scale markers
+                ctx.fillStyle = rgba(255, 255, 255, 0.6);
+                ctx.font = '12px monospace';
+                for (let i = -50; i <= 50; i += 10) {
+                    const screen = physicsToScreen(i, 0);
+                    if (i !== 0) {
+                        ctx.fillText(i + 'cm', screen.x - 20, H/2 + 20);
+                    }
+                }
+            }
+
+            function drawRays() {
+                rays.forEach((ray, index) => {
+                    const hue = (wavelength - 400) / 300 * 360; // Color based on wavelength
+                    const alpha = ray.intensity;
+
+                    ctx.strokeStyle = hsl(hue, 80, 60, alpha);
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+
+                    for (let i = 1; i < ray.path.length; i++) {
+                        const p1 = physicsToScreen(ray.path[i-1].x, ray.path[i-1].y);
+                        const p2 = physicsToScreen(ray.path[i].x, ray.path[i].y);
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                    }
+                    ctx.stroke();
+
+                    // Draw ray direction arrows
+                    if (ray.path.length > 1) {
+                        const last = ray.path[ray.path.length - 1];
+                        const prev = ray.path[ray.path.length - 2];
+                        const screenLast = physicsToScreen(last.x, last.y);
+                        const screenPrev = physicsToScreen(prev.x, prev.y);
+
+                        const dx = screenLast.x - screenPrev.x;
+                        const dy = screenLast.y - screenPrev.y;
+                        const len = Math.sqrt(dx*dx + dy*dy);
+                        if (len > 0) {
+                            const nx = dx / len;
+                            const ny = dy / len;
+                            const arrowSize = 8;
+
+                            ctx.beginPath();
+                            ctx.moveTo(screenLast.x, screenLast.y);
+                            ctx.lineTo(screenLast.x - arrowSize*nx + arrowSize*ny*0.3,
+                                     screenLast.y - arrowSize*ny - arrowSize*nx*0.3);
+                            ctx.moveTo(screenLast.x, screenLast.y);
+                            ctx.lineTo(screenLast.x - arrowSize*nx - arrowSize*ny*0.3,
+                                     screenLast.y - arrowSize*ny + arrowSize*nx*0.3);
+                            ctx.stroke();
+                        }
+                    }
+                });
+            }
+
+            function drawElements() {
+                elements.forEach(element => {
+                    const center = physicsToScreen(element.position, 0);
+
+                    ctx.strokeStyle = hsl(240, 80, 60);
+                    ctx.lineWidth = 3;
+                    ctx.fillStyle = hsl(240, 60, 30, 0.3);
+
+                    if (element.type.includes('lens')) {
+                        // Draw lens as two curved surfaces
+                        ctx.beginPath();
+                        ctx.ellipse(center.x, center.y, element.radius * 10, element.radius * 10 * 0.8, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+
+                        // Draw focal points
+                        const focalScreen = physicsToScreen(element.position + element.focalLength, 0);
+                        ctx.fillStyle = hsl(120, 80, 60);
+                        ctx.beginPath();
+                        ctx.arc(focalScreen.x, focalScreen.y, 4, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        const focalScreen2 = physicsToScreen(element.position - element.focalLength, 0);
+                        ctx.beginPath();
+                        ctx.arc(focalScreen2.x, focalScreen2.y, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (element.type.includes('mirror')) {
+                        // Draw mirror as curved or straight line
+                        ctx.beginPath();
+                        ctx.moveTo(center.x - element.radius * 10, center.y - element.radius * 10);
+                        ctx.lineTo(center.x + element.radius * 10, center.y + element.radius * 10);
+                        ctx.stroke();
+                    }
+                });
+            }
+
+            function drawDiffractionPattern() {
+                if (diffractionData.length === 0) return;
+
+                const maxIntensity = Math.max(...diffractionData.map(d => d.intensity));
+
+                diffractionData.forEach(point => {
+                    const screen = physicsToScreen(point.x + screenDistance, 0);
+                    const intensity = point.intensity / maxIntensity;
+                    const height = intensity * 100;
+
+                    ctx.fillStyle = hsl(45, 80, 60, intensity * 0.8);
+                    ctx.fillRect(screen.x - 1, H/2 - height/2, 2, height);
+                });
+            }
+
+            function drawHUD() {
+                ctx.fillStyle = rgba(255, 255, 255, 0.9);
+                ctx.font = '14px monospace';
+                ctx.fillText(`Mode: ${mode.toUpperCase()}  |  Wavelength: ${wavelength}nm`, 20, 30);
+                ctx.fillText(`Elements: ${elements.length}  |  Rays: ${rayCount}`, 20, 50);
+
+                if (mode === 'ray-tracing') {
+                    ctx.fillText(`Ray Angle: ${rayAngle}°  |  Incident Height: ${incidentHeight.toFixed(1)}cm`, 20, 70);
+                } else if (mode === 'diffraction') {
+                    ctx.fillText(`Slit Width: ${slitWidth}mm  |  Slits: ${slitCount}`, 20, 70);
+                }
+            }
+
+            function render() {
+                ctx.clearRect(0, 0, W, H);
+                drawBackground();
+                drawElements();
+
+                if (mode === 'diffraction') {
+                    drawDiffractionPattern();
+                } else {
+                    drawRays();
+                }
+
+                drawHUD();
+            }
+
+            // Animation loop
+            let raf;
+            function animate() {
+                updateSimulation();
+                render();
+                raf = requestAnimationFrame(animate);
+            }
+
+            // Initialize and start
+            initializeSimulation();
+            animate();
+
+            // Event listeners
+            document.getElementById('ao-seed-input').addEventListener('input', (e) => {
+                seed = parseInt(e.target.value);
+            });
+
+            document.getElementById('ao-mode-select').addEventListener('change', (e) => {
+                mode = e.target.value;
+                updateSimulation();
+            });
+
+            document.getElementById('ao-wavelength-slider').addEventListener('input', (e) => {
+                wavelength = parseInt(e.target.value);
+                document.getElementById('ao-wavelength-value').textContent = wavelength;
+                updateSimulation();
+            });
+
+            document.getElementById('ao-ray-count-slider').addEventListener('input', (e) => {
+                rayCount = parseInt(e.target.value);
+                document.getElementById('ao-ray-count-value').textContent = rayCount;
+                initializeSimulation();
+            });
+
+            document.getElementById('ao-ray-angle-slider').addEventListener('input', (e) => {
+                rayAngle = parseInt(e.target.value);
+                document.getElementById('ao-ray-angle-value').textContent = rayAngle;
+                updateSimulation();
+            });
+
+            document.getElementById('ao-incident-height-slider').addEventListener('input', (e) => {
+                incidentHeight = parseFloat(e.target.value);
+                document.getElementById('ao-incident-height-value').textContent = incidentHeight.toFixed(1);
+                updateSimulation();
+            });
+
+            document.getElementById('ao-element-select').addEventListener('change', (e) => {
+                elementType = e.target.value;
+                if (elements.length > 0) {
+                    elements[0] = new OpticalElement(elementType, elementPosition, focalLength);
+                }
+                updateSimulation();
+            });
+
+            document.getElementById('ao-focal-length-slider').addEventListener('input', (e) => {
+                focalLength = parseInt(e.target.value);
+                document.getElementById('ao-focal-length-value').textContent = focalLength;
+                if (elements.length > 0) {
+                    elements[0].focalLength = focalLength;
+                }
+                updateSimulation();
+            });
+
+            document.getElementById('ao-element-pos-slider').addEventListener('input', (e) => {
+                elementPosition = parseInt(e.target.value);
+                document.getElementById('ao-element-pos-value').textContent = elementPosition;
+                if (elements.length > 0) {
+                    elements[0].position = elementPosition;
+                }
+                updateSimulation();
+            });
+
+            document.getElementById('ao-slit-width-slider').addEventListener('input', (e) => {
+                slitWidth = parseFloat(e.target.value);
+                document.getElementById('ao-slit-width-value').textContent = slitWidth.toFixed(1);
+                updateSimulation();
+            });
+
+            document.getElementById('ao-slit-count-select').addEventListener('change', (e) => {
+                slitCount = parseInt(e.target.value) || e.target.value;
+                updateSimulation();
+            });
+
+            document.getElementById('ao-screen-dist-slider').addEventListener('input', (e) => {
+                screenDistance = parseInt(e.target.value);
+                document.getElementById('ao-screen-dist-value').textContent = screenDistance;
+                updateSimulation();
+            });
+
+            document.getElementById('ao-reset-simulation').addEventListener('click', () => {
+                initializeSimulation();
+            });
+
+            document.getElementById('ao-add-element').addEventListener('click', () => {
+                elements.push(new OpticalElement(elementType, elementPosition + elements.length * 10, focalLength));
+                updateSimulation();
+            });
+
+            document.getElementById('ao-clear-elements').addEventListener('click', () => {
+                elements = [];
+                updateSimulation();
+            });
+
+            // Fullscreen functionality
+            document.getElementById('ao-fullscreen').addEventListener('click', () => {
+                const card = document.getElementById('advanced-optics');
+                const controls = card.querySelector('.physics-controls');
+
+                if (card.classList.contains('physics-fullscreen')) {
+                    document.body.removeChild(document.querySelector('.fullscreen-exit'));
+                    card.classList.remove('physics-fullscreen');
+                    controls.style.position = '';
+                    controls.style.bottom = '';
+                    controls.style.right = '';
+                    controls.style.maxHeight = '';
+                    controls.style.overflowY = '';
+                } else {
+                    const exitBtn = document.createElement('button');
+                    exitBtn.textContent = 'Exit Fullscreen';
+                    exitBtn.className = 'fullscreen-exit';
+                    exitBtn.onclick = () => {
+                        card.classList.remove('physics-fullscreen');
+                        controls.style.position = '';
+                        controls.style.bottom = '';
+                        controls.style.right = '';
+                        controls.style.maxHeight = '';
+                        controls.style.overflowY = '';
+                        document.body.removeChild(exitBtn);
+                    };
+                    document.body.appendChild(exitBtn);
+
+                    card.classList.add('physics-fullscreen');
+                    controls.style.position = 'absolute';
+                    controls.style.bottom = '2rem';
+                    controls.style.right = '2rem';
+                    controls.style.maxHeight = '70vh';
+                    controls.style.overflowY = 'auto';
+                }
+            });
+
+            // Store animation reference for cleanup
+            window.advancedOpticsRAF = raf;
+
+            console.log('Advanced Optics simulation initialized');
+        }
+    </script>
+</body>
+</html>
