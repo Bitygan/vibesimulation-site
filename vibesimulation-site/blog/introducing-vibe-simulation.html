@@ -124,10 +124,17 @@
                 <p>Most sims stop at a pretty graph. Vibe starts there—and then adds <strong>proof</strong>.</p>
 
                 <ul>
-                    <li><strong>Run receipt (replayable evidence):</strong> For each meaningful run, Vibe can emit a compact, signed record of exactly what you did and what the sim did in response.</li>
-                    <li><strong>Evidence Drawer (in-sim):</strong> One click reveals inputs, seed (if used), scene/version, and a hash/check you can share with a teacher, teammate, or auditor.</li>
-                    <li><strong>Privacy-first analytics:</strong> We aggregate what helps improve learning without collecting what doesn't.</li>
+                    <li><strong>Reasoning Reels (tamper-evident recordings):</strong> Every simulation now includes "Export Reel" and "Verify Reel" buttons. Click "Export Reel" to download a cryptographically signed <code>.saxlg</code> file containing a complete, tamper-evident record of your interaction session—including parameter changes, pointer movements, simulation measurements, and state digests.</li>
+                    <li><strong>Hash-chain verification:</strong> Each event is chained using SHA-256, creating an immutable audit trail. The system generates ephemeral Ed25519 signatures for authenticity proof, with automatic fallback for browsers without Ed25519 support.</li>
+                    <li><strong>Standalone verifier:</strong> The "Verify Reel" button opens our independent verification page where you can upload and validate any <code>.saxlg</code> file. It recomputes the hash-chain and verifies signatures, providing cryptographic proof that your simulation results haven't been tampered with.</li>
+                    <li><strong>CPU-optimized recording:</strong> Recording uses lightweight FNV-1a hashing during interaction (~1% CPU impact) with full SHA-256 hash-chain computation only at export time. Events are throttled intelligently (20Hz pointer logging, 1Hz state sampling) for minimal performance impact.</li>
                 </ul>
+
+                <p>Our <strong>browser-native provenance engine</strong> captures every meaningful interaction: parameter adjustments, mouse/touch events, computed measurements (CFL numbers, residuals, energy drift), and significant milestones (convergence events, stability warnings). The result is a scientifically rigorous, tamper-evident ledger that transforms interactive learning into verifiable experimentation.</p>
+
+                <blockquote>
+                    <p><strong>Technical note:</strong> The system is designed for <em>scientific reproducibility</em>—not certification. It provides the cryptographic foundations that support audit workflows organizations already recognize, with clear technical documentation rather than compliance theater.</p>
+                </blockquote>
 
                 <p>Under the hood is our <strong>browser-first provenance engine</strong>—purpose-built to make every meaningful run <strong>reproducible</strong> and <strong>tamper-evident</strong>. We're designing adapters to established provenance ideas (<strong>W3C PROV</strong>) and content authenticity efforts (<strong>C2PA / Content Credentials</strong>) so your evidence travels with your work.</p>
 
@@ -161,11 +168,13 @@
                 <h2 id="roadmap-highlights">Roadmap highlights</h2>
 
                 <ul>
-                    <li><strong>Evidence Drawer</strong> (beta): in-sim, human-readable evidence for any run.</li>
-                    <li><strong>Run Receipts API:</strong> standard JSON for receipts so teams can build their own dashboards.</li>
-                    <li><strong>Provenance adapters:</strong> export mappings to <strong>W3C PROV</strong> and <strong>Content Credentials</strong>.</li>
-                    <li><strong>Privacy &amp; governance notes:</strong> clear statements on what we collect (and don't).</li>
+                    <li><strong>✅ Reasoning Reels (implemented):</strong> "Export Reel" and "Verify Reel" buttons now live in every simulation with full SHA-256 hash-chain and Ed25519 signature support.</li>
+                    <li><strong>Evidence Drawer</strong> (next): enhanced in-sim display showing session metadata, hash verification status, and exportable summaries.</li>
+                    <li><strong>Run Receipts API:</strong> standard JSON for receipts so teams can build their own dashboards and analysis tools.</li>
+                    <li><strong>Provenance adapters:</strong> export mappings to <strong>W3C PROV</strong> and <strong>Content Credentials</strong> for interoperability.</li>
+                    <li><strong>Privacy &amp; governance notes:</strong> clear statements on what we collect (and don't) with cryptographic transparency.</li>
                     <li><strong>Classroom kits:</strong> worksheet templates that reference run receipts for faster marking and moderation.</li>
+                    <li><strong>Performance analytics:</strong> aggregate learning insights from verified simulation sessions (privacy-first).</li>
                 </ul>
 
                 <h2 id="how-we-write-build">How we write &amp; build</h2>
@@ -181,9 +190,10 @@
                 <h2 id="if-youre-new-here">If you're new here</h2>
 
                 <ul>
-                    <li>Start with the demos on <strong><a href="https://vibesimulation.com" target="_blank" rel="noopener">Vibe Simulation</a></strong>.</li>
-                    <li>Bookmark our <strong>interactive simulations</strong> hub and the <strong>verifiable simulations</strong> explainer (we'll keep both up to date).</li>
-                    <li>Educators who use <strong>PhET</strong>: tell us what evidence would make grading and moderation easier—we're listening.</li>
+                    <li><strong>Try the new Reasoning Reels:</strong> Visit any simulation on <strong><a href="https://vibesimulation.com" target="_blank" rel="noopener">Vibe Simulation</a></strong>, interact with the parameters, then click "Export Reel" to create your first verifiable physics experiment. Use "Verify Reel" to see the cryptographic validation in action.</li>
+                    <li><strong>Explore the technical details:</strong> Check out our <strong><a href="REASONING-REELS-README.md" target="_blank" rel="noopener">complete technical documentation</a></strong> for the SHA-256 hash-chain, Ed25519 signatures, and CPU optimization strategies.</li>
+                    <li><strong>Bookmark our resources:</strong> Save the <strong>interactive simulations</strong> hub and our <strong>verifiable simulations</strong> documentation—we're continuously updating both with new capabilities.</li>
+                    <li><strong>Educators using PhET:</strong> Tell us what evidence formats would make grading and moderation easier with verifiable simulations—we're listening and building accordingly.</li>
                 </ul>
             </div>
 
@@ -197,6 +207,9 @@
                     <li><strong>NIST AI Risk Management Framework</strong> (overview and docs).</li>
                     <li><strong>EU AI Act</strong> timelines and summaries.</li>
                     <li><strong>Provenance standards:</strong> W3C PROV; <strong>Content authenticity:</strong> C2PA / Content Credentials.</li>
+                    <li><strong>Reasoning Reels:</strong> Our <a href="REASONING-REELS-README.md">complete technical documentation</a> covering SHA-256 hash-chains, Ed25519 signatures, and CPU optimization.</li>
+                    <li><strong>Web Cryptography API:</strong> Browser-native cryptographic primitives used for hash-chain and signature generation.</li>
+                    <li><strong>Cryptographic provenance:</strong> Research on tamper-evident scientific computing and reproducible experimentation.</li>
                 </ul>
 
                 <p class="footnote">
