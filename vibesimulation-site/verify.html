@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reasoning Reel Verifier • VibeSimulation</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: #0b0f14; color: #e6edf3; margin: 0; }
+    header { padding: 18px 20px; background: #0f1720; border-bottom: 1px solid #1b2734; }
+    main { max-width: 920px; margin: 0 auto; padding: 20px; }
+    .card { background: #0f1720; border: 1px solid #203042; border-radius: 14px; padding: 16px; margin-bottom: 18px; }
+    .muted { opacity: .75; }
+    .ok { color: #22c55e; }
+    .warn { color: #f59e0b; }
+    .bad { color: #ef4444; }
+    .monosmall { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; white-space: pre-wrap; word-break: break-word; }
+    input[type=file] { display: block; padding: 10px; background: #0b1119; border: 1px solid #223043; border-radius: 8px; color: #e6edf3; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .btn { padding: 8px 12px; border-radius: 8px; background:#243447; color:#e6edf3; border:1px solid #2f4358; cursor:pointer; }
+    .btn:hover { filter: brightness(1.1); }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>Reasoning Reel Verifier</strong>
+    <span class="muted"> – check hash-chain, signature, and basic stats</span>
+  </header>
+  <main>
+    <div class="card">
+      <input id="file" type="file" accept=".saxlg,application/json,text/plain">
+      <div style="margin-top:10px">
+        <button id="check" class="btn">Verify</button>
+      </div>
+    </div>
+
+    <div id="result" class="card monosmall muted">Load a .saxlg file and click Verify.</div>
+
+    <div id="meta" class="card monosmall"></div>
+    <div id="events" class="card monosmall" style="max-height: 320px; overflow: auto;"></div>
+  </main>
+
+  <script>
+    const enc = new TextEncoder();
+    const dec = new TextDecoder();
+
+    function canonicalize(obj) {
+      if (obj === null || typeof obj !== 'object') return obj;
+      if (Array.isArray(obj)) return obj.map(canonicalize);
+      const out = {};
+      Object.keys(obj).sort().forEach(k => { out[k] = canonicalize(obj[k]); });
+      return out;
+    }
+    function canonicalString(obj) { return JSON.stringify(canonicalize(obj)); }
+
+    function hex(buf) {
+      const v = new Uint8Array(buf);
+      let s = ""; for (let i=0;i<v.length;i++) s += v[i].toString(16).padStart(2,"0");
+      return s;
+    }
+
+    async function computeEventRoot(rows) {
+      let prev = new Uint8Array(32);
+      for (const ev of rows) {
+        const s = canonicalString(ev);
+        const data = new Uint8Array(prev.length + enc.encode(s).length);
+        data.set(prev, 0);
+        data.set(enc.encode(s), prev.length);
+        prev = new Uint8Array(await crypto.subtle.digest('SHA-256', data));
+      }
+      return "sha256-" + hex(prev);
+    }
+
+    async function verifyEd25519(pubB64, sigB64, metaMinusSig) {
+      try {
+        const algo = { name: "Ed25519" };
+        const pub = Uint8Array.from(atob(pubB64), c => c.charCodeAt(0));
+        const key = await crypto.subtle.importKey("raw", pub, algo, false, ["verify"]);
+        const data = new TextEncoder().encode(JSON.stringify(metaMinusSig));
+        const sig = Uint8Array.from(atob(sigB64), c => c.charCodeAt(0));
+        const ok = await crypto.subtle.verify(algo, key, sig, data);
+        return ok;
+      } catch (err) {
+        return { error: String(err) };
+      }
+    }
+
+    function show(el, html) { el.innerHTML = html; }
+
+    document.getElementById('check').addEventListener('click', async () => {
+      const f = document.getElementById('file').files[0];
+      const resultEl = document.getElementById('result');
+      const metaEl = document.getElementById('meta');
+      const eventsEl = document.getElementById('events');
+
+      if (!f) { show(resultEl, "<span class=bad>No file selected.</span>"); return; }
+
+      const text = await f.text();
+      const lines = text.trim().split(/\r?\n/);
+      if (!lines.length) { show(resultEl, "<span class=bad>Empty file.</span>"); return; }
+
+      let parsedMeta = null;
+      try {
+        const j0 = JSON.parse(lines[0]);
+        parsedMeta = j0.$meta || j0;
+      } catch (e) {
+        show(resultEl, "<span class=bad>First line is not valid JSON.</span>");
+        return;
+      }
+
+      const rows = [];
+      for (let i=1; i<lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        try { rows.push(JSON.parse(line)); } catch {}
+      }
+
+      const recomputed = await computeEventRoot(rows);
+
+      let rootMatch = (parsedMeta.event_root === recomputed);
+      let sigOk = null;
+      let sigErr = null;
+
+      if (parsedMeta.sig_alg && parsedMeta.sig_alg.toLowerCase() === "ed25519" && parsedMeta.pub && parsedMeta.sig) {
+        const {sig, pub, sig_alg, ...metaMinusSig} = parsedMeta;
+        metaMinusSig.event_root = parsedMeta.event_root;
+        const v = await verifyEd25519(parsedMeta.pub, parsedMeta.sig, metaMinusSig);
+        if (typeof v === "object" && v.error) { sigErr = v.error; sigOk = false; } else sigOk = v;
+      }
+
+      const stats = `
+        <div>Events: <b>${rows.length}</b></div>
+        <div>Event root: <code>${recomputed}</code></div>
+        <div>Root match with meta: ${rootMatch ? "<span class=ok>OK</span>" : "<span class=bad>NO MATCH</span>"}</div>
+        <div>Signature: ${sigOk===null ? "<span class=warn>none</span>" : (sigOk ? "<span class=ok>valid</span>" : "<span class=bad>invalid</span>")}</div>
+        ${sigErr ? "<div class=bad>Sig error: "+sigErr+"</div>" : ""}
+      `;
+      show(resultEl, stats);
+
+      show(metaEl, "<div class=muted>Meta</div><pre class=monosmall>"+JSON.stringify(parsedMeta, null, 2)+"</pre>");
+
+      const preview = rows.slice(0, 200).map(r => JSON.stringify(r)).join("\n");
+      show(eventsEl, "<div class=muted>First 200 events</div><pre class=monosmall>"+preview+"</pre>");
+    });
+  </script>
+</body>
+</html>
