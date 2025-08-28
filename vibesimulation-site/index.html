@@ -96,6 +96,45 @@
 				box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
 			}
 
+			.hero-primer {
+				display: flex;
+				flex-direction: column;
+				gap: 1rem;
+				margin: 2rem 0;
+				max-width: 500px;
+				margin-left: auto;
+				margin-right: auto;
+			}
+
+			.primer-step {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+				padding: 0.75rem 1rem;
+				background: rgba(255, 255, 255, 0.05);
+				border-radius: 12px;
+				border: 1px solid rgba(255, 255, 255, 0.1);
+				backdrop-filter: blur(10px);
+				transition: all 0.3s ease;
+			}
+
+			.primer-step:hover {
+				background: rgba(255, 255, 255, 0.08);
+				transform: translateY(-1px);
+			}
+
+			.primer-icon {
+				font-size: 1.5rem;
+				min-width: 2rem;
+				text-align: center;
+			}
+
+			.primer-text {
+				font-size: 0.95rem;
+				opacity: 0.9;
+				font-weight: 400;
+			}
+
 			/* ===== PHYSICS GALLERY ===== */
 			.physics-gallery {
 				padding: 5rem 2rem;
@@ -518,14 +557,27 @@
 			<!-- Physics Hero -->
 			<section id="physics-hero" class="physics-hero">
 				<div class="hero-content">
-					<h1 class="hero-title">Physics Gallery</h1>
+					<h1 class="hero-title">Interactive Physics Simulations</h1>
 					<p class="hero-subtitle">
-						Experience four fundamental domains of physics through real-time, interactive simulations.
-						From fluid dynamics to wave phenomena, explore the beauty of computational physics.
+						Click, drag, and interact with real-time physics engines. Each simulation responds to your touch, bringing complex mathematical concepts to life.
 					</p>
+					<div class="hero-primer">
+						<div class="primer-step">
+							<span class="primer-icon">👆</span>
+							<span class="primer-text">Click and drag on any canvas to interact</span>
+						</div>
+						<div class="primer-step">
+							<span class="primer-icon">⚙️</span>
+							<span class="primer-text">Adjust parameters with the controls</span>
+						</div>
+						<div class="primer-step">
+							<span class="primer-icon">🔍</span>
+							<span class="primer-text">Watch real physics unfold in real-time</span>
+						</div>
+					</div>
 					<button onclick="document.getElementById('fluid-dynamics').scrollIntoView({behavior: 'smooth'})" class="hero-cta">
 						<span>🌊</span>
-						Explore Physics
+						Start Interacting
 					</button>
 				</div>
 			</section>
