@@ -316,10 +316,6 @@
                         <label>Step/Frame</label>
                         <input type="number" id="mp-steps" min="1" max="10" value="2" />
                     </div>
-                    <div class="control-group">
-                        <label>Convergence Threshold</label>
-                        <input type="number" id="mp-threshold" step="0.0001" min="0.0001" max="0.01" value="0.001" />
-                    </div>
 
                     <!-- Visualization -->
                     <div class="control-group">
@@ -426,13 +422,6 @@
             let raf = null;
             let G = null; // graph object
             let stepCount = 0;
-
-            // Convergence detection
-            let solved = false;
-            let lastContrast = 0;
-            let contrastHistory = [];
-            let convergenceThreshold = 0.001; // Minimum change to be considered still learning
-            let convergenceWindow = 20; // Steps to look back for convergence
 
             // Utility functions
             function RNG(seed){ let state=BigInt(seed||1); return ()=>{ state=(6364136223846793005n*state+1442695040888963407n)&((1n<<64n)-1n); const x=Number(state>>32n)&0xffffffff; return (x>>>0)/4294967296; }; }
@@ -564,41 +553,6 @@
                 return contrast;
             }
 
-            function checkConvergence(currentContrast) {
-                contrastHistory.push(currentContrast);
-                if (contrastHistory.length > convergenceWindow) {
-                    contrastHistory.shift(); // Keep only recent history
-                }
-
-                if (contrastHistory.length < convergenceWindow) {
-                    return false; // Not enough data yet
-                }
-
-                // Calculate average change over the window
-                let totalChange = 0;
-                for (let i = 1; i < contrastHistory.length; i++) {
-                    totalChange += Math.abs(contrastHistory[i] - contrastHistory[i-1]);
-                }
-                const avgChange = totalChange / (contrastHistory.length - 1);
-
-                // Check if change is below threshold (converged)
-                if (avgChange < convergenceThreshold && !solved) {
-                    solved = true;
-                    console.log(`🎉 NETWORK SOLVED! Contrast: ${currentContrast.toFixed(6)}, Avg change: ${avgChange.toFixed(6)}`);
-
-                    // Auto-pause when solved
-                    running = false;
-                    if (raf) {
-                        cancelAnimationFrame(raf);
-                        raf = null;
-                    }
-
-                    return true;
-                }
-
-                return solved;
-            }
-
             // Drawing functions
             function draw(Iopt){
                 const R=G.R, C=G.C;
@@ -619,21 +573,8 @@
                     const x1=pad+cu*w, y1=pad+ru*h, x2=pad+cv*w, y2=pad+rv*h;
                     const cond=1/Math.max(1e-6, G.res.get(key));
                     const t = Math.min(1, (cond-1)/99);
-                    let width = 2 + 4*t;
-                    let r = Math.floor(42 + t*213), g = Math.floor(55 + t*200), b = Math.floor(70 + t*185);
-
-                    // Special highlighting when solved - make optimal path glow
-                    if (solved) {
-                        const Iuv = I.get(key)||0;
-                        const maxI = Math.max(...I.values());
-                        if (Iuv > maxI * 0.5) { // Highlight high-current paths
-                            width *= 1.5;
-                            r = Math.floor(60 + Math.sin(Date.now() * 0.005) * 40);
-                            g = Math.floor(200 + Math.sin(Date.now() * 0.005 + 2) * 55);
-                            b = Math.floor(255);
-                        }
-                    }
-
+                    const width = 2 + 4*t;
+                    const r = Math.floor(42 + t*213), g = Math.floor(55 + t*200), b = Math.floor(70 + t*185);
                     ctx.strokeStyle=`rgb(${r},${g},${b})`; ctx.lineWidth=width;
                     ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
 
@@ -645,7 +586,7 @@
                                 const tpar = (k+ (stepCount%10)/10 ) / (q+1);
                                 const px = x1 + (x2-x1)*tpar;
                                 const py = y1 + (y2-y1)*tpar;
-                                ctx.fillStyle = solved ? "rgba(255,215,0,0.9)" : "rgba(130,255,255,0.8)"; // Gold particles when solved
+                                ctx.fillStyle = "rgba(130,255,255,0.8)";
                                 ctx.beginPath(); ctx.arc(px,py,1.8,0,Math.PI*2); ctx.fill();
                             }
                         }
@@ -657,52 +598,12 @@
                     for (let c=0;c<C;c++){
                         const i=r*C+c, x=pad+c*w, y=pad+r*h;
                         if (i===G.start || i===G.end){
-                            let nodeColor = "#FFDC73";
-                            let nodeSize = 4;
-
-                            // Special celebration effect when solved
-                            if (solved) {
-                                const pulse = Math.sin(Date.now() * 0.01) * 0.5 + 0.5;
-                                nodeColor = `hsl(45, 100%, ${70 + pulse * 20}%)`;
-                                nodeSize = 4 + pulse * 3;
-                            }
-
-                            ctx.fillStyle = nodeColor;
-                            ctx.beginPath(); ctx.arc(x,y,nodeSize,0,Math.PI*2); ctx.fill();
-
-                            // Add glow effect when solved
-                            if (solved) {
-                                ctx.shadowColor = '#FFD700';
-                                ctx.shadowBlur = 10;
-                                ctx.beginPath(); ctx.arc(x,y,nodeSize,0,Math.PI*2); ctx.fill();
-                                ctx.shadowBlur = 0;
-                            }
+                            ctx.fillStyle=(i===G.start)?"#FFDC73":"#FFDC73";
+                            ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2); ctx.fill();
                         } else {
                             ctx.fillStyle="#506078"; ctx.beginPath(); ctx.arc(x,y,2,0,Math.PI*2); ctx.fill();
                         }
                     }
-                }
-
-                // Draw "SOLVED!" overlay when network converges
-                if (solved) {
-                    ctx.save();
-                    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                    // Pulsing text
-                    const pulse = Math.sin(Date.now() * 0.008) * 0.3 + 0.7;
-                    ctx.fillStyle = `rgba(255, 215, 0, ${pulse})`;
-                    ctx.font = 'bold 36px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText('🎉 NETWORK SOLVED! 🎉', canvas.width/2, canvas.height/2 - 20);
-
-                    ctx.fillStyle = `rgba(255, 255, 255, ${pulse})`;
-                    ctx.font = '18px Arial';
-                    ctx.fillText('Optimal path found through neuromorphic learning', canvas.width/2, canvas.height/2 + 20);
-                    ctx.fillText('The resistive network has converged!', canvas.width/2, canvas.height/2 + 45);
-
-                    ctx.restore();
                 }
             }
 
@@ -710,8 +611,6 @@
             function init(){
                 G = makeGrid(rows, cols, seed, backbone);
                 stepCount = 0;
-                solved = false; // Reset solved state
-                contrastHistory = []; // Reset convergence history
                 draw();
                 const sc = score(G, computeCurrents(G).I);
                 document.getElementById("mp-info").textContent = `Ready - contrast ${sc.toFixed(4)}`;
@@ -726,16 +625,7 @@
                 stepCount++;
                 draw(I);
                 const sc = score(G, I);
-
-                // Check for convergence
-                const isSolved = checkConvergence(sc);
-
-                // Update status display
-                let statusText = `step ${stepCount} • contrast ${sc.toFixed(4)} • solve ${(performance.now()-t0).toFixed(1)} ms`;
-                if (isSolved) {
-                    statusText += ` 🎉 SOLVED!`;
-                }
-                document.getElementById("mp-info").textContent = statusText;
+                document.getElementById("mp-info").textContent = `step ${stepCount} • contrast ${sc.toFixed(4)} • solve ${(performance.now()-t0).toFixed(1)} ms`;
             }
 
             function loop(){
@@ -782,10 +672,6 @@
                 stepsPerFrame = parseInt(e.target.value);
             });
 
-            document.getElementById('mp-threshold').addEventListener('input', (e) => {
-                convergenceThreshold = parseFloat(e.target.value);
-            });
-
             document.getElementById('mp-flow').addEventListener('change', (e) => {
                 showFlow = e.target.checked;
                 if (G) draw();
@@ -810,8 +696,6 @@
 
             document.getElementById('mp-reset').addEventListener('click', () => {
                 running=false;
-                solved = false;
-                contrastHistory = [];
                 init();
             });
 
