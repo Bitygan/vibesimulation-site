@@ -2293,149 +2293,17 @@
 
 
 
-					advectionStep() {
-						// Simple semi-Lagrangian advection for momentum
-						const dt = this.dt;
-						for (let j = 2; j < this.NY - 2; j++) {
-							for (let i = 2; i < this.NX - 2; i++) {
-								const idx = this.idx(i, j);
-								const h = this.h[idx];
-								if (h < 0.01) continue;
 
-								const u = this.hu[idx] / h;
-								const v = this.hv[idx] / h;
 
-								// Trace back
-								const x_back = i - dt * u / this.dx;
-								const y_back = j - dt * v / this.dx;
 
-								// Bilinear interpolation
-								const i0 = Math.floor(x_back);
-								const j0 = Math.floor(y_back);
-								const fx = x_back - i0;
-								const fy = y_back - j0;
 
-								if (i0 >= 0 && i0 < this.NX - 1 && j0 >= 0 && j0 < this.NY - 1) {
-									const idx00 = this.idx(i0, j0);
-									const idx10 = this.idx(i0 + 1, j0);
-									const idx01 = this.idx(i0, j0 + 1);
-									const idx11 = this.idx(i0 + 1, j0 + 1);
 
-									const hu_interp = this.lerp(
-										this.lerp(this.hu_prev[idx00], this.hu_prev[idx10], fx),
-										this.lerp(this.hu_prev[idx01], this.hu_prev[idx11], fx),
-										fy
-									);
 
-									const hv_interp = this.lerp(
-										this.lerp(this.hv_prev[idx00], this.hv_prev[idx10], fx),
-										this.lerp(this.hv_prev[idx01], this.hv_prev[idx11], fx),
-										fy
-									);
 
-									this.hu[idx] = hu_interp;
-									this.hv[idx] = hv_interp;
-								}
-							}
-						}
+					destroy() {
+						if (this.raf) cancelAnimationFrame(this.raf);
 					}
-
-					gravityStep() {
-						// Fast gravity and pressure forces - optimized for performance
-						const dt = this.dt;
-						const dx = this.dx;
-						const g = this.grav;
-
-						for (let j = 1; j < this.NY - 1; j++) {
-							for (let i = 1; i < this.NX - 1; i++) {
-								const idx = this.idx(i, j);
-								const h = this.h[idx];
-								if (h < 0.01) continue;
-
-								// Simple pressure gradient
-								const dh_dx = (this.h[this.idx(i + 1, j)] - this.h[this.idx(i - 1, j)]) / (2 * dx);
-								const dh_dy = (this.h[this.idx(i, j + 1)] - this.h[this.idx(i, j - 1)]) / (2 * dx);
-
-								// Update momentum
-								this.hu[idx] -= g * h * dh_dx * dt;
-								this.hv[idx] -= g * h * dh_dy * dt;
-							}
-						}
-					}
-
-					frictionStep() {
-						// Bottom friction
-						const dt = this.dt;
-						const friction = Math.exp(-this.fric * dt);
-
-						for (let j = 0; j < this.NY; j++) {
-							for (let i = 0; i < this.NX; i++) {
-								const idx = this.idx(i, j);
-								const h = this.h[idx];
-								if (h > 0.01) {
-									this.hu[idx] *= friction;
-									this.hv[idx] *= friction;
-								}
-							}
-						}
-					}
-
-					enforceBoundaries() {
-						// Reflecting boundaries
-						for (let i = 0; i < this.NX; i++) {
-							// Top and bottom
-							this.h[this.idx(i, 0)] = this.h[this.idx(i, 1)];
-							this.h[this.idx(i, this.NY - 1)] = this.h[this.idx(i, this.NY - 2)];
-							this.hu[this.idx(i, 0)] = this.hu[this.idx(i, 1)];
-							this.hu[this.idx(i, this.NY - 1)] = this.hu[this.idx(i, this.NY - 2)];
-							this.hv[this.idx(i, 0)] = -this.hv[this.idx(i, 1)]; // Reflect
-							this.hv[this.idx(i, this.NY - 1)] = -this.hv[this.idx(i, this.NY - 2)];
-						}
-
-						for (let j = 0; j < this.NY; j++) {
-							// Left and right
-							this.h[this.idx(0, j)] = this.h[this.idx(1, j)];
-							this.h[this.idx(this.NX - 1, j)] = this.h[this.idx(this.NX - 2, j)];
-							this.hv[this.idx(0, j)] = this.hv[this.idx(1, j)];
-							this.hv[this.idx(this.NX - 1, j)] = this.hv[this.idx(this.NX - 2, j)];
-							this.hu[this.idx(0, j)] = -this.hu[this.idx(1, j)]; // Reflect
-							this.hu[this.idx(this.NX - 1, j)] = -this.hu[this.idx(this.NX - 2, j)];
-						}
-
-						// Solid obstacles
-						for (let j = 0; j < this.NY; j++) {
-							for (let i = 0; i < this.NX; i++) {
-								const idx = this.idx(i, j);
-								if (this.solid[idx]) {
-									this.h[idx] = 0.05;
-									this.hu[idx] = 0;
-									this.hv[idx] = 0;
-								}
-							}
-						}
-					}
-
-
-
-					// High-quality visualization following SAX Perceptual Integrity principle
-					render() {
-						this.ctx.clearRect(0, 0, this.W, this.H);
-						this.ctx.fillStyle = "#0b0f16";
-						this.ctx.fillRect(0, 0, this.W, this.H);
-
-						const img = this.ctx.createImageData(this.W, this.H);
-
-						// Smooth interpolation for high-quality rendering
-						let hmin = 1e9, hmax = -1e9;
-						for (let j = 0; j < this.NY; j++) {
-							for (let i = 0; i < this.NX; i++) {
-								const h = this.h[this.idx(i, j)];
-								if (h < hmin) hmin = h;
-								if (h > hmax) hmax = h;
-							}
-						}
-
-						const range = Math.max(1e-3, hmax - hmin);
+				}
 
 						// High-quality bilinear interpolation
 						for (let Y = 0; Y < this.H; Y++) {
