@@ -1,0 +1,78 @@
+[
+  {
+    "id": "ps-001",
+    "when": "2025-08-27T10:01:00Z",
+    "sim": "PaintedSky",
+    "user_seed": 20250827,
+    "kpi": "spacing_px",
+    "mean": 29.4,
+    "ci95": [
+      27.9,
+      30.8
+    ],
+    "palette": "Aurora"
+  },
+  {
+    "id": "ps-002",
+    "when": "2025-08-27T10:10:00Z",
+    "sim": "PaintedSky",
+    "user_seed": 98765,
+    "kpi": "spacing_px",
+    "mean": 33.2,
+    "ci95": [
+      31.1,
+      35.1
+    ],
+    "palette": "NeonTokyo"
+  },
+  {
+    "id": "gl-001",
+    "when": "2025-08-27T10:12:00Z",
+    "sim": "GlassLabyrinth",
+    "user_seed": 20250827,
+    "kpi": "solve_time",
+    "mean": 4.9,
+    "ci95": [
+      4.7,
+      5.1
+    ]
+  },
+  {
+    "id": "ps-003",
+    "when": "2025-08-27T10:15:00Z",
+    "sim": "PaintedSky",
+    "user_seed": 123456,
+    "kpi": "spacing_px",
+    "mean": 25.8,
+    "ci95": [
+      24.2,
+      27.4
+    ],
+    "palette": "Sunstone"
+  },
+  {
+    "id": "gl-002",
+    "when": "2025-08-27T10:18:00Z",
+    "sim": "GlassLabyrinth",
+    "user_seed": 54321,
+    "kpi": "solve_time",
+    "mean": 3.7,
+    "ci95": [
+      3.4,
+      4.0
+    ]
+  },
+  {
+    "id": "ps-004",
+    "when": "2025-08-27T10:22:00Z",
+    "sim": "PaintedSky",
+    "user_seed": 777777,
+    "kpi": "spacing_px",
+    "mean": 31.5,
+    "ci95": [
+      29.8,
+      33.2
+    ],
+    "palette": "Aurora"
+  }
+]

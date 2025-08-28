@@ -1,0 +1,4 @@
+export type ParamMap = Record<string, string | number | boolean>;
+export function parseParams(): ParamMap { const url=new URL(window.location.href); const p:ParamMap={}; url.searchParams.forEach((v,k)=>{p[k]=v;});
+  Object.keys(p).forEach(k=>{ const v=String(p[k]); if(v==='1'||v.toLowerCase()==='true') p[k]=true; else if(v==='0'||v.toLowerCase()==='false') p[k]=false; else if(!Number.isNaN(Number(v))) p[k]=Number(v); }); return p; }
+export function shareLink(basePath:string, params:ParamMap){ const u=new URL(window.location.origin+basePath); Object.entries(params).forEach(([k,v])=>u.searchParams.set(k,String(v))); return u.toString(); }
