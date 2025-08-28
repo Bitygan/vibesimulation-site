@@ -36,7 +36,7 @@
     return out;
   }
 
-  // SAX SOP v2.2: Agent-First Paradigm - Component Agents
+  // SAX SOP v2.2: Agent-First Paradigm - Enhanced Component Agents (PhET-Inspired)
   class CircuitComponent {
     constructor(type, x, y, value = 0) {
       this.type = type; // 'battery', 'resistor', 'wire'
@@ -47,8 +47,23 @@
       this.selected = false;
       this.dragging = false;
       this.terminals = this.getTerminals();
+
+      // PhET-inspired educational properties
       this.voltage = 0;
       this.current = 0;
+      this.temperature = 20; // Celsius
+      this.power = 0; // Watts (P = I²R)
+
+      // Electron flow animation
+      this.electrons = [];
+      this.electronSpeed = 50; // pixels per second
+      this.lastElectronTime = 0;
+
+      // Visual enhancement properties
+      this.showCores = false;
+      this.showElectrons = true;
+      this.showTemperature = false;
+      this.showBatteryChemistry = false;
     }
 
     getTerminals() {
@@ -116,63 +131,268 @@
     }
 
     drawBattery(ctx) {
+      const ctxX = this.x;
+      const ctxY = this.y;
+
       // Battery symbol
       ctx.strokeStyle = '#059669';
       ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.moveTo(-15, 0);
-      ctx.lineTo(-5, 0);
-      ctx.moveTo(-5, -8);
-      ctx.lineTo(-5, 8);
-      ctx.moveTo(5, -5);
-      ctx.lineTo(5, 5);
-      ctx.moveTo(5, 0);
-      ctx.lineTo(15, 0);
+      ctx.moveTo(ctxX - 15, ctxY);
+      ctx.lineTo(ctxX - 5, ctxY);
+      ctx.moveTo(ctxX - 5, ctxY - 8);
+      ctx.lineTo(ctxX - 5, ctxY + 8);
+      ctx.moveTo(ctxX + 5, ctxY - 5);
+      ctx.lineTo(ctxX + 5, ctxY + 5);
+      ctx.moveTo(ctxX + 5, ctxY);
+      ctx.lineTo(ctxX + 15, ctxY);
       ctx.stroke();
+
+      // Show battery chemistry (PhET-inspired)
+      if (this.showBatteryChemistry) {
+        // Chemical reaction visualization
+        ctx.fillStyle = 'rgba(5, 150, 105, 0.2)';
+        ctx.fillRect(ctxX - 12, ctxY - 6, 24, 12);
+
+        // Positive electrode (cathode)
+        ctx.fillStyle = '#dc2626';
+        ctx.fillRect(ctxX - 10, ctxY - 4, 6, 8);
+
+        // Negative electrode (anode)
+        ctx.fillStyle = '#2563eb';
+        ctx.fillRect(ctxX + 4, ctxY - 4, 6, 8);
+
+        // Electrolyte
+        ctx.fillStyle = '#fbbf24';
+        ctx.fillRect(ctxX - 2, ctxY - 2, 4, 4);
+
+        // Ion flow animation
+        if (this.current > 0) {
+          const time = Date.now() * 0.002;
+          const ionX = ctxX - 8 + Math.sin(time) * 4;
+          const ionY = ctxY + Math.cos(time) * 2;
+
+          ctx.fillStyle = '#f59e0b';
+          ctx.beginPath();
+          ctx.arc(ionX, ionY, 1.5, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+      }
 
       // Voltage label
       ctx.fillStyle = '#059669';
       ctx.font = '10px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(`${this.value}V`, 0, -15);
-    }
-
-    drawResistor(ctx) {
-      // Resistor zigzag
-      ctx.strokeStyle = '#dc2626';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(-15, 0);
-      for (let i = 0; i < 5; i++) {
-        const x = -10 + i * 5;
-        const y = (i % 2 === 0 ? 5 : -5);
-        ctx.lineTo(x, y);
-      }
-      ctx.lineTo(15, 0);
-      ctx.stroke();
-
-      // Resistance label
-      ctx.fillStyle = '#dc2626';
-      ctx.font = '10px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText(`${this.value}Ω`, 0, -15);
+      ctx.fillText(`${this.value}V`, ctxX, ctxY - 18);
 
       // Current display
       if (this.current > 0) {
         ctx.fillStyle = '#ffffff';
         ctx.font = '8px monospace';
-        ctx.fillText(`${this.current.toFixed(2)}A`, 0, 15);
+        ctx.fillText(`${this.current.toFixed(3)}A`, ctxX, ctxY + 18);
+      }
+
+      // Electron flow from battery (PhET-inspired)
+      if (this.showElectrons && this.current > 0) {
+        this.updateBatteryElectronFlow(ctx);
       }
     }
 
-    drawWire(ctx) {
-      // Simple wire line
-      ctx.strokeStyle = '#6b7280';
+    updateBatteryElectronFlow(ctx) {
+      const currentTime = Date.now() / 1000;
+      const ctxX = this.x;
+      const ctxY = this.y;
+
+      // Add electrons from negative terminal
+      if (currentTime - this.lastElectronTime > 0.3) {
+        this.electrons.push({
+          progress: 0,
+          speed: this.electronSpeed * 0.5,
+          startX: ctxX - 15,
+          startY: ctxY,
+          endX: ctxX + 15,
+          endY: ctxY
+        });
+        this.lastElectronTime = currentTime;
+      }
+
+      // Update and draw electrons
+      this.electrons = this.electrons.filter(electron => {
+        electron.progress += electron.speed * 0.016;
+
+        if (electron.progress >= 1) return false;
+
+        const x = electron.startX + (electron.endX - electron.startX) * electron.progress;
+        const y = electron.startY + (electron.endY - electron.startY) * electron.progress;
+
+        // Add some random motion
+        const randomOffset = Math.sin(electron.progress * 10) * 1;
+
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(x + randomOffset, y, 2, 0, 2 * Math.PI);
+        ctx.fill();
+
+        return true;
+      });
+    }
+
+    drawResistor(ctx) {
+      const ctxX = this.x;
+      const ctxY = this.y;
+
+      // Calculate temperature-based color (PhET-inspired)
+      let tempColor = '#dc2626'; // Normal red
+      if (this.showTemperature && this.temperature > 25) {
+        // Heat up from red to orange to yellow
+        const heatRatio = Math.min((this.temperature - 25) / 50, 1);
+        const r = Math.round(220 + heatRatio * 35); // 220 -> 255
+        const g = Math.round(38 + heatRatio * 162);  // 38 -> 200
+        const b = Math.round(38 + heatRatio * 17);   // 38 -> 55
+        tempColor = `rgb(${r}, ${g}, ${b})`;
+      }
+
+      // Resistor body
+      ctx.strokeStyle = tempColor;
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.moveTo(-15, 0);
-      ctx.lineTo(15, 0);
+      ctx.moveTo(ctxX - 15, ctxY);
+      for (let i = 0; i < 5; i++) {
+        const x = ctxX - 10 + i * 5;
+        const y = ctxY + (i % 2 === 0 ? 5 : -5);
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(ctxX + 15, ctxY);
       ctx.stroke();
+
+      // Show resistor cores (PhET-inspired)
+      if (this.showCores) {
+        ctx.strokeStyle = '#8b5cf6'; // Purple cores
+        ctx.lineWidth = 1;
+        for (let i = 0; i < 3; i++) {
+          const x = ctxX - 8 + i * 6;
+          ctx.beginPath();
+          ctx.moveTo(x, ctxY - 3);
+          ctx.lineTo(x, ctxY + 3);
+          ctx.stroke();
+        }
+      }
+
+      // Resistance label
+      ctx.fillStyle = tempColor;
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${this.value}Ω`, ctxX, ctxY - 18);
+
+      // Power dissipation (temperature indicator)
+      if (this.showTemperature && this.power > 0) {
+        const tempText = this.temperature > 25 ? 'HOT' : 'COOL';
+        const tempColor = this.temperature > 25 ? '#ef4444' : '#3b82f6';
+        ctx.fillStyle = tempColor;
+        ctx.font = '8px monospace';
+        ctx.fillText(`${this.temperature.toFixed(0)}°C`, ctxX, ctxY + 18);
+      }
+
+      // Current display
+      if (this.current > 0) {
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '8px monospace';
+        ctx.fillText(`${this.current.toFixed(3)}A`, ctxX, ctxY + 15);
+      }
+
+      // Electron flow animation (PhET-inspired)
+      if (this.showElectrons && this.current > 0) {
+        this.updateElectronFlow(ctx);
+      }
+    }
+
+    updateElectronFlow(ctx) {
+      const currentTime = Date.now() / 1000;
+      const ctxX = this.x;
+      const ctxY = this.y;
+
+      // Add new electrons periodically
+      if (currentTime - this.lastElectronTime > 0.5) { // Every 0.5 seconds
+        this.electrons.push({
+          progress: 0,
+          speed: this.electronSpeed * (this.current / 0.01) // Faster with more current
+        });
+        this.lastElectronTime = currentTime;
+      }
+
+      // Update and draw electrons
+      this.electrons = this.electrons.filter(electron => {
+        electron.progress += electron.speed * 0.016; // ~60fps
+
+        if (electron.progress >= 1) return false;
+
+        // Calculate position along resistor
+        const electronX = ctxX - 15 + (electron.progress * 30);
+        let electronY = ctxY;
+
+        // Zigzag motion
+        const zigzagIndex = Math.floor(electron.progress * 5);
+        if (zigzagIndex < 5) {
+          electronY += (zigzagIndex % 2 === 0 ? 3 : -3) * (1 - Math.abs(electron.progress * 5 - zigzagIndex - 0.5) * 2);
+        }
+
+        // Draw electron
+        ctx.fillStyle = '#fbbf24'; // Yellow electron
+        ctx.beginPath();
+        ctx.arc(electronX, electronY, 2, 0, 2 * Math.PI);
+        ctx.fill();
+
+        return true;
+      });
+    }
+
+    drawWire(ctx) {
+      const ctxX = this.x;
+      const ctxY = this.y;
+
+      // Wire line with current-based styling
+      ctx.strokeStyle = this.current > 0 ? '#10b981' : '#6b7280';
+      ctx.lineWidth = this.current > 0 ? 3 : 2;
+      ctx.beginPath();
+      ctx.moveTo(ctxX - 15, ctxY);
+      ctx.lineTo(ctxX + 15, ctxY);
+      ctx.stroke();
+
+      // Electron flow animation (PhET-inspired)
+      if (this.showElectrons && this.current > 0) {
+        this.updateWireElectronFlow(ctx);
+      }
+    }
+
+    updateWireElectronFlow(ctx) {
+      const currentTime = Date.now() / 1000;
+      const ctxX = this.x;
+      const ctxY = this.y;
+
+      // Add electrons periodically
+      if (currentTime - this.lastElectronTime > 0.4) {
+        this.electrons.push({
+          progress: 0,
+          speed: this.electronSpeed * (this.current / 0.01)
+        });
+        this.lastElectronTime = currentTime;
+      }
+
+      // Update and draw electrons
+      this.electrons = this.electrons.filter(electron => {
+        electron.progress += electron.speed * 0.016;
+
+        if (electron.progress >= 1) return false;
+
+        const electronX = ctxX - 15 + (electron.progress * 30);
+
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(electronX, ctxY, 2, 0, 2 * Math.PI);
+        ctx.fill();
+
+        return true;
+      });
     }
   }
 
@@ -430,7 +650,51 @@
               </div>
             </div>
 
-            <!-- Advanced Controls -->
+            <!-- PhET-Inspired Educational Controls -->
+            <div class="control-group">
+              <label>Educational Views:</label>
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <label style="font-size: 0.8rem;">
+                  <input type="checkbox" id="show-electrons" checked> Show Electron Flow
+                </label>
+                <label style="font-size: 0.8rem;">
+                  <input type="checkbox" id="show-voltage-calc"> Show Voltage Math
+                </label>
+                <label style="font-size: 0.8rem;">
+                  <input type="checkbox" id="show-inside-battery"> Show Battery Chemistry
+                </label>
+                <label style="font-size: 0.8rem;">
+                  <input type="checkbox" id="show-resistor-cores"> Show Resistor Cores
+                </label>
+              </div>
+            </div>
+
+            <!-- Real-time Controls (PhET Style) -->
+            <div class="control-group">
+              <label>Battery Voltage:</label>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="range" id="battery-voltage-slider" min="0" max="15" step="0.1" value="9.0" style="flex: 1;">
+                <span id="battery-voltage-display" style="min-width: 50px; font-family: monospace;">9.0V</span>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label>Resistance:</label>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="range" id="resistance-slider" min="100" max="5000" step="50" value="1000" style="flex: 1;">
+                <span id="resistance-display" style="min-width: 60px; font-family: monospace;">1000Ω</span>
+              </div>
+            </div>
+
+            <!-- Ammeter Display -->
+            <div class="control-group">
+              <label>Ammeter:</label>
+              <div id="ammeter-display" style="font-family: monospace; font-size: 1.2rem; color: #10b981; padding: 0.5rem; background: rgba(16, 185, 129, 0.1); border-radius: 4px; text-align: center;">
+                0.000 A
+              </div>
+            </div>
+
+            <!-- Advanced Settings -->
             <div class="control-group">
               <label>Settings:</label>
               <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
@@ -439,6 +703,9 @@
                 </label>
                 <label style="font-size: 0.8rem;">
                   <input type="checkbox" id="auto-snap" checked> Auto-Snap Wires
+                </label>
+                <label style="font-size: 0.8rem;">
+                  <input type="checkbox" id="show-temperature"> Show Temperature
                 </label>
               </div>
             </div>
@@ -605,6 +872,93 @@
       // Initialize settings
       this.snapToGrid = snapToGridCheckbox.checked;
       this.autoSnap = autoSnapCheckbox.checked;
+
+      // PhET-inspired educational controls
+      const showElectronsCheckbox = card.querySelector('#show-electrons');
+      const showVoltageCalcCheckbox = card.querySelector('#show-voltage-calc');
+      const showInsideBatteryCheckbox = card.querySelector('#show-inside-battery');
+      const showResistorCoresCheckbox = card.querySelector('#show-resistor-cores');
+      const showTemperatureCheckbox = card.querySelector('#show-temperature');
+
+      const batteryVoltageSlider = card.querySelector('#battery-voltage-slider');
+      const batteryVoltageDisplay = card.querySelector('#battery-voltage-display');
+      const resistanceSlider = card.querySelector('#resistance-slider');
+      const resistanceDisplay = card.querySelector('#resistance-display');
+
+      // Educational view handlers
+      showElectronsCheckbox.addEventListener('change', (e) => {
+        this.components.forEach(comp => comp.showElectrons = e.target.checked);
+        this.reel.add({ type: "setting_changed", setting: "show_electrons", value: e.target.checked });
+      });
+
+      showVoltageCalcCheckbox.addEventListener('change', (e) => {
+        this.showVoltageMath = e.target.checked;
+        this.reel.add({ type: "setting_changed", setting: "show_voltage_calc", value: e.target.checked });
+      });
+
+      showInsideBatteryCheckbox.addEventListener('change', (e) => {
+        this.components.forEach(comp => {
+          if (comp.type === 'battery') comp.showBatteryChemistry = e.target.checked;
+        });
+        this.reel.add({ type: "setting_changed", setting: "show_battery_chemistry", value: e.target.checked });
+      });
+
+      showResistorCoresCheckbox.addEventListener('change', (e) => {
+        this.components.forEach(comp => {
+          if (comp.type === 'resistor') comp.showCores = e.target.checked;
+        });
+        this.reel.add({ type: "setting_changed", setting: "show_resistor_cores", value: e.target.checked });
+      });
+
+      showTemperatureCheckbox.addEventListener('change', (e) => {
+        this.components.forEach(comp => comp.showTemperature = e.target.checked);
+        this.reel.add({ type: "setting_changed", setting: "show_temperature", value: e.target.checked });
+      });
+
+      // Real-time control handlers
+      batteryVoltageSlider.addEventListener('input', (e) => {
+        const voltage = parseFloat(e.target.value);
+        batteryVoltageDisplay.textContent = voltage.toFixed(1) + 'V';
+
+        // Update battery voltage and recalculate circuit
+        this.components.forEach(comp => {
+          if (comp.type === 'battery') {
+            comp.value = voltage;
+            this.reel.add({ type: "battery_voltage_changed", new_voltage: voltage });
+          }
+        });
+
+        if (this.isRunning) {
+          this.solveCircuit();
+        }
+      });
+
+      resistanceSlider.addEventListener('input', (e) => {
+        const resistance = parseFloat(e.target.value);
+        resistanceDisplay.textContent = resistance + 'Ω';
+
+        // Update resistor resistance and recalculate circuit
+        this.components.forEach(comp => {
+          if (comp.type === 'resistor') {
+            comp.value = resistance;
+            this.reel.add({ type: "resistance_changed", new_resistance: resistance });
+          }
+        });
+
+        if (this.isRunning) {
+          this.solveCircuit();
+        }
+      });
+
+      // Initialize component display settings
+      this.components.forEach(comp => {
+        comp.showElectrons = showElectronsCheckbox.checked;
+        comp.showBatteryChemistry = showInsideBatteryCheckbox.checked;
+        comp.showCores = showResistorCoresCheckbox.checked;
+        comp.showTemperature = showTemperatureCheckbox.checked;
+      });
+
+      this.showVoltageMath = showVoltageCalcCheckbox.checked;
 
       // Control button events
       const clearBtn = card.querySelector('#clear-circuit-btn');
@@ -1052,16 +1406,30 @@
       resistors.forEach((resistor, i) => {
         const current = totalCurrent;
         const voltage = current * resistor.value;
+        const power = voltage * current; // P = V * I
+
         this.voltages.set(resistor.id, voltage);
         this.currents.set(resistor.id, current);
         resistor.voltage = voltage;
         resistor.current = current;
+        resistor.power = power;
+
+        // Calculate temperature based on power dissipation (PhET-inspired)
+        // Temperature = ambient + (power * thermal_resistance)
+        const thermalResistance = 50; // °C/W (typical for small resistor)
+        resistor.temperature = 20 + (power * thermalResistance);
 
         // Update terminals
         resistor.terminals.forEach(term => {
           term.voltage = term.type === 'input' ? voltageDrop : voltageDrop + voltage;
         });
         voltageDrop += voltage;
+      });
+
+      // Update battery current and power
+      batteries.forEach(battery => {
+        battery.current = totalCurrent;
+        battery.power = battery.value * totalCurrent; // P = V * I (battery supplies power)
       });
 
       this.updateStatus(`Solved: ${totalVoltage.toFixed(1)}V, ${totalCurrent.toFixed(3)}A`);
@@ -1145,11 +1513,72 @@
       // Draw components
       this.components.forEach(comp => comp.draw(this.ctx));
 
+      // Draw voltage math overlay (PhET-inspired)
+      if (this.showVoltageMath && this.isRunning) {
+        this.drawVoltageMath();
+      }
+
       // Draw cursor hint
       if (this.draggedComponent) {
         this.ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
         this.ctx.font = '12px monospace';
         this.ctx.fillText('Release to place', this.mousePos.x + 10, this.mousePos.y - 10);
+      }
+
+      // Update ammeter display
+      this.updateAmmeterDisplay();
+    }
+
+    drawVoltageMath() {
+      // Draw voltage calculation overlay (PhET-inspired)
+      const centerX = this.W / 2;
+      const centerY = this.H - 60;
+
+      // Semi-transparent background
+      this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      this.ctx.fillRect(centerX - 150, centerY - 25, 300, 50);
+
+      // Calculate values
+      const batteries = this.components.filter(c => c.type === 'battery');
+      const resistors = this.components.filter(c => c.type === 'resistor');
+      const totalVoltage = batteries.reduce((sum, b) => sum + b.value, 0);
+      const totalResistance = resistors.reduce((sum, r) => sum + r.value, 0);
+      const totalCurrent = totalResistance > 0 ? totalVoltage / totalResistance : 0;
+
+      // Display Ohm's Law calculations
+      this.ctx.fillStyle = '#ffffff';
+      this.ctx.font = '14px monospace';
+      this.ctx.textAlign = 'center';
+
+      const ohmsLaw = `V = ${totalVoltage.toFixed(1)}V, R = ${totalResistance}Ω, I = ${totalCurrent.toFixed(3)}A`;
+      const powerCalc = resistors.length > 0 ? `P = ${resistors[0].power?.toFixed(2) || 0}W (resistor)` : '';
+
+      this.ctx.fillText('Ohm\'s Law: ' + ohmsLaw, centerX, centerY - 5);
+      if (powerCalc) {
+        this.ctx.fillText('Power: ' + powerCalc, centerX, centerY + 15);
+      }
+    }
+
+    updateAmmeterDisplay() {
+      const ammeterEl = document.getElementById('ammeter-display');
+      if (!ammeterEl) return;
+
+      // Calculate total current
+      const batteries = this.components.filter(c => c.type === 'battery');
+      const resistors = this.components.filter(c => c.type === 'resistor');
+      const totalVoltage = batteries.reduce((sum, b) => sum + b.value, 0);
+      const totalResistance = resistors.reduce((sum, r) => sum + r.value, 0);
+      const totalCurrent = totalResistance > 0 ? totalVoltage / totalResistance : 0;
+
+      ammeterEl.textContent = totalCurrent.toFixed(3) + ' A';
+
+      // Color code based on current level
+      if (totalCurrent > 1.0) {
+        ammeterEl.style.color = '#ef4444'; // Red for high current
+      } else if (totalCurrent > 0.1) {
+        ammeterEl.style.color = '#f59e0b'; // Orange for medium current
+      } else {
+        ammeterEl.style.color = '#10b981'; // Green for low current
       }
     }
 
