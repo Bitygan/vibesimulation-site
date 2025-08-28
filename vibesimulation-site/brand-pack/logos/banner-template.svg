@@ -1,0 +1,62 @@
+<svg width="1500" height="500" viewBox="0 0 1500 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Ocean gradient background -->
+  <defs>
+    <linearGradient id="bannerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0c0c0c;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#16213e;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#0f3460;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a1a2e;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Wave pattern -->
+    <pattern id="wavePattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+      <path d="M0,50 Q25,25 50,50 T100,50 V100 H0 Z" fill="#60a5fa" opacity="0.1"/>
+      <path d="M0,60 Q25,35 50,60 T100,60 V100 H0 Z" fill="#60a5fa" opacity="0.05"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1500" height="500" fill="url(#bannerGradient)"/>
+  <rect width="1500" height="500" fill="url(#wavePattern)" opacity="0.3"/>
+
+  <!-- Decorative physics elements -->
+  <circle cx="200" cy="150" r="30" fill="#60a5fa" opacity="0.6">
+    <animate attributeName="r" values="25;35;25" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="1300" cy="350" r="20" fill="#a78bfa" opacity="0.5">
+    <animate attributeName="r" values="15;25;15" dur="4s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Main logo -->
+  <g transform="translate(100, 150)">
+    <!-- Wave emoji -->
+    <text x="0" y="50" font-size="72" text-anchor="middle">🌊</text>
+
+    <!-- Brand text -->
+    <text x="80" y="30" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="700" fill="white">
+      Vibe
+    </text>
+    <text x="80" y="75" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="700" fill="#60a5fa">
+      Simulation
+    </text>
+  </g>
+
+  <!-- Tagline -->
+  <text x="100" y="280" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="400" fill="rgba(255,255,255,0.9)">
+    Interactive Physics Simulations • Making Complex Concepts Simple
+  </text>
+
+  <!-- Website URL -->
+  <text x="100" y="320" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="500" fill="#60a5fa">
+    vibesimulation.com
+  </text>
+
+  <!-- Subtle grid pattern -->
+  <defs>
+    <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+      <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1500" height="500" fill="url(#grid)"/>
+</svg>
