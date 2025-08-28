@@ -1,0 +1,111 @@
+<svg width="2048" height="1152" viewBox="0 0 2048 1152" xmlns="http://www.w3.org/2000/svg">
+  <!-- YouTube Banner Template - 2048x1152px -->
+  <!-- Optimized for Desktop, Mobile, and TV viewing -->
+
+  <defs>
+    <!-- Ocean gradient background -->
+    <linearGradient id="oceanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0c0c0c;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#16213e;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#0f3460;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a1a2e;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Wave pattern -->
+    <pattern id="wavePattern" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
+      <path d="M0,100 Q50,50 100,100 T200,100 L200,200 L0,200 Z" fill="#60a5fa" opacity="0.08"/>
+      <path d="M0,120 Q50,70 100,120 T200,120 L200,200 L0,200 Z" fill="#60a5fa" opacity="0.05"/>
+      <path d="M0,140 Q50,90 100,140 T200,140 L200,200 L0,200 Z" fill="#60a5fa" opacity="0.03"/>
+    </pattern>
+
+    <!-- Physics visualization elements -->
+    <radialGradient id="physicsGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:0.6" />
+      <stop offset="70%" style="stop-color:#a78bfa;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#0f3460;stop-opacity:0.1" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="2048" height="1152" fill="url(#oceanGradient)"/>
+  <rect width="2048" height="1152" fill="url(#wavePattern)"/>
+
+  <!-- Decorative physics elements (subtle, non-distracting) -->
+  <!-- Top-left area - safe zone -->
+  <circle cx="200" cy="200" r="80" fill="url(#physicsGlow)" opacity="0.4">
+    <animate attributeName="r" values="70;90;70" dur="4s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Top-right area - safe zone -->
+  <circle cx="1800" cy="180" r="60" fill="#a78bfa" opacity="0.3">
+    <animate attributeName="r" values="50;70;50" dur="5s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Bottom area - safe zone -->
+  <circle cx="400" cy="950" r="40" fill="#60a5fa" opacity="0.25">
+    <animate attributeName="r" values="35;45;35" dur="3s" repeatCount="indefinite"/>
+  </circle>
+
+  <circle cx="1600" cy="1000" r="50" fill="#f093fb" opacity="0.2">
+    <animate attributeName="r" values="40;60;40" dur="6s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Main Logo - Strategically positioned for maximum visibility -->
+
+  <!-- PRIMARY LOGO POSITION - Center-left (Optimal for all devices) -->
+  <!-- Desktop: Visible, Mobile: Partially visible, TV: Fully visible -->
+  <g id="main-logo" transform="translate(150, 400)">
+    <!-- Large wave emoji -->
+    <text x="0" y="120" font-size="180" text-anchor="middle" dominant-baseline="middle">🌊</text>
+
+    <!-- Brand text -->
+    <text x="200" y="60" font-family="system-ui, -apple-system, sans-serif" font-size="120" font-weight="800" fill="white">
+      Vibe
+    </text>
+    <text x="200" y="160" font-family="system-ui, -apple-system, sans-serif" font-size="120" font-weight="800" fill="#60a5fa">
+      Simulation
+    </text>
+  </g>
+
+  <!-- SECONDARY LOGO - Top-right corner (Desktop focus) -->
+  <!-- Desktop: Perfect visibility, Mobile: Hidden, TV: Visible -->
+  <g id="secondary-logo" transform="translate(1600, 100)">
+    <!-- Smaller logo for desktop -->
+    <text x="0" y="40" font-size="60" text-anchor="middle">🌊</text>
+    <text x="70" y="20" font-family="system-ui, -apple-system, sans-serif" font-size="40" font-weight="700" fill="white">
+      VibeSimulation
+    </text>
+  </g>
+
+  <!-- Tagline - Bottom area (Safe zone for all devices) -->
+  <text x="1024" y="900" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="400" fill="rgba(255,255,255,0.9)" text-anchor="middle">
+    Interactive Physics Simulations • Real-time Mathematics
+  </text>
+
+  <!-- Website URL - Bottom center (Always visible) -->
+  <text x="1024" y="980" font-family="system-ui, -apple-system, sans-serif" font-size="36" font-weight="500" fill="#60a5fa" text-anchor="middle">
+    vibesimulation.com
+  </text>
+
+  <!-- Call to Action - Strategic placement -->
+  <g id="cta-section" transform="translate(1024, 1050)">
+    <text x="0" y="0" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="600" fill="white" text-anchor="middle">
+      Subscribe for Physics Magic ✨
+    </text>
+  </g>
+
+  <!-- Subtle grid overlay for design alignment -->
+  <defs>
+    <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
+      <path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="2048" height="1152" fill="url(#grid)"/>
+
+  <!-- Safe zone indicators (for design reference - remove in production) -->
+  <!-- Desktop safe zone: 1546x423px (centered) -->
+  <rect x="251" y="364" width="1546" height="423" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2" stroke-dasharray="10,5" opacity="0.3"/>
+  <!-- Mobile safe zone: ~800x300px (centered) -->
+  <rect x="624" y="426" width="800" height="300" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-dasharray="5,5" opacity="0.3"/>
+</svg>

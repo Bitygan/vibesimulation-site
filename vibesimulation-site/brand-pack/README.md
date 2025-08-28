@@ -13,6 +13,8 @@ This brand pack contains everything you need to maintain consistent VibeSimulati
 - **`logo-square.svg`** - Square logo for social profiles (200x200px)
 - **`logo-icon-only.svg`** - Icon-only version (64x64px)
 - **`banner-template.svg`** - Social media banner template (1500x500px)
+- **`youtube-banner-2048x1152.svg`** - YouTube banner (2048x1152px) with strategic logo placement
+- **`png-export-guide.md`** - Complete PNG export instructions and automation
 
 ### 📱 **Social Media** (`/social-media/`)
 - **README.md** - Complete social media strategy guide
@@ -20,6 +22,7 @@ This brand pack contains everything you need to maintain consistent VibeSimulati
 - **Bio templates** and content guidelines
 - **Hashtag strategies** and posting schedules
 - **Performance tracking** metrics
+- **`youtube-banner-guide.md`** - Strategic YouTube banner placement guide
 
 ### 🌐 **Favicons** (`/favicons/`)
 - **README.md** - Favicon implementation guide
@@ -48,13 +51,32 @@ This brand pack contains everything you need to maintain consistent VibeSimulati
 <img src="/brand-pack/logos/logo-square.svg" alt="VibeSimulation" width="100">
 ```
 
-### 2. **Social Media Setup**
+### 2. **YouTube Banner Setup**
+```bash
+# Export the optimized YouTube banner
+inkscape brand-pack/social-media/youtube-banner-2048x1152.svg \
+  -w 2048 -h 1152 -o youtube-banner.png
+
+# Upload to YouTube Studio → Channel → Branding
+# Preview on desktop, mobile, and TV before publishing
+```
+
+### 3. **Export Logos to PNG**
+```bash
+# Quick export all logos
+cd brand-pack/logos
+inkscape logo-primary.svg -w 400 -h 120 -o logo-primary.png
+inkscape logo-square.svg -w 400 -h 400 -o logo-square.png
+# ... (see png-export-guide.md for complete instructions)
+```
+
+### 4. **Social Media Setup**
 1. **Twitter/X:** Use `logo-square.svg` (400x400px)
-2. **YouTube:** Use `logo-square.svg` (800x800px)
+2. **YouTube:** Use `logo-square.svg` (800x800px) + `youtube-banner-2048x1152.svg`
 3. **LinkedIn:** Use `logo-square.svg` (400x400px)
 4. **Instagram:** Use `logo-square.svg` (320x320px)
 
-### 3. **Website Integration**
+### 5. **Website Integration**
 ```html
 <!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="/brand-pack/logos/logo-icon-only.svg">
