@@ -65,16 +65,14 @@
   }
 
   // ---------- UI Setup ----------
-  const canvasContainer = document.querySelector(".morpho-canvas-section");
+  const canvasContainer = document.querySelector(".canvas-container");
   const controlsContainer = document.querySelector("#morphogen-controls");
 
   // Create canvas
-  const canvas=el("canvas",{id:"ma-canvas",width:"900",height:"540",style:"border:1px solid #223; display:block; margin:0 auto; background:#0b1119; border-radius:10px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);"});
+  const canvas=el("canvas",{id:"ma-canvas",width:"900",height:"540",style:"border:1px solid #223; display:block; margin:0 auto; background:#0b1119; border-radius:1rem; box-shadow: 0 20px 60px rgba(0,0,0,0.5);"});
   canvasContainer.appendChild(canvas);
 
   // Create controls (placed at bottom)
-  const controls=el("div",{class:"physics-card"});
-  const title=el("h2",null,"Interactive Controls");
   const g1=el("div",{class:"control-group"},
     el("button",{id:"ma-start", class:"control-toggle-btn"},"Start"),
     el("button",{id:"ma-pause", class:"control-toggle-btn"},"Pause"),
@@ -123,8 +121,7 @@
     el("button",{id:"ma-autothr", class:"control-toggle-btn"},"Auto‑threshold"),
     el("button",{id:"ma-autopreset", class:"control-toggle-btn"},"Auto‑preset")
   );
-  controls.appendChild(title); controls.appendChild(g1); controls.appendChild(g2); controls.appendChild(g3); controls.appendChild(g4);
-  controlsContainer.appendChild(controls);
+  controlsContainer.appendChild(g1); controlsContainer.appendChild(g2); controlsContainer.appendChild(g3); controlsContainer.appendChild(g4);
 
   // ---------- Model ----------
   const reel = makeReel("MorphogeneticAnimation");
