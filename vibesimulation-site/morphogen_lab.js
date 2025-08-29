@@ -127,6 +127,12 @@
   const reel = makeReel("MorphogeneticAnimation");
   const ctx = canvas.getContext("2d");
   const W = 180, H = 108; // internal grid
+
+  // Update info to show touch capability
+  const infoEl = document.getElementById("ma-info");
+  if (infoEl) {
+    infoEl.innerHTML = '<span style="color:#10b981;">🖱️ Touch anywhere on canvas to seed patterns!</span><br>Initializing morphogenesis simulation...';
+  }
   let U = new Float32Array(W*H);
   let V = new Float32Array(W*H);
   let running=false, raf=0, frame=0;
@@ -359,11 +365,53 @@
 
   let tempSeedMode=null;
   canvas.addEventListener("pointerdown",(e)=>{
-    const r=canvas.getBoundingClientRect(); const x=e.clientX-r.left, y=e.clientY-r.top;
+    e.preventDefault();
+    const r=canvas.getBoundingClientRect();
+    const x=e.clientX-r.left, y=e.clientY-r.top;
     const rad = (+document.getElementById("ma-brush").value|0);
-    if (tempSeedMode==="dot"){ seedDot(x,y, rad); reel.add({type:"seed_apply", kind:"dot", x:x|0, y:y|0, r:rad}); draw(); }
-    if (tempSeedMode==="ring"){ seedRing(x,y, Math.max(5,rad+4), 2); reel.add({type:"seed_apply", kind:"ring", x:x|0, y:y|0, r:rad}); draw(); }
+
+    // Always respond to touch/click - seed a dot by default if no mode is active
+    if (tempSeedMode==="dot" || tempSeedMode===null){
+      seedDot(x,y, rad);
+      reel.add({type:"seed_apply", kind:"dot", x:x|0, y:y|0, r:rad});
+      draw();
+    }
+    if (tempSeedMode==="ring"){
+      seedRing(x,y, Math.max(5,rad+4), 2);
+      reel.add({type:"seed_apply", kind:"ring", x:x|0, y:y|0, r:rad});
+      draw();
+    }
+
+    // Add visual feedback
+    canvas.style.cursor="crosshair";
   });
+
+  // Add touch support for mobile devices
+  canvas.addEventListener("touchstart",(e)=>{
+    e.preventDefault();
+    if (e.touches.length > 0) {
+      const touch = e.touches[0];
+      const r=canvas.getBoundingClientRect();
+      const x=touch.clientX-r.left, y=touch.clientY-r.top;
+      const rad = (+document.getElementById("ma-brush").value|0);
+
+      // Always respond to touch - seed a dot by default
+      seedDot(x,y, rad);
+      reel.add({type:"seed_apply", kind:"touch", x:x|0, y:y|0, r:rad});
+      draw();
+    }
+  });
+
+  canvas.addEventListener("pointerenter", (e) => {
+    // Show crosshair cursor when hovering over canvas
+    canvas.style.cursor = tempSeedMode ? "crosshair" : "pointer";
+  });
+
+  canvas.addEventListener("pointerleave", (e) => {
+    // Reset cursor when leaving canvas
+    canvas.style.cursor = "default";
+  });
+
   window.addEventListener("pointerup", ()=>{ tempSeedMode=null; canvas.style.cursor="default"; });
 
   document.getElementById("ma-autothr").onclick=()=>{
