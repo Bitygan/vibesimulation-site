@@ -292,6 +292,77 @@
             margin: 15px 0;
         }
 
+        /* ===== NAVIGATION DROPDOWN ===== */
+        #nav .dropdown {
+            position: relative;
+        }
+
+        #nav .dropdown-toggle {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #nav .dropdown-toggle i {
+            transition: transform 0.3s ease;
+            font-size: 0.8em;
+        }
+
+        #nav .dropdown:hover .dropdown-toggle i {
+            transform: rotate(180deg);
+        }
+
+        #nav .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            padding: 0.5rem 0;
+        }
+
+        #nav .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        #nav .dropdown-menu li {
+            list-style: none;
+        }
+
+        #nav .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        #nav .dropdown-menu a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(4px);
+        }
+
+        #nav .dropdown-icon {
+            font-size: 1.1em;
+            width: 20px;
+            text-align: center;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .memristor-title {
@@ -317,6 +388,10 @@
                 width: 100%;
                 max-width: 100%;
             }
+
+            #nav .dropdown-menu {
+                min-width: 180px;
+            }
         }
     </style>
 </head>
@@ -331,9 +406,14 @@
                 <li><a href="intermediate.html">Intermediate</a></li>
                 <li><a href="advanced.html">Advanced</a></li>
                 <li><a href="ai.html">AI Learning</a></li>
-                <li><a href="drag-rangefinder.html">Drag Rangefinder</a></li>
-                <li><a href="memristor-pathfinder.html">Memristor Pathfinder</a></li>
-                <li><a href="morphogenetic.html" class="active">Morphogenetic Studio</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">Advanced Simulations <i class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="drag-rangefinder.html"><span class="dropdown-icon">🎯</span> Drag Rangefinder</a></li>
+                        <li><a href="memristor-pathfinder.html"><span class="dropdown-icon">🧠</span> Memristor Pathfinder</a></li>
+                        <li><a href="morphogenetic.html" class="active"><span class="dropdown-icon">🧬</span> Morphogenetic Studio</a></li>
+                    </ul>
+                </li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
         </nav>
