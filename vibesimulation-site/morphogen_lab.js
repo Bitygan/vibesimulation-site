@@ -64,18 +64,24 @@
     return e;
   }
 
-  // ---------- UI Card ----------
-  const host=document.querySelector("#gallery, main, .cards, .container")||document.body;
-  const card=el("section",{id:"morphogen-lab", class:"physics-card"});
-  const title=el("h2",null,"Morphogenetic Animation Studio — Gray–Scott (SAX SOP v2.2)");
-  const controls=el("div",{class:"physics-controls"});
+  // ---------- UI Setup ----------
+  const canvasContainer = document.querySelector(".morpho-canvas-section");
+  const controlsContainer = document.querySelector("#morphogen-controls");
+
+  // Create canvas
+  const canvas=el("canvas",{id:"ma-canvas",width:"900",height:"540",style:"border:1px solid #223; display:block; margin:0 auto; background:#0b1119; border-radius:10px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);"});
+  canvasContainer.appendChild(canvas);
+
+  // Create controls (placed at bottom)
+  const controls=el("div",{class:"physics-card"});
+  const title=el("h2",null,"Interactive Controls");
   const g1=el("div",{class:"control-group"},
-    el("button",{id:"ma-start"},"Start"),
-    el("button",{id:"ma-pause"},"Pause"),
-    el("button",{id:"ma-step"},"Step"),
-    el("button",{id:"ma-reset"},"Reset"),
-    el("button",{id:"ma-export"},"Export Reel (.saxlg)"),
-    el("button",{id:"ma-verify"},"Verify Reel")
+    el("button",{id:"ma-start", class:"control-toggle-btn"},"Start"),
+    el("button",{id:"ma-pause", class:"control-toggle-btn"},"Pause"),
+    el("button",{id:"ma-step", class:"control-toggle-btn"},"Step"),
+    el("button",{id:"ma-reset", class:"control-toggle-btn"},"Reset"),
+    el("button",{id:"ma-export", class:"control-toggle-btn"},"Export Reel (.saxlg)"),
+    el("button",{id:"ma-verify", class:"control-toggle-btn"},"Verify Reel")
   );
   const g2=el("div",{class:"control-group"},
     el("label",null,"Preset ",
@@ -103,9 +109,9 @@
     el("label",null,"Steps/frame ", el("input",{id:"ma-spf",type:"number",min:"1",max:"30",value:"8"}))
   );
   const g3=el("div",{class:"control-group"},
-    el("button",{id:"ma-seed-dot"},"Seed Dot"),
-    el("button",{id:"ma-seed-ring"},"Seed Ring"),
-    el("button",{id:"ma-seed-noise"},"Seed Noise"),
+    el("button",{id:"ma-seed-dot", class:"control-toggle-btn"},"Seed Dot"),
+    el("button",{id:"ma-seed-ring", class:"control-toggle-btn"},"Seed Ring"),
+    el("button",{id:"ma-seed-noise", class:"control-toggle-btn"},"Seed Noise"),
     el("label",null,"Brush: radius ", el("input",{id:"ma-brush",type:"range",min:"2",max:"32",value:"8"}))
   );
   const g4=el("div",{class:"control-group"},
@@ -114,14 +120,11 @@
       el("span",{id:"ma-thrv",style:"margin-left:4px"},"0.25")
     ),
     el("label",null,"Target coverage % ", el("input",{id:"ma-cov",type:"number",min:"1",max:"95",value:"30"})),
-    el("button",{id:"ma-autothr"},"Auto‑threshold"),
-    el("button",{id:"ma-autopreset"},"Auto‑preset")
+    el("button",{id:"ma-autothr", class:"control-toggle-btn"},"Auto‑threshold"),
+    el("button",{id:"ma-autopreset", class:"control-toggle-btn"},"Auto‑preset")
   );
-  const info=el("div",{id:"ma-info",class:"muted",style:"opacity:.85;"},"");
-  const canvas=el("canvas",{id:"ma-canvas",width:"900",height:"540",style:"border:1px solid #223; display:block; margin-top:8px; background:#0b1119"});
-  controls.appendChild(g1); controls.appendChild(g2); controls.appendChild(g3); controls.appendChild(g4); controls.appendChild(info);
-  card.appendChild(title); card.appendChild(controls); card.appendChild(canvas);
-  host.appendChild(card);
+  controls.appendChild(title); controls.appendChild(g1); controls.appendChild(g2); controls.appendChild(g3); controls.appendChild(g4);
+  controlsContainer.appendChild(controls);
 
   // ---------- Model ----------
   const reel = makeReel("MorphogeneticAnimation");

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Morphogenetic Animation Studio - Gray-Scott Reaction-Diffusion - VibeSimulation</title>
+    <meta name="description" content="Explore morphogenesis through Gray-Scott reaction-diffusion. Watch beautiful patterns emerge from simple mathematical rules with interactive controls and tamper-evident recording.">
+    <meta name="keywords" content="morphogenesis, gray-scott, reaction-diffusion, pattern formation, computational biology, mathematical biology, turing patterns">
+
+    <!-- Google AdSense Auto ads -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1357596091010556"
+         crossorigin="anonymous"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
+
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/video.css" />
+    <link rel="stylesheet" href="assets/css/cookie-consent.css" />
+
+    <!-- Page-specific Styles -->
+    <style>
+        body {
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #1a1a2e 100%);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .morpho-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .morpho-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .morpho-header h1 {
+            color: #ffffff;
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .morpho-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            margin: 0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .morpho-canvas-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .morpho-info {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        #ma-canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            background: #0b1119;
+        }
+
+        .morpho-controls-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .morpho-controls-section h3 {
+            color: #ffffff;
+            margin: 0 0 20px 0;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .morpho-header h1 {
+                font-size: 2rem;
+            }
+
+            .morpho-container {
+                padding: 15px;
+            }
+
+            .morpho-canvas-section,
+            .morpho-controls-section {
+                padding: 15px;
+            }
+
+            #ma-canvas {
+                width: 100%;
+                height: auto;
+                max-width: 100%;
+            }
+        }
+
+        /* Physics card styles for controls */
+        .physics-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+
+        .physics-card h2 {
+            color: #ffffff;
+            text-align: center;
+            margin: 0 0 20px 0;
+            font-size: 1.3rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .control-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .control-group input[type="range"] {
+            width: 80px;
+        }
+
+        .control-group input[type="number"] {
+            width: 60px;
+            padding: 4px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .control-group select {
+            padding: 4px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .control-toggle-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .control-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .muted {
+            opacity: 0.75;
+            text-align: center;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <h1><a href="index.html">VibeSimulation</a></h1>
+        <nav id="nav">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="basics.html">Basics</a></li>
+                <li><a href="intermediate.html">Intermediate</a></li>
+                <li><a href="advanced.html">Advanced</a></li>
+                <li><a href="ai.html">AI Learning</a></li>
+                <li><a href="drag-rangefinder.html">Drag Rangefinder</a></li>
+                <li><a href="memristor-pathfinder.html">Memristor Pathfinder</a></li>
+                <li><a href="morphogenetic.html" class="active">Morphogenetic Studio</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="morpho-container">
+        <div class="morpho-header">
+            <h1>Morphogenetic Animation Studio</h1>
+            <p>Explore the emergence of complex patterns through Gray-Scott reaction-diffusion. Watch as simple mathematical rules give rise to coral reefs, mazes, and cellular structures - the mathematics of life itself.</p>
+        </div>
+
+        <div class="morpho-canvas-section">
+            <div id="ma-info" class="morpho-info">Initializing morphogenesis simulation...</div>
+            <!-- Canvas will be inserted here by the script -->
+        </div>
+
+        <div class="morpho-controls-section">
+            <h3>Interactive Controls</h3>
+            <div id="morphogen-controls">
+                <!-- Controls will be inserted here by the script -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Morphogenetic Animation Script -->
+    <script src="morphogen_lab.js"></script>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <ul class="icons">
+            <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+            <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+            <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+            <li><a href="#" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+            <li><a href="#" class="icon brands fa-youtube"><span class="label">YouTube</span></a></li>
+        </ul>
+        <ul class="copyright">
+            <li>&copy; 2025 VibeSimulation</li>
+            <li>Built with Manim & Web Technologies</li>
+            <li><a href="privacy-policy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+        </ul>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.dropotron.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
