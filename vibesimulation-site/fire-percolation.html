@@ -128,6 +128,64 @@
             pointer-events: none; /* Allow canvas interaction through toolbar */
         }
 
+        .probability-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            pointer-events: auto;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .probability-control label {
+            font-size: 12px;
+            color: #fff;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .probability-control input[type="range"] {
+            width: 80px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .probability-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .probability-control input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .probability-control span {
+            font-size: 12px;
+            color: #ffd93d;
+            font-weight: 600;
+            min-width: 35px;
+            text-align: center;
+        }
+
         .canvas-toolbar-left {
             display: flex;
             gap: 10px;
@@ -481,11 +539,7 @@
             <div class="controls-section">
                 <div class="control-group">
                     <h3>Advanced Settings</h3>
-                    <div class="control-row">
-                        <label>Fire Spread Probability:</label>
-                        <input type="range" id="spread-prob" min="0" max="1" step="0.01" value="0.35">
-                        <span id="spread-value">0.35</span>
-                    </div>
+                    <!-- Probability slider moved to canvas toolbar -->
                 </div>
             </div>
 
@@ -527,6 +581,11 @@
                         </button>
                     </div>
                     <div class="canvas-toolbar-right">
+                        <div class="probability-control">
+                            <label for="spread-prob">Prob:</label>
+                            <input type="range" id="spread-prob" min="0" max="1" step="0.01" value="0.35">
+                            <span id="spread-value">0.35</span>
+                        </div>
                         <button id="start-btn" class="canvas-btn start">
                             <i class="fas fa-play"></i> Start Fire
                         </button>
