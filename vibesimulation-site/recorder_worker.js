@@ -178,3 +178,4 @@ self.postMessage({
   type: 'worker_ready'
 });
 
+

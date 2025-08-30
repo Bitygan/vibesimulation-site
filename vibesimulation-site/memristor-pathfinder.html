@@ -440,19 +440,21 @@
                 reelEvents.push(event);
             }
 
-            // ECDSA signing for Reasoning Reels (Web Crypto API compatible)
+            // Ed25519 signing for Reasoning Reels (consistent with other simulations)
             let keyPair = null;
 
             async function generateKeyPair() {
                 if (!keyPair) {
-                    keyPair = await crypto.subtle.generateKey(
-                        {
-                            name: "ECDSA",
-                            namedCurve: "P-256"
-                        },
-                        true, // extractable
-                        ["sign", "verify"]
-                    );
+                    try {
+                        keyPair = await crypto.subtle.generateKey(
+                            { name: "Ed25519" },
+                            true, // extractable
+                            ["sign", "verify"]
+                        );
+                    } catch (e) {
+                        console.warn("Ed25519 unavailable; exporting unsigned reel.", e);
+                        return null;
+                    }
                 }
                 return keyPair;
             }
@@ -460,25 +462,30 @@
             async function signMetadata(metadata) {
                 const keyPair = await generateKeyPair();
 
-                // Export public key as JWK format
-                const pubKeyJWK = await crypto.subtle.exportKey("jwk", keyPair.publicKey);
-                const pubKeyB64 = btoa(JSON.stringify(pubKeyJWK));
+                if (!keyPair) {
+                    // Ed25519 not available, return metadata without signature
+                    return metadata;
+                }
 
                 // Create metadata without signature fields for signing
                 const { sig, sig_alg, pub, ...metaToSign } = metadata;
                 metaToSign.event_root = metadata.event_root; // Ensure event_root is included
 
-                // Sign the metadata
+                // Sign the metadata using Ed25519 (consistent with other simulations)
                 const dataToSign = new TextEncoder().encode(JSON.stringify(metaToSign));
                 const signature = await crypto.subtle.sign(
-                    { name: "ECDSA", hash: "SHA-256" },
+                    { name: "Ed25519" },
                     keyPair.privateKey,
                     dataToSign
                 );
                 const sigB64 = btoa(String.fromCharCode(...new Uint8Array(signature)));
 
+                // Export public key as raw format (Ed25519 standard)
+                const pubKeyRaw = await crypto.subtle.exportKey("raw", keyPair.publicKey);
+                const pubKeyB64 = btoa(String.fromCharCode(...new Uint8Array(pubKeyRaw)));
+
                 // Add signature fields to metadata
-                metadata.sig_alg = "ecdsa-sha256";
+                metadata.sig_alg = "ed25519";
                 metadata.pub = pubKeyB64;
                 metadata.sig = sigB64;
 

@@ -104,3 +104,4 @@ def perform_ray_tracing(scene):
 ---
 
 **This document serves as a record of the experimental implementation and the architectural lessons learned. Any future Advanced Optics implementation must achieve full SAX SOP v2.2 compliance.**
+

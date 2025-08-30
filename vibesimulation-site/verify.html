@@ -80,7 +80,7 @@
 
     async function verifySignature(pubB64, sigB64, sigAlg, metaMinusSig) {
       try {
-        const data = new TextEncoder().encode(JSON.stringify(metaMinusSig));
+        const data = new TextEncoder().encode(JSON.stringify(canonicalize(metaMinusSig)));
         const sig = Uint8Array.from(atob(sigB64), c => c.charCodeAt(0));
 
         if (sigAlg === "ecdsa-sha256") {

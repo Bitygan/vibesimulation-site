@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - VibeSimulation</title>
+    <meta name="description" content="Continue exploring physics simulations offline. Your favorite interactive physics experiences are available without an internet connection.">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        .offline-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .offline-content {
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .offline-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .offline-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .offline-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .offline-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .offline-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-block;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .offline-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+        }
+
+        .offline-features {
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .feature-icon {
+            font-size: 1.25rem;
+        }
+
+        .feature-text {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .offline-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .offline-title {
+                font-size: 1.75rem;
+            }
+
+            .offline-description {
+                font-size: 1rem;
+            }
+
+            .offline-btn {
+                width: 100%;
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-content">
+            <div class="offline-icon">🔬</div>
+            <h1 class="offline-title">Continue Your Physics Journey</h1>
+            <p class="offline-description">
+                You're currently offline, but you can still explore our interactive physics simulations!
+                Many of our simulations are cached locally and available for offline use.
+            </p>
+
+            <div class="offline-actions">
+                <a href="fire-percolation.html" class="offline-btn">
+                    🔥 Fire Percolation Simulation
+                </a>
+                <a href="drag-rangefinder.html" class="offline-btn">
+                    🎯 Drag Rangefinder Simulation
+                </a>
+                <a href="memristor-pathfinder.html" class="offline-btn">
+                    🧠 Memristor Pathfinder Simulation
+                </a>
+                <a href="morphogenetic.html" class="offline-btn">
+                    🧬 Morphogenetic Animation Studio
+                </a>
+            </div>
+
+            <div class="offline-features">
+                <h3 style="margin-bottom: 1rem; font-size: 1.25rem;">Offline Features Available:</h3>
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <span class="feature-icon">⚡</span>
+                        <span class="feature-text">Real-time physics simulations</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon">📊</span>
+                        <span class="feature-text">Interactive parameter controls</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon">🔒</span>
+                        <span class="feature-text">Tamper-evident data recording</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon">📈</span>
+                        <span class="feature-text">Statistical analysis capabilities</span>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon">🎯</span>
+                        <span class="feature-text">Educational learning objectives</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.2);">
+                <p style="font-size: 0.9rem; opacity: 0.7;">
+                    <strong>Pro tip:</strong> Install VibeSimulation as a Progressive Web App for the best offline experience!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="physics-nav" style="position: absolute; top: 0; width: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px);">
+        <div class="nav-content">
+            <a href="/" class="nav-logo">
+                <span style="font-size: 1.2em;">🌊</span>
+                VibeSimulation
+            </a>
+            <div class="nav-links">
+                <span style="color: #ef4444; font-weight: 600;">🔌 Offline Mode</span>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        // Check network status and redirect when back online
+        function checkOnlineStatus() {
+            if (navigator.onLine) {
+                // User is back online, redirect to main site
+                window.location.href = '/';
+            }
+        }
+
+        // Check every 5 seconds
+        setInterval(checkOnlineStatus, 5000);
+
+        // Also check when user clicks "try again"
+        window.addEventListener('online', () => {
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1000);
+        });
+
+        // Add click handlers for offline buttons
+        document.querySelectorAll('.offline-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Check if the link works offline
+                fetch(e.target.href, { method: 'HEAD' })
+                    .then(response => {
+                        if (!response.ok) {
+                            e.preventDefault();
+                            alert('This simulation is not available offline. Please connect to the internet to access it.');
+                        }
+                    })
+                    .catch(() => {
+                        e.preventDefault();
+                        alert('This simulation is not available offline. Please connect to the internet to access it.');
+                    });
+            });
+        });
+    </script>
+</body>
+</html>

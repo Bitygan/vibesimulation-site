@@ -298,3 +298,4 @@ pngcrush -brute youtube-banner.png youtube-banner-optimized.png
 
 *Banner design optimized for VibeSimulation physics education content*
 
+

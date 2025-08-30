@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Fire Percolation - Cellular Automata Physics - VibeSimulation</title>
+    <meta name="description" content="Explore fire spread dynamics through cellular automata. Watch probabilistic percolation patterns emerge in real-time with interactive controls and scientific accreditation.">
+    <meta name="keywords" content="fire percolation, cellular automata, probability, forest fire model, percolation theory, physics simulation">
+
+    <!-- Google AdSense Auto ads -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1357596091010556"
+         crossorigin="anonymous"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/fontawesome-all.min.css" />
+
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/video.css" />
+    <link rel="stylesheet" href="assets/css/cookie-consent.css" />
+
+    <!-- Simulation Styles -->
+    <style>
+        body {
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #1a1a2e 100%);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .fire-percolation-header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .fire-percolation-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcf7f, #4ecdc4, #45b7d1);
+            background-size: 400% 400%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .fire-percolation-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            letter-spacing: 0.5px;
+        }
+
+        .back-link {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            z-index: 1000;
+            padding: 0.75rem 1.5rem;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .physics-card {
+            max-width: 1400px;
+            margin: 2rem auto;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .simulation-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .canvas-container {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.5);
+            order: -1; /* Move canvas above controls */
+        }
+
+        /* Canvas overlay toolbar for main controls */
+        .canvas-toolbar {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none; /* Allow canvas interaction through toolbar */
+        }
+
+        .canvas-toolbar-left {
+            display: flex;
+            gap: 10px;
+            pointer-events: auto;
+        }
+
+        .canvas-toolbar-right {
+            display: flex;
+            gap: 10px;
+            pointer-events: auto;
+        }
+
+        .canvas-btn {
+            padding: 12px 16px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 80px;
+            justify-content: center;
+        }
+
+        .canvas-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.9);
+            transform: translateY(-1px);
+        }
+
+        .canvas-btn:active {
+            transform: translateY(0);
+        }
+
+        .canvas-btn.active {
+            background: rgba(255, 107, 107, 0.8);
+            border-color: #ff6b6b;
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .canvas-btn.ignite { border-color: #ff6b6b; }
+        .canvas-btn.tree { border-color: #16a34a; }
+        .canvas-btn.break { border-color: #3742fa; }
+        .canvas-btn.start { border-color: #10b981; }
+        .canvas-btn.stop { border-color: #ef4444; }
+
+        /* Enhanced visual feedback */
+        .canvas-btn:hover .fas {
+            transform: scale(1.1);
+        }
+
+        .canvas-btn.active .fas {
+            color: #ffd700;
+            filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5));
+        }
+
+        /* Cursor changes based on brush mode */
+        .fire-canvas.ignite-mode { cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><circle cx="12" cy="12" r="8" fill="red" opacity="0.7"/></svg>'), crosshair; }
+        .fire-canvas.tree-mode { cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M12 2L8 10H16L12 2Z M12 22V14" stroke="green" stroke-width="2" opacity="0.7"/></svg>'), crosshair; }
+        .fire-canvas.break-mode { cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><rect x="4" y="4" width="16" height="16" fill="gray" opacity="0.7"/></svg>'), crosshair; }
+
+        /* Brush size indicator */
+        .brush-indicator {
+            position: absolute;
+            pointer-events: none;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: none;
+            z-index: 5;
+        }
+
+        .brush-indicator.active {
+            display: block;
+        }
+
+        .controls-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            order: 1; /* Move controls below canvas */
+            margin-top: 2rem;
+        }
+
+        .fire-canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 16px;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        /* Controls section styling moved above */
+
+        .control-group {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .control-group h3 {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .control-row label {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            min-width: 80px;
+        }
+
+        .control-row input[type="range"] {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+        }
+
+        .control-row input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+        }
+
+        .control-row input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+        }
+
+        .control-row span {
+            color: white;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        .ignite-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ff4757);
+            border: none;
+        }
+
+        .ignite-btn:hover {
+            background: linear-gradient(135deg, #ff5252, #ff3838);
+        }
+
+        .break-btn {
+            background: linear-gradient(135deg, #3742fa, #2f3542);
+            border: none;
+        }
+
+        .break-btn:hover {
+            background: linear-gradient(135deg, #2f3542, #1e272e);
+        }
+
+        .tree-btn {
+            background: linear-gradient(135deg, #2ed573, #1e8449);
+            border: none;
+        }
+
+        .tree-btn:hover {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+        }
+
+        .status-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .status-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .status-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-value {
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+        }
+
+        .percolated .status-value {
+            color: #ff6b6b;
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+        }
+
+        .accreditation-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .accreditation-toggle {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .accreditation-toggle label {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+
+        .accreditation-toggle input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #ff6b6b;
+        }
+
+        .accreditation-controls {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .accreditation-controls.active {
+            display: grid;
+        }
+
+        .accreditation-result {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .confidence-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcf7f);
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .fire-percolation-header {
+                padding: 1.5rem 1rem;
+            }
+
+            .physics-card {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .controls-section {
+                grid-template-columns: 1fr;
+            }
+
+            .control-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .button-group {
+                justify-content: center;
+            }
+
+            .status-display {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Simulations
+    </a>
+
+    <header class="fire-percolation-header">
+        <h1 class="fire-percolation-title">Fire Percolation</h1>
+        <p class="fire-percolation-subtitle">Cellular Automata • Probabilistic Spread • Real-time Physics</p>
+    </header>
+
+    <main class="physics-card">
+        <div class="simulation-container">
+            <!-- Advanced Controls Section -->
+            <div class="controls-section">
+                <div class="control-group">
+                    <h3>Advanced Settings</h3>
+                    <div class="control-row">
+                        <label>Fire Spread Probability:</label>
+                        <input type="range" id="spread-prob" min="0" max="1" step="0.01" value="0.35">
+                        <span id="spread-value">0.35</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Display -->
+            <div class="status-display">
+                <div class="status-item">
+                    <div class="status-label">Trees</div>
+                    <div class="status-value" id="trees-count">0</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">Burning</div>
+                    <div class="status-value" id="burning-count">0</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">Percolated</div>
+                    <div class="status-value" id="percolation-status">No</div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">Density</div>
+                    <div class="status-value" id="density-value">0.00</div>
+                </div>
+            </div>
+
+            <!-- Canvas Container with Overlay Toolbar -->
+            <div class="canvas-container">
+                <canvas id="fire-canvas" width="1600" height="1200"></canvas>
+
+                <!-- Canvas Toolbar Overlay -->
+                <div class="canvas-toolbar">
+                    <div class="canvas-toolbar-left">
+                        <button id="ignite-btn" class="canvas-btn ignite active">
+                            <i class="fas fa-fire"></i> Ignite
+                        </button>
+                        <button id="tree-btn" class="canvas-btn tree">
+                            <i class="fas fa-tree"></i> Plant
+                        </button>
+                        <button id="break-btn" class="canvas-btn break">
+                            <i class="fas fa-shield-alt"></i> Break
+                        </button>
+                    </div>
+                    <div class="canvas-toolbar-right">
+                        <button id="start-btn" class="canvas-btn start">
+                            <i class="fas fa-play"></i> Start Fire
+                        </button>
+                        <button id="reset-btn" class="canvas-btn" style="border-color: #f59e0b;">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Brush Size Indicator -->
+                <div class="brush-indicator" id="brush-indicator"></div>
+            </div>
+
+            <!-- Accreditation Section -->
+            <div class="accreditation-section">
+                <div class="accreditation-toggle">
+                    <input type="checkbox" id="accreditation-toggle">
+                    <label for="accreditation-toggle">Enable Scientific Accreditation</label>
+                </div>
+                <div class="accreditation-controls" id="accreditation-controls">
+                    <div class="control-row">
+                        <label>Replications:</label>
+                        <input type="number" id="rep-count" min="10" max="200" value="30">
+                    </div>
+                    <button id="run-accreditation" class="control-btn">
+                        <i class="fas fa-flask"></i> Run Accreditation
+                    </button>
+
+                    <!-- Export and Verify Buttons -->
+                    <div class="control-row">
+                        <button id="fp-export" class="control-btn">
+                            <i class="fas fa-download"></i> Export Reel (.saxlg)
+                        </button>
+                        <button id="fp-verify" class="control-btn">
+                            <i class="fas fa-check-circle"></i> Verify Reel
+                        </button>
+                    </div>
+
+                    <div class="accreditation-result" id="accreditation-result" style="display: none;">
+                        <div>Percolation Probability</div>
+                        <div style="font-size: 1.5rem; font-weight: bold;" id="prob-value">—</div>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="confidence-fill" style="width: 0%;"></div>
+                        </div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6);" id="confidence-interval">—</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Fire Percolation Simulation - SAX SOP v2.3 Compliant
+        (function() {
+            // Canvas and Context
+            const canvas = document.getElementById('fire-canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Simulation Parameters - High Density Grid
+            const G_X = 320; // Grid width (100x denser than original 96)
+            const G_Y = 240; // Grid height
+            const CELL_SIZE_X = 5; // Pixel size per cell X
+            const CELL_SIZE_Y = 5; // Pixel size per cell Y
+            const W = G_X * CELL_SIZE_X; // 1600 pixels wide
+            const H = G_Y * CELL_SIZE_Y; // 1200 pixels tall
+
+            // Set canvas size to match HTML dimensions
+            canvas.width = 1600;
+            canvas.height = 1200;
+
+            // Simulation State - High Density Grid
+            let grid = new Uint8Array(G_X * G_Y).fill(1); // 0: ash, 1: tree, 2: burning
+            let spreadProb = 0.35;
+            let running = true;
+            let brushMode = 'ignite';
+            let animationId = null;
+
+            // SAX SOP v2.3 - Tamper-evident Recording
+            class Ledger {
+                constructor() {
+                    this.events = [];
+                    this.lastHash = "";
+                    this.keyPair = null;
+                    this.sessionStart = Date.now();
+                }
+
+                async init() {
+                    try {
+                        this.keyPair = await crypto.subtle.generateKey(
+                            { name: 'Ed25519' },
+                            true, ['sign', 'verify']
+                        );
+                    } catch (e) {
+                        console.warn('Ed25519 unavailable; exporting unsigned reel.', e);
+                    }
+                }
+
+                async record(type, data) {
+                    const ev = {
+                        t: performance.now() / 1000,
+                        type,
+                        data: this.canonicalize(data),
+                        prev: this.lastHash || null,
+                        hash: ''
+                    };
+
+                    const toHash = JSON.stringify({
+                        prev: ev.prev,
+                        t: ev.t,
+                        type: ev.type,
+                        data: ev.data
+                    });
+
+                    ev.hash = await this.sha256(toHash);
+                    this.lastHash = ev.hash;
+                    this.events.push(ev);
+                }
+
+                canonicalize(obj) {
+                    if (obj === null || typeof obj !== 'object') return obj;
+                    if (Array.isArray(obj)) return obj.map(item => this.canonicalize(item));
+                    const out = {};
+                    for (const k of Object.keys(obj).sort()) {
+                        out[k] = this.canonicalize(obj[k]);
+                    }
+                    return out;
+                }
+
+                async sha256(str) {
+                    const buf = new TextEncoder().encode(str);
+                    const hash = await crypto.subtle.digest('SHA-256', buf);
+                    return Array.from(new Uint8Array(hash))
+                        .map(b => b.toString(16).padStart(2, '0'))
+                        .join('');
+                }
+
+                async computeEventRoot(events) {
+                    let prev = new Uint8Array(32); // Start with empty hash
+
+                    for (const event of events) {
+                        // Canonicalize and stringify event
+                        const canonicalEvent = this.canonicalize(event);
+                        const eventString = JSON.stringify(canonicalEvent);
+
+                        // Concatenate previous hash with event data
+                        const eventBytes = new TextEncoder().encode(eventString);
+                        const data = new Uint8Array(prev.length + eventBytes.length);
+                        data.set(prev);
+                        data.set(eventBytes, prev.length);
+
+                        // Compute new hash
+                        prev = new Uint8Array(await crypto.subtle.digest('SHA-256', data));
+                    }
+
+                    // Return as hex string with prefix
+                    return 'sha256-' + Array.from(prev).map(b => b.toString(16).padStart(2, '0')).join('');
+                }
+
+                async exportReel() {
+                    if (this.events.length === 0) {
+                        alert('No simulation data to export. Please interact with the simulation first.');
+                        return;
+                    }
+
+                    // Compute event root for tamper-evident verification
+                    const eventRoot = await ledger.computeEventRoot(this.events);
+
+                    // Create metadata object (first line of file)
+                    const metaData = {
+                        spec: 'saxlg/1',
+                        simulation: 'fire-percolation',
+                        version: '2025.08.30',
+                        generator: 'PCG32-JS (compat)',
+                        user_seed: Math.floor(Math.random() * 1e9),
+                        resolution: [W, H],
+                        fps: 60,
+                        deep_link: window.location.href,
+                        event_root: eventRoot,
+                        event_count: this.events.length,
+                        session_duration: Date.now() - ledger.sessionStart
+                    };
+
+                    // Add signature if keyPair exists
+                    if (this.keyPair) {
+                        try {
+                            // Sign just the metadata (excluding signature fields)
+                            const metaToSign = { ...metaData };
+                            delete metaToSign.sig_alg;
+                            delete metaToSign.pub;
+                            delete metaToSign.sig;
+                            // Ensure event_root is included for verification
+                            metaToSign.event_root = metaData.event_root;
+
+                            const payload = new TextEncoder().encode(JSON.stringify(this.canonicalize(metaToSign)));
+                            const sig = await crypto.subtle.sign(
+                                { name: 'Ed25519' },
+                                this.keyPair.privateKey, payload
+                            );
+                            const sigB64 = btoa(String.fromCharCode(...new Uint8Array(sig)));
+                            const pub = await crypto.subtle.exportKey('raw', this.keyPair.publicKey);
+                            const pubB64 = btoa(String.fromCharCode(...new Uint8Array(pub)));
+
+                            metaData.sig_alg = 'ed25519';
+                            metaData.pub = pubB64;
+                            metaData.sig = sigB64;
+                        } catch (e) {
+                            console.warn('Ed25519 sign failed; exporting unsigned reel.', e);
+                        }
+                    }
+
+                    // Create file content: metadata JSON + each event as separate line
+                    const fileContent = JSON.stringify(metaData) + '\n' +
+                        this.events.map(event => JSON.stringify(this.canonicalize(event))).join('\n');
+
+                    // Create and download the file
+                    const blob = new Blob([fileContent], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `fire-percolation_${Date.now()}.saxlg`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(url);
+
+                    console.log('🔥 Exported Fire Percolation Reel:', metaData);
+                    alert('Fire Percolation Reel exported successfully!\nFile: ' + a.download + '\nFormat: Compatible with Verifier');
+                }
+            }
+
+            // Initialize Ledger
+            const ledger = new Ledger();
+            ledger.init();
+
+            // Simulation Functions
+            function initForest() {
+                grid.fill(1); // All trees initially
+                // Ignite some left-edge cells deterministically
+                for (let y = 0; y < G_Y; y++) {
+                    if (Math.random() < 0.1) {
+                        grid[y * G_X + 0] = 2; // Burning
+                    }
+                }
+                ledger.record('simulation_start', { mode: 'forest_init' });
+            }
+
+            function runFireStep() {
+                const next = new Uint8Array(grid);
+                let burning = 0;
+
+                for (let y = 0; y < G_Y; y++) {
+                    for (let x = 0; x < G_X; x++) {
+                        const i = y * G_X + x;
+                        const v = grid[i];
+
+                        if (v === 2) { // Burning
+                            next[i] = 3; // → Ash
+                            burning++;
+
+                            // Spread to neighbors
+                            const neighbors = [
+                                [x + 1, y], [x - 1, y],
+                                [x, y + 1], [x, y - 1]
+                            ];
+
+                            for (const [nx, ny] of neighbors) {
+                                if (nx >= 0 && nx < G_X && ny >= 0 && ny < G_Y) {
+                                    const ni = ny * G_X + nx;
+                                    if (grid[ni] === 1 && Math.random() < spreadProb) {
+                                        next[ni] = 2; // Ignite neighbor
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                grid = next;
+                return burning;
+            }
+
+            function paint(x, y, mode) {
+                const gx = Math.floor(x / CELL_SIZE_X);
+                const gy = Math.floor(y / CELL_SIZE_Y);
+
+                if (gx < 0 || gy < 0 || gx >= G_X || gy >= G_Y) return;
+
+                const i = gy * G_X + gx;
+                const brushSize = 5; // Larger brush for high-density grid
+
+                for (let dy = -brushSize; dy <= brushSize; dy++) {
+                    for (let dx = -brushSize; dx <= brushSize; dx++) {
+                        const nx = gx + dx;
+                        const ny = gy + dy;
+
+                        if (nx >= 0 && nx < G_X && ny >= 0 && ny < G_Y) {
+                            const ni = ny * G_X + nx;
+
+                            if (mode === 'break') {
+                                grid[ni] = 0; // Ash/firebreak
+                            } else if (mode === 'tree') {
+                                if (grid[ni] === 0) grid[ni] = 1; // Plant tree on ash
+                            } else if (mode === 'ignite') {
+                                if (grid[ni] === 1) grid[ni] = 2; // Ignite tree
+                            }
+                        }
+                    }
+                }
+
+                ledger.record('brush_apply', { x: gx, y: gy, mode, brushSize });
+            }
+
+            function render() {
+                ctx.clearRect(0, 0, W, H);
+
+                for (let y = 0; y < G_Y; y++) {
+                    for (let x = 0; x < G_X; x++) {
+                        const i = y * G_X + x;
+                        const v = grid[i];
+
+                        let color;
+                        if (v === 0) color = '#374151'; // Ash
+                        else if (v === 1) color = '#16a34a'; // Tree
+                        else if (v === 2) color = '#ef4444'; // Burning
+                        else color = '#6b7280'; // Burnt
+
+                        ctx.fillStyle = color;
+                        ctx.fillRect(x * CELL_SIZE_X, y * CELL_SIZE_Y, CELL_SIZE_X, CELL_SIZE_Y);
+                    }
+                }
+            }
+
+            function updateStats() {
+                let trees = 0, burning = 0;
+                let percolated = false;
+
+                for (let i = 0; i < grid.length; i++) {
+                    if (grid[i] === 1) trees++;
+                    if (grid[i] === 2) burning++;
+                }
+
+                // Check percolation (fire reached right edge)
+                for (let y = 0; y < G_Y; y++) {
+                    if (grid[y * G_X + (G_X - 1)] === 2) {
+                        percolated = true;
+                        break;
+                    }
+                }
+
+                const density = trees / (G_X * G_Y);
+
+                // Update UI
+                document.getElementById('trees-count').textContent = trees;
+                document.getElementById('burning-count').textContent = burning;
+                document.getElementById('percolation-status').textContent = percolated ? 'Yes' : 'No';
+                document.getElementById('density-value').textContent = density.toFixed(2);
+
+                // Add visual effect for percolation
+                const statusEl = document.getElementById('percolation-status');
+                if (percolated) {
+                    statusEl.parentElement.classList.add('percolated');
+                } else {
+                    statusEl.parentElement.classList.remove('percolated');
+                }
+
+                return { trees, burning, percolated, density };
+            }
+
+            function animate() {
+                if (running) {
+                    const burning = runFireStep();
+                    if (burning === 0 && grid.every(v => v !== 2)) {
+                        running = false; // Stop when fire is out
+                        const startBtn = document.getElementById('start-btn');
+                        startBtn.innerHTML = '<i class="fas fa-play"></i> Start Fire';
+                        startBtn.className = 'canvas-btn start';
+                    }
+                }
+
+                render();
+                updateStats();
+                animationId = requestAnimationFrame(animate);
+            }
+
+            // Event Listeners - IMMEDIATE TOUCH RESPONSE
+            canvas.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                paint(x, y, brushMode);
+            });
+
+            canvas.addEventListener('pointermove', (e) => {
+                if (e.buttons === 1) { // Left mouse button held
+                    e.preventDefault();
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    paint(x, y, brushMode);
+                }
+            });
+
+            // Touch support - IMMEDIATE RESPONSE
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if (e.touches.length > 0) {
+                    const touch = e.touches[0];
+                    const rect = canvas.getBoundingClientRect();
+                    const x = touch.clientX - rect.left;
+                    const y = touch.clientY - rect.top;
+                    paint(x, y, brushMode);
+                }
+            });
+
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                if (e.touches.length > 0) {
+                    const touch = e.touches[0];
+                    const rect = canvas.getBoundingClientRect();
+                    const x = touch.clientX - rect.left;
+                    const y = touch.clientY - rect.top;
+                    paint(x, y, brushMode);
+                }
+            });
+
+            // Canvas overlay control buttons
+            function updateBrushModeButtons(activeMode) {
+                // Remove active class from all brush buttons
+                ['ignite-btn', 'tree-btn', 'break-btn'].forEach(id => {
+                    document.getElementById(id).classList.remove('active');
+                });
+                // Add active class to current mode
+                document.getElementById(activeMode + '-btn').classList.add('active');
+
+                // Update canvas cursor based on brush mode
+                const canvas = document.getElementById('fire-canvas');
+                canvas.className = 'fire-canvas ' + activeMode + '-mode';
+            }
+
+            document.getElementById('ignite-btn').addEventListener('click', () => {
+                brushMode = 'ignite';
+                updateBrushModeButtons('ignite');
+                ledger.record('mode_change', { mode: 'ignite' });
+            });
+
+            document.getElementById('break-btn').addEventListener('click', () => {
+                brushMode = 'break';
+                updateBrushModeButtons('break');
+                ledger.record('mode_change', { mode: 'break' });
+            });
+
+            document.getElementById('tree-btn').addEventListener('click', () => {
+                brushMode = 'tree';
+                updateBrushModeButtons('tree');
+                ledger.record('mode_change', { mode: 'tree' });
+            });
+
+            document.getElementById('start-btn').addEventListener('click', () => {
+                running = true;
+                const btn = document.getElementById('start-btn');
+                btn.innerHTML = '<i class="fas fa-pause"></i> Stop Fire';
+                btn.className = 'canvas-btn stop';
+                ledger.record('control', { action: 'run' });
+            });
+
+            document.getElementById('reset-btn').addEventListener('click', () => {
+                initForest();
+                running = false;
+                const startBtn = document.getElementById('start-btn');
+                startBtn.innerHTML = '<i class="fas fa-play"></i> Start Fire';
+                startBtn.className = 'canvas-btn start';
+                ledger.record('control', { action: 'reset' });
+            });
+
+            // Spread probability control
+            document.getElementById('spread-prob').addEventListener('input', (e) => {
+                spreadProb = parseFloat(e.target.value);
+                document.getElementById('spread-value').textContent = spreadProb.toFixed(2);
+                ledger.record('parameter_change', { parameter: 'spreadProb', value: spreadProb });
+            });
+
+            // Accreditation system
+            document.getElementById('accreditation-toggle').addEventListener('change', (e) => {
+                const controls = document.getElementById('accreditation-controls');
+                if (e.target.checked) {
+                    controls.classList.add('active');
+                } else {
+                    controls.classList.remove('active');
+                }
+            });
+
+            document.getElementById('run-accreditation').addEventListener('click', async () => {
+                const repCount = parseInt(document.getElementById('rep-count').value);
+                const results = [];
+
+                // Run replications
+                for (let r = 0; r < repCount; r++) {
+                    const testGrid = new Uint8Array(G_X * G_Y).fill(1);
+                    // Initialize with same pattern
+                    for (let y = 0; y < G_Y; y++) {
+                        if (Math.random() < 0.1) testGrid[y * G_X + 0] = 2;
+                    }
+
+                    let burning = 1, steps = 0, percolated = false;
+                    while (burning > 0 && steps < 2000) {
+                        const next = new Uint8Array(testGrid);
+                        burning = 0;
+
+                        for (let y = 0; y < G_Y; y++) {
+                            for (let x = 0; x < G_X; x++) {
+                                const i = y * G_X + x;
+                                const v = testGrid[i];
+
+                                if (v === 2) {
+                                    next[i] = 3;
+                                    burning++;
+
+                                    const neighbors = [
+                                        [x + 1, y], [x - 1, y],
+                                        [x, y + 1], [x, y - 1]
+                                    ];
+
+                                    for (const [nx, ny] of neighbors) {
+                                        if (nx >= 0 && nx < G_X && ny >= 0 && ny < G_Y) {
+                                            const ni = ny * G_X + nx;
+                                            if (testGrid[ni] === 1 && Math.random() < spreadProb) {
+                                                next[ni] = 2;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        testGrid.set(next);
+                        percolated = percolated || testGrid.some((v, i) => (i % G_X) === (G_X - 1) && v === 2);
+                        steps++;
+                    }
+
+                    results.push(percolated ? 1 : 0);
+                }
+
+                // Calculate statistics
+                const mean = results.reduce((a, b) => a + b, 0) / results.length;
+                const variance = results.reduce((a, b) => a + (b - mean) ** 2, 0) / results.length;
+                const stdDev = Math.sqrt(variance);
+
+                // 95% confidence interval (t-distribution approximation)
+                const t95 = 1.96; // Approximation for n > 30
+                const margin = t95 * stdDev / Math.sqrt(repCount);
+                const lower = Math.max(0, mean - margin);
+                const upper = Math.min(1, mean + margin);
+
+                // Update UI
+                const resultDiv = document.getElementById('accreditation-result');
+                document.getElementById('prob-value').textContent = (mean * 100).toFixed(1) + '%';
+                document.getElementById('confidence-fill').style.width = (mean * 100) + '%';
+                document.getElementById('confidence-interval').textContent =
+                    `${(lower * 100).toFixed(1)}% - ${(upper * 100).toFixed(1)}% (95% CI)`;
+                resultDiv.style.display = 'block';
+
+                // Record in ledger
+                await ledger.record('accreditation_complete', {
+                    replications: repCount,
+                    percolation_prob: mean,
+                    ci_lower: lower,
+                    ci_upper: upper,
+                    std_dev: stdDev
+                });
+            });
+
+            // Export Reel Button
+            document.getElementById('fp-export').addEventListener('click', async () => {
+                ledger.record('export', {action: 'export_requested'});
+                await ledger.exportReel();
+            });
+
+            // Verify Reel Button
+            document.getElementById('fp-verify').addEventListener('click', () => {
+                ledger.record('verify', {action: 'verify_page_opened'});
+                window.open("verify.html","_blank");
+            });
+
+            // Export functionality (hidden, triggered by long press)
+            let exportTimeout;
+            canvas.addEventListener('pointerdown', () => {
+                exportTimeout = setTimeout(async () => {
+                    await ledger.exportReel();
+                    // Visual feedback
+                    const originalCursor = canvas.style.cursor;
+                    canvas.style.cursor = 'progress';
+                    setTimeout(() => canvas.style.cursor = originalCursor, 1000);
+                }, 2000); // 2 second long press
+            });
+
+            canvas.addEventListener('pointerup', () => {
+                clearTimeout(exportTimeout);
+            });
+
+            canvas.addEventListener('pointerleave', () => {
+                clearTimeout(exportTimeout);
+            });
+
+            // Initialize and start
+            initForest();
+            updateBrushModeButtons('ignite'); // Set initial active state
+            animate();
+
+        })();
+    </script>
+</body>
+</html>

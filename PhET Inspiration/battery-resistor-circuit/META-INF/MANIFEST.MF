@@ -1,0 +1,2084 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.7.0
+Application-Name: PhET Simulation
+Permissions: sandbox
+Codebase: *
+Created-By: 20.45-b01 (Sun Microsystems Inc.)
+Main-Class: edu.colorado.phet.javaversionchecker.JavaVersionChecker
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_fa.properties
+SHA-256-Digest: xx+v0oNjAV3UIozn+cAy6L5N/62zcBQWbnnqAaG+7jc=
+
+Name: edu/colorado/phet/common/phetcommon/preferences/StatisticsDetail
+ sDialog$1.class
+SHA-256-Digest: y1519Zv+Y1TRkQU/OdHGb5KUCGNsYdL4F2XhyWNFrIo=
+
+Name: edu/colorado/phet/batteryresistorcircuit/gui/CoreCountListener.c
+ lass
+SHA-256-Digest: F386dmnw0XoayYnSBJVzVaFfiPtr5/r2jMUO9D08MC0=
+
+Name: battery-resistor-circuit/contrib-licenses/java-look-and-feel-gra
+ phics-sun-graphics-license.txt
+SHA-256-Digest: XgXRrclslHoemrUsNnkOZty9UaHjXjdjaUTIM1FEEns=
+
+Name: edu/colorado/phet/common/phetcommon/application/JARLauncher$Simu
+ lationInfo.class
+SHA-256-Digest: L8Imubn3lkKesfEJGV7a0UZ+gXhzt5TNjKKY7IVI5gI=
+
+Name: javax/jnlp/FileOpenService.class
+SHA-256-Digest: 3rCXuwppZc2Z2wYl9WXZa6x+FiSoofG7gamXNJ7m2Jc=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/SimAbstractU
+ pdateDialog$AskMeLaterButton.class
+SHA-256-Digest: EhEznaIl85IR55m/p+zFR6002PFyR/wTWa+DgR2jKbo=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/vector/Vec
+ torPainter.class
+SHA-256-Digest: yFfFTXgh8KRF6IkrQiz6r3wLWYHCJQ0RFslEbeB+MGk=
+
+Name: edu/colorado/phet/batteryresistorcircuit/regions/AndRegion.class
+SHA-256-Digest: GueiLy66byn3K1YKLYYWXbucDpVaEZfP+wu+wwkR1CE=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/UpdateErrorD
+ ialog.class
+SHA-256-Digest: vAj0OdnJEkwCw1Y5j+BYKlPrfEyyglCrQtjEFShAbO0=
+
+Name: image002.gif
+SHA-256-Digest: R4j47oBa4OVjeN3TKqQ8G/4KEWHkAbYCTe9+4eoUQTs=
+
+Name: edu/colorado/phet/common/phetcommon/application/SoftwareAgreemen
+ tManager$MessagePane.class
+SHA-256-Digest: n6KjaDyCPzLCNC4CDl7JMhcAhtVM56ebjMth/BovT6I=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_ta.properties
+SHA-256-Digest: 4a+ICQ7bABNpbYrHZCWCRfUwhPR8IRR/X1N4zADe3GI=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_da.properties
+SHA-256-Digest: juhOURdPQOgUsUbpKi92++QYsbKd2ll3Etv9onS5wUw=
+
+Name: edu/colorado/phet/batteryresistorcircuit/Resistance.class
+SHA-256-Digest: oh4DzaRNlc7CLV6t5mDdUhR0sWNSC8qOj8kr8o3xxvc=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/BatteryForcePropag
+ ator.class
+SHA-256-Digest: ienzgAspEACxqN9/qfgBTtG6Asa/S8bfaHDNxDmnJYk=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_et.properties
+SHA-256-Digest: IozASi1AWWGeHhm1nkFOtBJkQ/MWszdtPi0uQoYs57Q=
+
+Name: edu/colorado/phet/common/phetcommon/view/menu/ControlPanelProper
+ tiesMenuItem.class
+SHA-256-Digest: gxKl0EQEwBeumCY3PBTHD9Lt3AzEscGGFQCdm3n7R2E=
+
+Name: edu/colorado/phet/common/phetcommon/util/logging/LoggingUtils.cl
+ ass
+SHA-256-Digest: lnnKZqjkAAfDEGNi6HHU0V2Aa5IebCwhc9MGF/5KB8s=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/HTMLUtils.class
+SHA-256-Digest: V3QQ9CC2+LpyX+vhN5YsChp9C3jD2HZp5KipKO8Gu38=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/gauges/Ima
+ geGauge.class
+SHA-256-Digest: 5PWiUiKzvryXXMAO8+JEINFgJ6pdhCcTfVE+ylUQt2c=
+
+Name: battery-resistor-circuit/images/spectra/spect3.jpg
+SHA-256-Digest: uDHVZ61P5VniYzh4nA+AUgMpfPWHV9VnSlkZX1hZKUk=
+
+Name: edu/colorado/phet/common/phetcommon/util/JavaVersion.class
+SHA-256-Digest: k1mcvGcd7Ki5XXUZ5GllcE01vQACipvTSOma3jMbiJQ=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/wire1d/paint/Wir
+ eParticlePainter.class
+SHA-256-Digest: IyIuL/suypLRItdolV/N+t62XzCRry4e2s7BnEHHM40=
+
+Name: edu/colorado/phet/common/phetcommon/tests/TestPhetFrameWorkaroun
+ d$TestModule$2.class
+SHA-256-Digest: gU0A5bevtcqiNSEdeMjHyu9WRNee5B9uqWBLYdW/IQs=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_it.properties
+SHA-256-Digest: brsG6qa/OqqScPAjzh/OwO5V5LmSa/NI3zZiokrOB3E=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/CreditsDialog$Transl
+ ationCredits.class
+SHA-256-Digest: k5mEPqyYgmyKpEKwYpH6iU7HFaJmNLRAKwwW1YWIUpQ=
+
+Name: edu/colorado/phet/common/phetcommon/util/function/VoidFunction0.
+ class
+SHA-256-Digest: FyDESGbETu/hJmCbvOPskEX9ZcXjju/vn9v0lod0/kw=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/wire1d/WirePatch
+ .class
+SHA-256-Digest: vkNERUyoBTSaTyLgT7iO6KSVAxkgZrT08eyjU35O8sM=
+
+Name: junit/runner/excluded.properties
+SHA-256-Digest: GwIbIADoCfys7VzWXdG/I/59y8RBNbVBsGU3Glv+B6M=
+
+Name: edu/colorado/phet/common/phetcommon/view/menu/ControlPanelProper
+ tiesMenuItem$1.class
+SHA-256-Digest: As+sZRtDHAdUsVMjyERLnrEg5PQ35HuJqP34zKiNCgQ=
+
+Name: stylesheet.css
+SHA-256-Digest: i3r02PdLvW1/FcCNDqQYHEqh4hrEpDuJfFEyC1xTRV4=
+
+Name: edu/colorado/phet/common/phetcommon/application/PhetPersistenceD
+ ir.class
+SHA-256-Digest: 39QxZw/MJTDK21y1WtxU8rrNDGkTtn5jBs9sSjagbAw=
+
+Name: edu/colorado/phet/common/phetcommon/application/PhetApplicationL
+ auncher$1.class
+SHA-256-Digest: 38CMwTxMph7XVO/yrU77IhKKsR5cKDbW2BDPCx5EJes=
+
+Name: edu/colorado/phet/common/phetcommon/application/ISimInfo.class
+SHA-256-Digest: X69Hr8QL+p0FWo1yybFv663GZY59QqdhezFnzNFpi5A=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_km.properties
+SHA-256-Digest: 9jTZt9Vp7ClNw0I7BjC6XZ1CXDqEnY45pBVf8ixWVdA=
+
+Name: edu/colorado/phet/common/phetcommon/model/clock/IClock.class
+SHA-256-Digest: qRVnVrHdlt1t8QB4Pd7TPx3uCk2XRwEZIdFHhahF/3c=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/RangedPropagator.c
+ lass
+SHA-256-Digest: MuNMhf2nQUt6HFdRuxOZBQypxf6k70GuAhbYpdRJT+c=
+
+Name: edu/colorado/phet/common/phetcommon/model/clock/ConstantDtClock.
+ class
+SHA-256-Digest: BLvYwbl3hKpT2jVS1FENIOs78muew07vr5vpGyI/qzk=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/ImageLoader$Conver
+ sionStrategy.class
+SHA-256-Digest: lnPxwG6WEp+87br88YtDf9IwDvfBvh/hKGbLhEViLtk=
+
+Name: edu/colorado/phet/common/phetcommon/preferences/PreferencesDialo
+ g$1.class
+SHA-256-Digest: I/jdJ9K6OrHTKs+k1brwVUakv5T/tjCrxowU+ZoNTl8=
+
+Name: edu/colorado/phet/common/phetcommon/view/menu/ControlPanelProper
+ tiesDialog.class
+SHA-256-Digest: UGhna+0Ntx+aKQp0mnSMohXuBaGh0mcX4nGlLhelGRo=
+
+Name: edu/colorado/phet/batteryresistorcircuit/BatteryResistorCircuitS
+ imulationPanel$1.class
+SHA-256-Digest: 9bTx1jFkmINo+5gUDvTNfOde7or7U44iGGCSrylvhwM=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_cy.properties
+SHA-256-Digest: cgvRrIOgJ+xaP6rAqHVDd0CNzjqrojmciNVzd3phwTY=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/SimAbstractU
+ pdateDialog$CancelButton.class
+SHA-256-Digest: BKPNe7KqMi8wAz2ZvK7XW0xGI6QgInAx9nkTCeQ6I1E=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_pt.properties
+SHA-256-Digest: 02nRoZN2YC2zCn55kFoSAbeh2OJgFfCIMGA0sEfoOUg=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/wire1d/forces/Co
+ ulombForce.class
+SHA-256-Digest: WYS3wsPApPHxi6yud/+eGcN/EzS14/vxm4ikJLNcynI=
+
+Name: edu/colorado/phet/common/phetcommon/updates/ManualUpdatesManager
+ $2.class
+SHA-256-Digest: jVglhKnKcyiDGCd04+bbVXSrtFXM76VyXgRCMymPm98=
+
+Name: edu/colorado/phet/batteryresistorcircuit/BatteryResistorCircuitA
+ pplication.class
+SHA-256-Digest: 16vb8GbNrYffBXUmKJw7sFfVw7CgyqYhKsHpibOC0sY=
+
+Name: edu/colorado/phet/common/phetcommon/view/TimeControlPanel$2.clas
+ s
+SHA-256-Digest: lfYKR4GUHGl7G/wFUYT4aRMl8Vz1kN3U8H08ZxQPzwU=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/PhetFont.class
+SHA-256-Digest: wHpjtClnkncQBYRaIDSRJa2ofVyPJ6dgHqNOLX5SEt0=
+
+Name: edu/colorado/phet/batteryresistorcircuit/BatteryResistorCircuitS
+ trings.class
+SHA-256-Digest: vV5NtvTlyj/F/Pc61q81wJbcy7WhbEnoptXrCzftsQw=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_am.properties
+SHA-256-Digest: XqXZhZmqRcS341ZSFZ+p6fJX6M6GbIvixLX6lXoM70E=
+
+Name: edu/colorado/phet/common/phetcommon/util/DownloadThread.class
+SHA-256-Digest: tOlXQ8XgGqYUiLjsFJiELboxbvZaIc2858KqZ5tVSbA=
+
+Name: javax/jnlp/PrintService.class
+SHA-256-Digest: h/8yYOI2QQ5U+gWZntrodJJiDp833NR44NX3aRCszlA=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/DownloadProgressDial
+ og$ThisDownloadThreadListener$1.class
+SHA-256-Digest: If4SZghT/EFwj82jG+4QnbDuErSmWK83S6Z9fMuNF4E=
+
+Name: edu/colorado/phet/common/phetcommon/view/PhetFrame$3.class
+SHA-256-Digest: +DR4q7cth3b+c3ZmMldd5tGXyqTehmjCmaO/l0lKZLU=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_th.properties
+SHA-256-Digest: 4IZdJSBM+Bl8mBNqNFjwdACJz+Febrp3hFtYNc6HE4M=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/phys2d/Repaint.c
+ lass
+SHA-256-Digest: uo4HZ7iy1iY+bDO5Uls3bNHbb9yVURl1Ac42b6PSdIA=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/ScaleAlphaImageOpA
+ RGB.class
+SHA-256-Digest: hus9aCr+BMF3QKm7Ou+HoKEggR9G6xPTEKeGZ/bvHuo=
+
+Name: edu/colorado/phet/common/phetcommon/preferences/PrivacyPreferenc
+ esPanel$DescriptionPane$1.class
+SHA-256-Digest: Z+USiGVUJZtvpJ4U8NDtGxgVUgu9xFcsdwGn3PYrn9I=
+
+Name: edu/colorado/phet/common/phetcommon/view/HelpPanel$1.class
+SHA-256-Digest: 14vKqXRAj1Osmh8t7FsIXsoZkSDQDLXTs/SgNdqnge8=
+
+Name: javax/jnlp/ClipboardService.class
+SHA-256-Digest: VugQaN7mRSJI+km3YRubhCUpMUbrzI8gBg/MQobPXAw=
+
+Name: edu/colorado/phet/common/phetcommon/application/KSUCreditsWindow
+ $1.class
+SHA-256-Digest: lWpoaSB1vpFfydtTwziChweEwhogdtYvOQIvYaGQ9Dg=
+
+Name: battery-resistor-circuit/contrib-licenses/license-info.txt
+SHA-256-Digest: D9LZLPitYJRfHHvne7VfxwfPGTS87RDaBrvfPGQvf5c=
+
+Name: junit/swingui/icons/ok.gif
+SHA-256-Digest: vJPhtYMrLsOiywCkPawC7eJ5zLSgs4merg2fMiQ7tBE=
+
+Name: phetcommon/localization/phetcommon-strings_ko.properties
+SHA-256-Digest: F0XwXZHmPJWOaYq+dO+7oH/9OrPxCXxhq3xsnetg2fc=
+
+Name: edu/colorado/phet/common/phetcommon/view/ClockControlPanel$2.cla
+ ss
+SHA-256-Digest: G6paUyq3K6ydhYL6DAgQ4Wwg+skn85OkDB1ReNbLpgs=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/wire1d/WireParti
+ cle.class
+SHA-256-Digest: dGBSJDlc2V6ZrIHRZi1W9uWb+B7fpQTeKffoqKgSRps=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/CompositeP
+ ainter.class
+SHA-256-Digest: HgT11mjtjG7kMsXSKqECHWMn8AcgMIk9GhNsDjk8xXw=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/StackTraceDialog$1.c
+ lass
+SHA-256-Digest: NSbVgOZ6NkjMoDModvcjuYbnfH1G+2ZgxJYuLd7FTng=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_hy.properties
+SHA-256-Digest: 2WmejLGE6BegEV2jsZ1nTs3GYLAhH1GNixJdnEp/PRA=
+
+Name: edu/colorado/phet/common/phetcommon/view/controls/ColorControl$2
+ .class
+SHA-256-Digest: L34szfPY9AgMMYIWTaPG7Rd3Y8MVNh6ihJYGjrWlVKg=
+
+Name: edu/colorado/phet/common/phetcommon/util/DownloadThread$Download
+ ThreadListener.class
+SHA-256-Digest: htUBUralkUhUTP4vkpMtMUyD/ZbfDrmNBq410nw/4O0=
+
+Name: image001.gif
+SHA-256-Digest: WCAwAMNBviNuwuFqwbXat6u7UL+C4aoHQIeoLTS8gGQ=
+
+Name: edu/colorado/phet/common/phetcommon/model/clock/TimingStrategy.c
+ lass
+SHA-256-Digest: iLt0MyZbQw5ngSzc+K4b5AwKoqauNKZXU3WNTpC5lpU=
+
+Name: junit/swingui/icons/failure.gif
+SHA-256-Digest: X2zARBxx/3CKea1UeksjVujei0H6p6zq1S9tcpll6io=
+
+Name: phetcommon/images/clock/StepForward24.gif
+SHA-256-Digest: SM38S32WKfe+iytqU01BUqT9Y7xhWT3bn48mZs7rqjc=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/WireRegion.class
+SHA-256-Digest: /qrEN6/03zx4Z/sqpENwO3ja9NU+dGaXmaW6RxtggJo=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/ColorMap.class
+SHA-256-Digest: WpHMQTuRcoApNfHT7qvBpNnwy0wvasTw6HZ9+NbGdSI=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_ar.properties
+SHA-256-Digest: zkOfmyA1/J2u3VO0QSWs4b2AhftxEN880Shyo80lRVA=
+
+Name: javax/jnlp/BasicService.class
+SHA-256-Digest: 9bPldnPPafiezq78ls99stDI+YV7mvtC3DekSa1lY8A=
+
+Name: edu/colorado/phet/common/phetcommon/application/PaintImmediateDi
+ alog$PaintImmediateTimer.class
+SHA-256-Digest: xFri8T7dYjZYkQ7zw4RXEFqi45hFDgBBi3x3PS5csow=
+
+Name: edu/colorado/phet/common/phetcommon/application/PhetApplication$
+ 2.class
+SHA-256-Digest: ZgZuP5PfURNXt4wqwHrlO6cFD2FhsrvmXrpLDazUxNA=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/HTMLUtils$Interact
+ iveHTMLPane$1.class
+SHA-256-Digest: EEbbx994HudAeNfcSEd4eL7cZhcu0W7fpdXMXZpOHV4=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/XMLUtils.class
+SHA-256-Digest: AsADLTzsIjde2gO/U5zA3StesyFbt8rl4WkqFX0Tt5I=
+
+Name: phetcommon/images/buttons/maximizeButton.png
+SHA-256-Digest: B7kYGsSDkIyipssj0Bdp5epCMFH5Q8OJv/4EaFM8+EI=
+
+Name: battery-resistor-circuit/images/spectra/license.txt
+SHA-256-Digest: 8tU3h5oeF+/+BbHGF5pVaY2+oin27DYW22nDm194kpo=
+
+Name: edu/colorado/phet/batteryresistorcircuit/collisions/Collider.cla
+ ss
+SHA-256-Digest: JZWKl8PG5Fpw9GGhNOoKXzXBaMUJnRiuYfoMVwQto/M=
+
+Name: junit/swingui/icons/hierarchy.gif
+SHA-256-Digest: 3KjVpCldFGYe8N4wfxhrbObfb4FeZq0+yXS7wQV+/b0=
+
+Name: edu/colorado/phet/common/phetcommon/preferences/UpdatesPreferenc
+ esPanel$2.class
+SHA-256-Digest: BupoDx+/YDcMpVYKWUY76fyBZklS8ByN3QYA0GZTEAM=
+
+Name: edu/colorado/phet/batteryresistorcircuit/oscillator2d/OscillateF
+ actory.class
+SHA-256-Digest: yo/XKm03y/TzMnBm/tyBC+Aq02P35cXBHwy/4vbcqV4=
+
+Name: edu/colorado/phet/common/phetcommon/statistics/SessionMessage.cl
+ ass
+SHA-256-Digest: uzw+F92annJwhCNgcpTaFkYZADt8+AIYebvECZ5Hq/U=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_mr.properties
+SHA-256-Digest: 1vgzwCitu1JkhUxK7esXOpMGBRYqQaHAsXvXB8c8D2s=
+
+Name: phetcommon/localization/phetcommon-strings_zh_CN.properties
+SHA-256-Digest: GJXt2VCOHiTQQPjD/pwk7RuBfR1XuCp2mgFRFsxoS0E=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_es_PE.properties
+SHA-256-Digest: QeDF3DHAyS7DeAoqMGrWflReck1iq/W9g6wae5qnqIo=
+
+Name: edu/colorado/phet/common/phetcommon/tests/TestPhetFrameWorkaroun
+ d.class
+SHA-256-Digest: tULMICEpoO99imodevEIqcHPVEwrNusA1e7fuqYBlrg=
+
+Name: edu/colorado/phet/common/phetcommon/application/SoftwareAgreemen
+ tManager$AcceptanceDialog$2.class
+SHA-256-Digest: C/PKLoa4q1C7dfbZdeCy3a3tQ/u3H/bEu8dYTqIx+Bc=
+
+Name: edu/colorado/phet/common/phetcommon/view/JTabbedModulePane$1.cla
+ ss
+SHA-256-Digest: JqWwQ4NMv1fiKc5uKuGoOI7f/xLVhilBiEsIKl5D2Jg=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/SimAbstractU
+ pdateDialog$UpdateButton.class
+SHA-256-Digest: dz38YEDxk1d9+4jTJrWHb6ywbLETejG0Jx5trSYOc6U=
+
+Name: edu/colorado/phet/common/phetcommon/application/AWTSplashWindow$
+ 1.class
+SHA-256-Digest: SwcoOmlfhhSXNNGJMt5IkluM0IUdgL/eJKiPRDT6boI=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/Crash.class
+SHA-256-Digest: NuLWTAQlOaZwBDJVNf9eH9SSNhhtqVcIJ4aJCURynhw=
+
+Name: edu/colorado/phet/batteryresistorcircuit/oscillator2d/Oscillate.
+ class
+SHA-256-Digest: jqv+oHa3td3XbypQKG1fkKu/WrMB9b6qcqJneqJIMEs=
+
+Name: edu/colorado/phet/common/phetcommon/tests/TestPhetFrameWorkaroun
+ d$TestModule.class
+SHA-256-Digest: Q1LVbvkWs0UOnHK03DEAAS4bQcBGmgiS79PiwGBVEI0=
+
+Name: edu/colorado/phet/common/phetcommon/application/JARLauncher$JARL
+ auncherGUI$2.class
+SHA-256-Digest: 20FWSSH0yTneq1I+1G72j/RLgJWz8d5K36NG4bRIN7E=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_tk.properties
+SHA-256-Digest: qAjy3IniyYzQ/O7MYTPyLgRB2N2N2G9T1KSp4OFs7O4=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_sr.properties
+SHA-256-Digest: nI8Fx/dermyj6x2yFzGtaIp5kpqmlAO0Iu2J2UJ+mgE=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/phys2d/NullPropa
+ gator.class
+SHA-256-Digest: nCionC+J46sCQbZMH94ndPxS/Tbn/aqM+Uyq2ZQPEO4=
+
+Name: edu/colorado/phet/common/phetcommon/view/menu/HelpMenu$CheckForS
+ imUpdateMenuItem.class
+SHA-256-Digest: 5MXjL/cUoWiGy9X6x5GqpFoWtosAoozMWdxDR1tFmp4=
+
+Name: edu/colorado/phet/common/phetcommon/statistics/StatisticsManager
+ .class
+SHA-256-Digest: B5JGtjDzeliWfOvXrlr4JowGIeznsRwZ+ZxdZXTJr1Y=
+
+Name: phetcommon/localization/phetcommon-strings_el.properties
+SHA-256-Digest: cXycyOLojC0+ddaX19uHdrQCXMfczEov4iygaZ++gFA=
+
+Name: phetcommon/localization/phetcommon-strings_sq.properties
+SHA-256-Digest: 1NvObXNRN5Fa8wYp2w0L97Mo10azHdfqlwAS4ZK7G5c=
+
+Name: phetcommon/localization/phetcommon-strings_de.properties
+SHA-256-Digest: pjBMhq+O8pZYSyTj35CB5U4wjWKtBkNqjL4mI5ZwzEU=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/CreditsDialog$1.clas
+ s
+SHA-256-Digest: 0QKMZIyGmRIqAKzrGr1UEBqw7i14GNDKh0kNnZH+TqY=
+
+Name: edu/colorado/phet/common/phetcommon/application/SessionCounter$S
+ essionCountsFile.class
+SHA-256-Digest: TjbFwS6+iBuuZX8O9/wqeZijAW8Nbz0SKY5fclEsf5w=
+
+Name: phetcommon/localization/phetcommon-strings_pt.properties
+SHA-256-Digest: eQOWTFqMbtHB4S1FgOjgF6yhXk53yx8WjOiSukDhrZw=
+
+Name: edu/colorado/phet/common/phetcommon/view/menu/DeveloperMenu.clas
+ s
+SHA-256-Digest: RxwH9SYI31GP97ffDT3DnFQrFEXtMcarRCwjcO1K9/I=
+
+Name: edu/colorado/phet/common/phetcommon/application/JARLauncher$Simu
+ lationInfo$1.class
+SHA-256-Digest: U4OGwKteT8iLJAsjoG3X89e5K46HlOdXpuZsfLQ2I8k=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/SimAbstractU
+ pdateDialog$UpdateButton$1.class
+SHA-256-Digest: D1dD6gC3fXZhn3Eduoqw8Lun3qxfvGYRP8aoe2w1TR4=
+
+Name: edu/colorado/phet/common/phetcommon/application/PhetTestApplicat
+ ion$1.class
+SHA-256-Digest: IaTRoN0Y/6koE0+/XvGx20wUDxxHKqyU0/ghMbwDMg8=
+
+Name: edu/colorado/phet/common/phetcommon/application/SoftwareAgreemen
+ tManager$AcceptanceDialog.class
+SHA-256-Digest: 5vf0WdJ6fdHaDSlGP+4Rcl2yQcmDMndIqqoTgbdmhoY=
+
+Name: edu/colorado/phet/common/phetcommon/application/PaintImmediateDi
+ alog.class
+SHA-256-Digest: YOICtV5r0PbOCVlJvwiPdCEXJHA/Rls3IY7LOMM3zI4=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/VoltCount.class
+SHA-256-Digest: I2hjQg64GWJqPAAcHMxhazjrQdipfM1isLkYQBZzhYI=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/CreditsDialog.class
+SHA-256-Digest: s5hrUrBtFeK7q/KEerGssbsd6pWn1FzSelPX/ew27Ec=
+
+Name: phetcommon/localization/phetcommon-strings_es_CO.properties
+SHA-256-Digest: l+3clYOBkaF4UcBFhOpDvOPUhzlE34RM82FinH1wFnw=
+
+Name: phetcommon/localization/phetcommon-strings_pt_BR.properties
+SHA-256-Digest: s7B06bIjvhIoSs3OWHqJlkaDRHRSa47bTBVaLA3vWXk=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/ColorChooserFactory$
+ 3.class
+SHA-256-Digest: 3ruR9wSIi1wAaa6Nkgl056jF1boBDszYJzlHGFWaIb4=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/ColorChooserFactory.
+ class
+SHA-256-Digest: yjWOxoTB/RgdbYUGHoL/IUOJS9s9/N2+a0MxfVdZkus=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/InstallerAbs
+ tractUpdateDialog$MoreButton.class
+SHA-256-Digest: y7DaY0F+YbTme13OfJoLJ50iZeQvHXv4CYhNg9dA/6w=
+
+Name: battery-resistor-circuit/images/pushers/PushLeft.gif
+SHA-256-Digest: m80o/FsyySg99h8b17YxmNl3qGYDtF0SCjRzRrm0Prw=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/SimAbstractU
+ pdateDialog$AskMeLaterButton$1.class
+SHA-256-Digest: wMhpmx9dNpK8ye6vLSu8w4mT4HzKi9e0gyVMSdUoKHs=
+
+Name: battery-resistor-circuit/images/icons/Pause16.gif
+SHA-256-Digest: zDsLHJ5RqUSNXojErhRD2n0US8lCBlf+PQdKLkZgKg0=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/CreditsDialog$Intera
+ ctiveHTMLPane$1.class
+SHA-256-Digest: JfcWB/6k25bBoh6lAplHYr6G93zFvWRpRyi5BTm+DSQ=
+
+Name: phetcommon/localization/phetcommon-strings_lv.properties
+SHA-256-Digest: sB9V4GGjTrlu8OQkSbKsxZsAU0ERwQeqPg7EDOCkbg0=
+
+Name: edu/colorado/phet/common/phetcommon/application/AWTSplashWindow$
+ ImageComponent.class
+SHA-256-Digest: d30bu7j7rHcF5RSxBmD33Qs+5v10kVD5wJ7ZnHJKHZs=
+
+Name: edu/colorado/phet/common/phetcommon/view/PhetFrameWorkaround.cla
+ ss
+SHA-256-Digest: jlQAIadIRm6PLByZ6jlD4XY0kPF9DJGdXen85ex4dHw=
+
+Name: edu/colorado/phet/common/phetcommon/application/SessionCounter.c
+ lass
+SHA-256-Digest: 6+g2m55G/5reuEddcWglK0uvipjQBfcMY8vVwJu1JXU=
+
+Name: edu/colorado/phet/common/phetcommon/util/JavaVersion$1.class
+SHA-256-Digest: RC/+4NFoCZFY2l1g5WgAA9n8qssmDRIkPYA4yoKXFUw=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/wire1d/propagato
+ rs/DualJunction.class
+SHA-256-Digest: 0F8Qws1eAoS6wcknndKd7YO90i01LJwsETcseHK43s0=
+
+Name: edu/colorado/phet/common/phetcommon/updates/InstallerAskMeLaterS
+ trategy.class
+SHA-256-Digest: qlI8DsQBhEQMWsI7T5R43evmgXFNszNO1GnxL23xCVY=
+
+Name: battery-resistor-circuit/images/spectra/fullSpectrum.jpg
+SHA-256-Digest: FaVk154Sglv6U0N5KaPEZBchaZzT2vIbAem7YUYIdkM=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_ka.properties
+SHA-256-Digest: oW1KsENQY2mw71BO0j7pmVMdiPqyUYYsfQv9uxgSFT0=
+
+Name: javax/jnlp/JNLPRandomAccessFile.class
+SHA-256-Digest: RD/HMVtk5Xumaiw5BWsMetJB9WJN+7r6/7PWKndGwzo=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_ro.properties
+SHA-256-Digest: 8Sj28InctySSL5MMF6FIqEGGGUKhC1KJG3R79PYveEQ=
+
+Name: edu/colorado/phet/javaversionchecker/JavaVersionChecker$2.class
+SHA-256-Digest: MmbXozgd00HlKFpjvF1gvO9HV2JUIc2mxRKa8Lvi8FU=
+
+Name: edu/colorado/phet/common/phetcommon/application/VersionInfoQuery
+ $VersionInfoQueryException.class
+SHA-256-Digest: nhlTho18ROpw4S6Ihsgu8x+4YVw/k9fSrVdrwu9ogUc=
+
+Name: edu/colorado/phet/common/phetcommon/application/SoftwareAgreemen
+ tDialog$1.class
+SHA-256-Digest: r3QDYDmRfHeBYxvCETxhvQdPw/UAkFeAc1eSWfD/2RE=
+
+Name: edu/colorado/phet/javaversionchecker/JavaVersionChecker$LocalBas
+ icService.class
+SHA-256-Digest: PW0oWA8bRXVQR4Ku1Ama+7eeoG+anVeLszt/FBIjV0k=
+
+Name: battery-resistor-circuit/images/components/cable-srr3.gif
+SHA-256-Digest: ru7K92YnviOXWsoXSUIuwfCCMnxrLMlg65uwNsbP3As=
+
+Name: battery-resistor-circuit/images/icons/Play24x.gif
+SHA-256-Digest: Ss+aDsFx2arca4nYIAc4tAz2fkF+Et+do+o86mwnElU=
+
+Name: phetcommon/localization/phetcommon-strings_fa.properties
+SHA-256-Digest: 6sEqgH7XPabS287lNbnWC8xGzOwHR6dXRAhzTbP12FU=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/InstallerAbs
+ tractUpdateDialog$NoButton$1.class
+SHA-256-Digest: oYgYrIF5QfNP9OhGcqzcDfWnutmOqxJI+cVWQXfDG6w=
+
+Name: edu/colorado/phet/common/phetcommon/resources/DefaultResourceLoa
+ der.class
+SHA-256-Digest: d0FsPLMWnW1of1a9rKrWp/u+E0zi4vAUszi0AU1ApR4=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/phys2d/DoublePoi
+ nt.class
+SHA-256-Digest: mBzp2f6z+pMl6BhlsidH6esaEWqOMmsWL9FFWWspl90=
+
+Name: edu/colorado/phet/common/phetcommon/util/LocaleUtils.class
+SHA-256-Digest: gHgaFKNYjN9ZO9RvWcD0Q2cAycorGvo/ylUENjO8QF0=
+
+Name: edu/colorado/phet/common/phetcommon/preferences/StatisticsDetail
+ sDialog.class
+SHA-256-Digest: NiK1UbRTE716CF/KVCXr3SK9sEteYsMPi5nQFu6Bwmk=
+
+Name: edu/colorado/phet/common/phetcommon/application/JARLauncher$JARL
+ auncherGUI$3.class
+SHA-256-Digest: LmcrENVTvtTMUaD/HAIf33zoJJ5K88EF/LbU72RZEJs=
+
+Name: edu/colorado/phet/common/phetcommon/application/PhetTestApplicat
+ ion.class
+SHA-256-Digest: F0/5rjiB7CcEZ01+a5a1DfqhZik0rcoBdlSIsKpuXVQ=
+
+Name: javax/jnlp/DownloadService.class
+SHA-256-Digest: ZIaMfXXuwszNU2blu0U90cAsJTrRCz5AEDD9wTTG2DM=
+
+Name: phetcommon/localization/phetcommon-strings_ja.properties
+SHA-256-Digest: yVp8QQMf1ur77oapq+en0Q5lo5l2J0iP/j90803zhkM=
+
+Name: edu/colorado/phet/batteryresistorcircuit/regions/SimplePatch.cla
+ ss
+SHA-256-Digest: A/eV9gCXY1tfVyq9+x62/M88g5CxwjBY5WsRd2ztbyU=
+
+Name: phetcommon/localization/phetcommon-strings_et.properties
+SHA-256-Digest: 1748BqsUrhZHsz+y4gtcYyBnhh/5KcJkKKtSRO03WOw=
+
+Name: phetcommon/images/buttons/minimizeButton.png
+SHA-256-Digest: Xyjv+r687azqW0CWeOdmUsRgctLS8Pi/iMO8/gj+XWU=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/ColorChooserFactory$
+ 1.class
+SHA-256-Digest: l8LEB47BK0pBnedUCWCFKDdHkbIyVZvX495h7xLIjls=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/phys2d/System2D.
+ class
+SHA-256-Digest: u8pUB1ZhgYttJGUNHSO/RDy6TgxdvC255WBWvp5FNqw=
+
+Name: phetcommon/localization/phetcommon-strings_it.properties
+SHA-256-Digest: XlWZ6dpSWa00OR297E0YBfya13R42/7Mm6RN94EvsA8=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/DownloadProgressDial
+ og.class
+SHA-256-Digest: T5g5XJtLes0RrdFPlPxAfk0DoHMTQ8PkJUgoWIBA/Hs=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/phys2d/Propagato
+ r.class
+SHA-256-Digest: SigsssK1rW7DlzdTmT0vDyVAHcKa2Gro+zc6t8v+mho=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/InstallerAbs
+ tractUpdateDialog$AskMeLaterButton$1.class
+SHA-256-Digest: 7EMWJQPZGfNgYyYdPt9nvCnHCjYZVqOfEMu/5V1tXR0=
+
+Name: edu/colorado/phet/common/phetcommon/view/TimeControlPanel.class
+SHA-256-Digest: lxkNCFBZWt+LUIcSDpzE5kHNH5pfcAMwLDW3LCjE+i8=
+
+Name: edu/colorado/phet/common/phetcommon/application/SoftwareAgreemen
+ tDialog.class
+SHA-256-Digest: fPqqgzMykuAODv4HNepA4m+79alqhghH6KY9fBaj7qE=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/gauges/Gau
+ geScaling.class
+SHA-256-Digest: hSX2/LXfNAQAQnzRxxIHj9kAMRSKGajMSHR6vmw4DX4=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/BatteryDirectionCh
+ anger.class
+SHA-256-Digest: WIf4kA8CFJDQlDcbbYJj4duUrANbvMGpAuTSLMuJMsc=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/DownloadProgressDial
+ og$ThisDownloadThreadListener$3.class
+SHA-256-Digest: dF61sPjy9R43RZgypWiAtWez7SGtjnzdkOH/f4rADoE=
+
+Name: edu/colorado/phet/common/phetcommon/view/ModulePanel.class
+SHA-256-Digest: o7ZJickiosLEXB4sba12ArV+ZKZEEfVcJe+WnwtoB48=
+
+Name: edu/colorado/phet/common/phetcommon/servicemanager/LocalBasicSer
+ vice.class
+SHA-256-Digest: hYC2SLXuH790eIEt0H0iwGg/7J7+2DwGTUAGufwmCe4=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/SimAbstractU
+ pdateDialog.class
+SHA-256-Digest: TrRmrcCuDcVF90ZiuYoM/AcdhMF/9bHw/RcVYY7ralI=
+
+Name: edu/colorado/phet/common/phetcommon/util/AbstractPropertiesFile.
+ class
+SHA-256-Digest: yE1uoXQehk4BK1Bt34xCbVy/gk97j/QUcEa4QvRchT0=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/DownloadProgressDial
+ og$1.class
+SHA-256-Digest: 5U5ePql1cYV8vhBsrCLf4zOoT4LaL3iiDBmyDgPTy+4=
+
+Name: edu/colorado/phet/common/phetcommon/util/DeploymentScenario.clas
+ s
+SHA-256-Digest: IMpMlj8d/xC5T3ZMT6PXGJm7n6MLerKrNsvRlbAwqIo=
+
+Name: edu/colorado/phet/common/phetcommon/math/DoubleSeries.class
+SHA-256-Digest: 8kNCc35iOrHGoCatswrvRYVpbTbHBF23CZmGmaauBYA=
+
+Name: edu/colorado/phet/common/phetcommon/application/PhetApplicationL
+ auncher.class
+SHA-256-Digest: LvKOU+XT0QucptLu6rsz4tbVeOCiNpGilsHzJ2kq2w0=
+
+Name: edu/colorado/phet/common/phetcommon/files/PhetInstallation.class
+SHA-256-Digest: f7Q7iI5z+67p1wAe2pi4de984k8ndmfa0AwXpcyw0u0=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_mk.properties
+SHA-256-Digest: AuLAi5Agm8/MSbfZjOF4ByFeui9it/2iFMY+Ge2wIDo=
+
+Name: phetcommon/localization/phetcommon-strings_cs.properties
+SHA-256-Digest: EMBRDGZVVhTxmp4zd64Tm6THbQ5VNOxpsqpNsOpP2qQ=
+
+Name: javax/jnlp/PersistenceService.class
+SHA-256-Digest: u3ZHMRXjGazUDTpzsKzYdAuX8bblNDb0RyjIFWv5q5s=
+
+Name: phetcommon/images/clock/sun-license.txt
+SHA-256-Digest: XgXRrclslHoemrUsNnkOZty9UaHjXjdjaUTIM1FEEns=
+
+Name: edu/colorado/phet/common/phetcommon/preferences/UpdatesPreferenc
+ esPanel.class
+SHA-256-Digest: vxHsn6YEZ3uQ5T4EjomkBSM5j8eMpu/24J/EzUgfM3g=
+
+Name: edu/colorado/phet/common/phetcommon/view/menu/PhetFileMenu.class
+SHA-256-Digest: loCfImkUiQThVtaivWAAlr5Ycp9KKZGLTEydWcbicDY=
+
+Name: phetcommon/images/clock/Stop24.gif
+SHA-256-Digest: dl9L4hGK6yIXQoGyXURSKFrXo947NUud9gOTbUyo7nI=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/SimAbstractU
+ pdateDialog$SkipVersionButton$1.class
+SHA-256-Digest: p6et1C0ruTCPPXEtffSDxMIONah2WBgB9WpWK0FtIU4=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/PhetAboutDialog$1.cl
+ ass
+SHA-256-Digest: v68CzzI3XCGBRPoSlqvnaVVu7kaNrlF16kwJKJI3iUs=
+
+Name: edu/colorado/phet/batteryresistorcircuit/oscillator2d/Core.class
+SHA-256-Digest: a/fyQIffWZpbIxcU70xKXnDRqwBavPPyzdNIthYInKg=
+
+Name: edu/colorado/phet/common/phetcommon/application/Module.class
+SHA-256-Digest: U64SF/PH5R2VEpsvM6YdhZDq4hPrZYoA473h+JKY1qU=
+
+Name: edu/colorado/phet/common/phetcommon/util/PhetUtilities.class
+SHA-256-Digest: 5l7TcypDRysya0yuhHIzq6/BsM+oPtX9PghA9qNLHKU=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_iw.properties
+SHA-256-Digest: xZruujsAY5ZyBt70wbC/nqvRNsiey+wiTg/dvQ6GKtI=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/Filament.class
+SHA-256-Digest: gvzykff4KHbf+FpBqGExUN/6uMAHvjf+jeyLRrWBmsY=
+
+Name: phetcommon/localization/phetcommon-strings_nl.properties
+SHA-256-Digest: +BcewjPbDizr1Y3avAGAbTnFEjAs/sjUaNoCcR/9aHk=
+
+Name: edu/colorado/phet/batteryresistorcircuit/Electron.class
+SHA-256-Digest: YLSULYa6JyyvXB7QVrDHCVycGA2lONAipV+99mz4QMU=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/LayeredPai
+ nter.class
+SHA-256-Digest: F1BnItMxSSFRpcPigeVFZ4E4ioJYOa+d9Ly+qOTrZYk=
+
+Name: edu/colorado/phet/batteryresistorcircuit/oscillator2d/DefaultOsc
+ illateFactory.class
+SHA-256-Digest: vQ8yQ0NH2p6rhGLXZNCqyZpFe71cMg+KvPZdVKI3qoM=
+
+Name: edu/colorado/phet/common/phetcommon/view/menu/HelpMenu.class
+SHA-256-Digest: j2Ml2JMRdYqUBA26yxny7eWUdjFIigHLCTfklMlAwyo=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/ErrorDialog$1.class
+SHA-256-Digest: 3xCTB2VFZ3FN4h/V2LNfWHc23mghqx5OfID4LNfvUns=
+
+Name: jar-launcher.properties
+SHA-256-Digest: nhxwIvVVclepm4d0DpxhdC8ATt2rOU1OuvqKzKZB8NE=
+
+Name: edu/colorado/phet/common/phetcommon/updates/SimUpdater.class
+SHA-256-Digest: wJhqBoMNXSiVYpIgibuJVRqGJV877h6NB+1G81H5k00=
+
+Name: edu/colorado/phet/common/phetcommon/updates/ManualUpdatesManager
+ $1$1.class
+SHA-256-Digest: 7w+uYZ9Y15nsWhRloqwUBlymIcKPFtenNUVa8QotiCw=
+
+Name: edu/colorado/phet/common/phetcommon/application/PhetApplicationC
+ onfig.class
+SHA-256-Digest: FKvrK3zBRAZ8vv3BWeC/4YjS/Og92NhEqpRtvYdwzNk=
+
+Name: edu/colorado/phet/common/phetcommon/view/SoftwareAgreementButton
+ .class
+SHA-256-Digest: CGrWsLTOvRjMvABVp+JoODADYPDXK8lyBzo4fjvrQsY=
+
+Name: edu/colorado/phet/batteryresistorcircuit/BatteryResistorCircuitS
+ imulationPanel$MediaHandler$PlayListener.class
+SHA-256-Digest: QpPgDTI3Y/Tyb37saAp60Oz/ymtdD3ggbhewgmW7eJY=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/wire1d/forces/Ad
+ jacentPatchCoulombForce.class
+SHA-256-Digest: 1UZ6Rmn0oXpvlYhoJdbFSO1Om/6Xq5enJyTbsmTDREE=
+
+Name: edu/colorado/phet/common/phetcommon/application/PhetApplication.
+ class
+SHA-256-Digest: i1EZ1PHTs09xn2cAWb6A0Ges+Yowwc53dKgE9+eVXIA=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_es_MX.properties
+SHA-256-Digest: lNfwV05DCTgw7F3FWnzMb+C+5Ct4wJ1R9tSOTARdfjs=
+
+Name: edu/colorado/phet/batteryresistorcircuit/BatteryResistorCircuitS
+ imulationPanel$MediaHandler.class
+SHA-256-Digest: vdcu+4bEhLZ/YpRY3yuNz0sW9ekAVJYSo9WVAZWdYKk=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_fr.properties
+SHA-256-Digest: 7gH1d2wka0JYuXKvreGdP7gmzUkaJ3VIkgCA1/dVBwk=
+
+Name: edu/colorado/phet/common/phetcommon/model/clock/SwingClock$1.cla
+ ss
+SHA-256-Digest: NTEPfmgMkND9rmbTNYbqTmvFTXPcEpwuEyGENOyAbiY=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/phys2d/Propagati
+ ngParticle.class
+SHA-256-Digest: v914NY1FT+LuPllB8uLaAziqVq/19LL+njKbX+kJwHs=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/InstallerMan
+ ualUpdateDialog.class
+SHA-256-Digest: /YJibgnvesojTB7YjivOVNu2WozljO/aE8mDiITpYHQ=
+
+Name: edu/colorado/phet/batteryresistorcircuit/collisions/CollisionEve
+ nt.class
+SHA-256-Digest: qjW5egSobIDIKIKbp8wgcqNW2jdL7IYbM+D3RPrXLmM=
+
+Name: edu/colorado/phet/common/phetcommon/util/IProguardKeepClass.clas
+ s
+SHA-256-Digest: qgsyLsMDh14/tV0Ra9ciZ+mldcaiRGNAqjRz6Bw7PGc=
+
+Name: edu/colorado/phet/common/phetcommon/updates/ManualUpdatesManager
+ .class
+SHA-256-Digest: uh50KAmcPE0OAn7KaWTSbnmP6iGtW53NgEYsapnmHJA=
+
+Name: phetcommon/localization/phetcommon-strings_hu.properties
+SHA-256-Digest: oJq8Hfw2BgDMhKEOJfK3T9XcXxN21QH1uemRjWFLoEs=
+
+Name: phetcommon/localization/phetcommon-strings_sr.properties
+SHA-256-Digest: fviumAhKGGhWW7ttzGDZ1AoS0NKqba9DuHrOdajFjE4=
+
+Name: edu/colorado/phet/common/phetcommon/util/CommandLineUtils.class
+SHA-256-Digest: R8XQk7UpwdW7vZFv8k9rimop4b2RaAcjBvWDxmq1hOA=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/DownloadProgressDial
+ og$ThisDownloadThreadListener$2.class
+SHA-256-Digest: qZngs7duy/3j9NXurVZ57kbhPbiVeg0RqmXKv5xFwIw=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_pl.properties
+SHA-256-Digest: JQTu3RAMrtzF7u9veHsZCMxzRfqjgEom0nYg+i2NL5s=
+
+Name: edu/colorado/phet/batteryresistorcircuit/gui/VoltageListener.cla
+ ss
+SHA-256-Digest: yqIns6Yu4pywUVnao121XAalihrmaTVAbMHpOfzC7fY=
+
+Name: edu/colorado/phet/common/phetcommon/view/PhetFrame$1.class
+SHA-256-Digest: qhsCsASn/HrFeXNjmoXwXsFv1hj9tKKRlWifgvlUF6k=
+
+Name: phetcommon/localization/phetcommon-strings_ro.properties
+SHA-256-Digest: /btDWLcei76x1F6ua+7nkiQ6aguUgTzk1tjbvno7XXs=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/NoUpdateDial
+ og$1.class
+SHA-256-Digest: ruWnG85cXvjIkzbyIP1ePBgZ2IwNajlcuFZYKD/hCW8=
+
+Name: edu/colorado/phet/common/phetcommon/application/ModuleEvent.clas
+ s
+SHA-256-Digest: Xjip+TSlbA2/XmEKmgUjmI0NFrCKm9Bo3cFT6wt2M/w=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_uk.properties
+SHA-256-Digest: aBy7AVKygRf/dgLU3R5qhc+Dzt241bOjKUwFZqQlonw=
+
+Name: edu/colorado/phet/common/phetcommon/resources/PhetVersion.class
+SHA-256-Digest: TLwXlgO+hwa+WSYC/nNNjOdyQeh7asS3oN0+DtiInnw=
+
+Name: edu/colorado/phet/common/phetcommon/application/JARLauncher.clas
+ s
+SHA-256-Digest: /FxO7yH2gsN6DpWt2B99JSzaSJPh+fckPp/Vu6prlT4=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/particle/I
+ magePainter.class
+SHA-256-Digest: hujsXDt69NwhxsSodQuTpdIQAlFVi85fJEfU1QkJXd4=
+
+Name: phetcommon/localization/phetcommon-locales.properties
+SHA-256-Digest: hNCfjht8rpDz2C5BtvZg0dYIHNhLozXGoFgBMnVzONc=
+
+Name: edu/colorado/phet/common/phetcommon/updates/AutomaticUpdatesMana
+ ger$2.class
+SHA-256-Digest: KOsRfKGk67kiZsyGsjbXHog+Eez64RPFkszQYOIAGeA=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/PhetAboutDialog$2.cl
+ ass
+SHA-256-Digest: lpCFrUUfhS2bf89POfpCg6IWtZZJYZr1kXc98/0HQWs=
+
+Name: edu/colorado/phet/common/phetcommon/application/KSUCreditsWindow
+ .class
+SHA-256-Digest: MAqtzelg1yxZwXQJp4eXRHUDQ7j0iO0IYg5GgwnR4nA=
+
+Name: edu/colorado/phet/common/phetcommon/application/SoftwareAgreemen
+ tManager.class
+SHA-256-Digest: R8W1OMbnj2fc4jPnFZdOcFf4MbLhFjxwbQK3fseTqpE=
+
+Name: edu/colorado/phet/common/phetcommon/application/SoftwareAgreemen
+ tDialog$HTMLFactoryWithImages.class
+SHA-256-Digest: XBuATWKsva040WBs6OsBkR/tO5Zc6H5+auLmzYKWUbM=
+
+Name: edu/colorado/phet/common/phetcommon/view/PhetLookAndFeel.class
+SHA-256-Digest: g4XJxYmB2S/9NwhN3jVxXKmaaujuKbW66/7WWFCp484=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/PhetAboutDialog.clas
+ s
+SHA-256-Digest: sHusWE4lDM9vVP+VriI69OKLntqld96+uxMH9Sbcviw=
+
+Name: edu/colorado/phet/batteryresistorcircuit/AverageCurrent.class
+SHA-256-Digest: TfhnjJiMVkAXiCBJFaGsAzQw5SslZFvenqQTEAOnV88=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/ErrorDialog.class
+SHA-256-Digest: Dvrz6nl2jOXvCxV9TxED9WUeOOfXoMomkLkOFQ8/0ec=
+
+Name: battery-resistor-circuit/images/icons/Play24.GIF
+SHA-256-Digest: MpWjalHbYh1tciUTk3WVspjbWyayEGTzWQKgNqLOlXk=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_sq.properties
+SHA-256-Digest: NywOMl+9UkhSH8mfitx4pYvmwasc5zKUvpfNfahpoyY=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/phys2d/Law.class
+SHA-256-Digest: WD8U+QpH7/Vk6ju9QKkAlJ6uif7mAa2TLEE4IS7DHuU=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/SimAutomatic
+ UpdateDialog.class
+SHA-256-Digest: JbJiSXAHIOTxRKsMg9wsm0Eyxy4sCQda3gb58o8UG2s=
+
+Name: battery-resistor-circuit/images/ron/license.txt
+SHA-256-Digest: jjSIYg9EOI0cDirryHx1yolIkbNtHhqiKXHptitQKb8=
+
+Name: battery-resistor-circuit/images/icons/license.txt
+SHA-256-Digest: WyRFDIW8Tj9Lm1Q1Ob9bXoOrCuRMz3CPm/iSCyduh4k=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_es.properties
+SHA-256-Digest: JOiElGgVPqbI3soA/vUvtJtnjTA8EsmQCOpgEWcX/aw=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/InstallerAbs
+ tractUpdateDialog$NoButton.class
+SHA-256-Digest: sVvNeWX14csMMGWuR59Ikvr7SRflRF6DHm3Dvf3bRvk=
+
+Name: software-agreement.htm
+SHA-256-Digest: JgsWb8+jcF/07qnLVqEAUquqt+dJLGb62K5vH4KYp0s=
+
+Name: edu/colorado/phet/common/phetcommon/application/JARLauncher$1.cl
+ ass
+SHA-256-Digest: o6GIfeUcHE7fVijgR9qIbdNU190p4X/Ha21bqNFqEdM=
+
+Name: phetcommon/images/clock/Play24.gif
+SHA-256-Digest: Ss+aDsFx2arca4nYIAc4tAz2fkF+Et+do+o86mwnElU=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_de.properties
+SHA-256-Digest: xmE+FjZErvpxMrlfJjMBeqBD/NIekdP38m0OW82F8vI=
+
+Name: edu/colorado/phet/common/phetcommon/application/ModuleManager.cl
+ ass
+SHA-256-Digest: vq3FNgyNALHBitFOWWSC4ahJ6sNJ1uqYTJgaqhjHw3Y=
+
+Name: edu/colorado/phet/common/phetcommon/view/ControlPanel$DefaultScr
+ ollPolicy.class
+SHA-256-Digest: K5hQofEYiSpIylg5fJ0SiFCvOzrJzQHLTbNZS6Zb6Hw=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/wire1d/WireSegme
+ nt.class
+SHA-256-Digest: Tbz2b66W4dBwBEUgHskY8qDoOLpzu73mWCMn6mCSLH0=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/SimManualUpd
+ ateDialog.class
+SHA-256-Digest: H8Egy4EKne8fYqenNO2ZMpgExaIXrro405YAEwU6yfw=
+
+Name: phetcommon/localization/phetcommon-strings_sv.properties
+SHA-256-Digest: HNz8I3InIEBZeV5bpCSRyypivpSuHzUVWSoaytdB81M=
+
+Name: edu/colorado/phet/common/phetcommon/statistics/StatisticsManager
+ $StatisticsRunnable.class
+SHA-256-Digest: hBpXkXS0nCgS6JjnHsZczkiFurQa72ULJElb4zmm9HU=
+
+Name: edu/colorado/phet/common/phetcommon/view/MaxCharsLabel.class
+SHA-256-Digest: zdqcRR/8IO2pXiZmk29u9Y0XAqX3+WjlgFhuc2aU9cw=
+
+Name: edu/colorado/phet/common/phetcommon/view/PhetLookAndFeel$1.class
+SHA-256-Digest: 6z41BsNYPMRZBxVuZBnhr7E9Y4rukDtcEawYsKrmoYg=
+
+Name: edu/colorado/phet/common/phetcommon/preferences/PrivacyPreferenc
+ esPanel$DescriptionPane.class
+SHA-256-Digest: vpIWUl/O0NHbharuF1ra/L87eU90DNL1g6sYXDzv86M=
+
+Name: battery-resistor-circuit/battery-resistor-circuit.properties
+SHA-256-Digest: PGE43LBNGHXq+h+SEKzF7Khg5GFfeKoDHVKyv1UGmUo=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/PhetAboutDialog$3.cl
+ ass
+SHA-256-Digest: g3uP7thaELzuB4Rpc6fkcv2QPSj2n6R7GmOnpHeC3Tg=
+
+Name: edu/colorado/phet/common/phetcommon/updates/AutomaticUpdatesMana
+ ger$1.class
+SHA-256-Digest: NnE/5w9jfPbBHMWGgOmOmG/yPX7BtoIEIv40v+zEGQw=
+
+Name: edu/colorado/phet/common/phetcommon/view/PhetFrame.class
+SHA-256-Digest: 86hBm6ct3pUqqgsQGk0ldCUyDcr8Li/o0oY6CzW4FJg=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/InstallerAbs
+ tractUpdateDialog$UpdateButton.class
+SHA-256-Digest: MFnEBRxW4/3LytbRKLO2nlYZNkLfYm+Tib9KoA1YQqs=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/InstallerAbs
+ tractUpdateDialog$UpdateButton$1.class
+SHA-256-Digest: X6nGqsdcHywLcC2/PN/ffugOLqIeKBWYcUxrQjuDKWw=
+
+Name: edu/colorado/phet/common/phetcommon/resources/PhetProperties.cla
+ ss
+SHA-256-Digest: SVAPvpMKk90mU7+DyLpq2D0CRVMMNqVoPOTplr7z5ZM=
+
+Name: edu/colorado/phet/common/phetcommon/model/Command.class
+SHA-256-Digest: lktwLploggnc5gj0sSL85joWCAMHOHkUL2cFa1Nvo4k=
+
+Name: javax/jnlp/ServiceManager.class
+SHA-256-Digest: OByGhBHCqSo0ZZm6UT8KiZLLA8WbFYzOUTOSOaOpsBM=
+
+Name: edu/colorado/phet/batteryresistorcircuit/gui/ShowPainterListener
+ .class
+SHA-256-Digest: paL5AcWIc56n6oX5FRL4Cc0VV1vFQUwuOjrfkfjT53M=
+
+Name: edu/colorado/phet/common/phetcommon/model/clock/Clock.class
+SHA-256-Digest: xxHhkGEpOMR6FV8gJYYSzcIxQ1ejuPVWYnOWJxm3IkU=
+
+Name: edu/colorado/phet/common/phetcommon/statistics/StatisticsManager
+ $1.class
+SHA-256-Digest: R9NfU09a2e38LNoAy+k6P/K3/QSYl/3neRwnY/c78dQ=
+
+Name: edu/colorado/phet/common/phetcommon/servicemanager/LocalBasicSer
+ vice$BrowserControl.class
+SHA-256-Digest: sNXNXowPMoLCLRbfOz9dq1A5iEzq+VDAwonpF0VYpDs=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_az.properties
+SHA-256-Digest: fcFPU2TQdBb+cJ7x2MYjE0A4UzH4KRlTdKIdIJUzAu8=
+
+Name: edu/colorado/phet/common/phetcommon/view/PhetLookAndFeel$Propert
+ yList.class
+SHA-256-Digest: 3SAzn1Fe/Hg9w13tcKmQUn+W+5thUKu5ZVOU77nFgmU=
+
+Name: edu/colorado/phet/common/phetcommon/math/MathUtil.class
+SHA-256-Digest: 7m421GwwW2Ke9YYGtfiluwuQ1dMwYK3kXFjRuDPE4/g=
+
+Name: edu/colorado/phet/common/phetcommon/view/controls/ColorControl$1
+ .class
+SHA-256-Digest: p+O5jxFmtchcN2cQ/8qinfQYL97V5LaVEMT+8sWXYCA=
+
+Name: phetcommon/localization/phetcommon-fonts.properties
+SHA-256-Digest: pM22vBWkGDiBwjkgHdm4m44G8IhSPvP8EndLa316d+Q=
+
+Name: battery-resistor-circuit/images/wheels/license.txt
+SHA-256-Digest: 8L9ss8w4gBYRE+ImNIv7IvwbyMASJ+lfE2ws3o20PQ4=
+
+Name: edu/colorado/phet/common/phetcommon/view/HelpPanel$2.class
+SHA-256-Digest: mTtMhbg5MWosV4sVxFznbjsvRUGpHHi5/cCT1lPbKWg=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/ShowInsideBattery.
+ class
+SHA-256-Digest: ItWWu+3Tip21D7iZBIasZBwc4hyPNda+C6bGv0P1+8w=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/InstallerAbs
+ tractUpdateDialog.class
+SHA-256-Digest: xNudBwWFiCu3xdDJ0V6euO+XuLTF3hwVSN34u4Ou66g=
+
+Name: phetcommon/localization/phetcommon-strings_ar_SA.properties
+SHA-256-Digest: HGagLBRpAyGOiltOnLwsgElpH9AOXEUZAEtynaO7d5g=
+
+Name: phetcommon/images/clock/FastForward24.gif
+SHA-256-Digest: Oksy5gkXv5XchvfsuFBbN6mbvsiAaHVb+GMbPAQEKp0=
+
+Name: edu/colorado/phet/common/phetcommon/view/TimeControlListener.cla
+ ss
+SHA-256-Digest: CAVmKZHPTi15J1ne92afj6XGOIwSkVd3GQHZPzpefdE=
+
+Name: edu/colorado/phet/batteryresistorcircuit/BatteryResistorCircuitR
+ esources.class
+SHA-256-Digest: UWUlmMcdcFUvXndXNoLmtNTaWqeTGMzHnhbJWQZHaNM=
+
+Name: edu/colorado/phet/common/phetcommon/preferences/PhetPreferences.
+ class
+SHA-256-Digest: sTCHM5lb+SV1SckvoBR1/F841L1w5x1ovaeOfanD/pA=
+
+Name: edu/colorado/phet/common/phetcommon/view/SoftwareAgreementButton
+ $1.class
+SHA-256-Digest: tJkv+9R1tW057Mz1GcVMa9LLPLkvxQGSFC4daWOfwdo=
+
+Name: edu/colorado/phet/common/phetcommon/updates/AutomaticUpdatesMana
+ ger.class
+SHA-256-Digest: dHAa+sPB8/9TFLkVs8rekZzX5nlt196iBJAv44lpSuw=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/phys2d/SystemRun
+ ner.class
+SHA-256-Digest: y9gq5Pm451bLZ9sxg00WOs7cz9RNjuvnn10yMam8p6U=
+
+Name: edu/colorado/phet/common/phetcommon/view/ClockControlPanel$1.cla
+ ss
+SHA-256-Digest: lw9Si+oOqWxJsW2NkqTsY+MA90NvCRsvn+TT16KDCmg=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/PhetOptionPane.cla
+ ss
+SHA-256-Digest: XB62lPw2IFEtijGlCQdz5n/5LCaIz3lJm4kZON33hA8=
+
+Name: edu/colorado/phet/common/phetcommon/view/menu/HelpMenu$2.class
+SHA-256-Digest: SaluIS4Ur2n34LPC0fjKpu84NauAQOs32Jvx/FH5zUU=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/HTMLUtils$Interact
+ iveHTMLPane.class
+SHA-256-Digest: 9y/eApeHkNtukuPanZ2xsBOymxlEmyxEQ0gimCpGNkw=
+
+Name: edu/colorado/phet/batteryresistorcircuit/gui/VoltageSlider.class
+SHA-256-Digest: g03EmTCnqPMibUpYfYm+WQ/nTgvO0PVih5Vo9OTDSwM=
+
+Name: edu/colorado/phet/common/phetcommon/application/ModuleObserver.c
+ lass
+SHA-256-Digest: N6fMlVwHemf+ymB4LzBa3ZhuyLLGg5lxEUMrafEarb4=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_bg.properties
+SHA-256-Digest: nCXlCz511kRgKwgfWkx4+IR+Wv2dc9aWsFsaIf5owRA=
+
+Name: edu/colorado/phet/common/phetcommon/application/PhetApplication$
+ 1.class
+SHA-256-Digest: hEUsP+zbb5j1nJ9hg9DdVuqs9qxcZ2l+hAgd2WnV4YU=
+
+Name: edu/colorado/phet/common/phetcommon/view/menu/ControlPanelProper
+ tiesDialog$1.class
+SHA-256-Digest: pHfDWny7RJM7epPAMuSoTQ8w4cu/0xIcrm7Mw9fS64U=
+
+Name: edu/colorado/phet/common/phetcommon/view/ITabbedModulePane.class
+SHA-256-Digest: 72t81k8XMVVD3bLV+QyBLmW9YRiPrnSPko3IcaDlrVk=
+
+Name: edu/colorado/phet/common/phetcommon/view/PhetFrame$2.class
+SHA-256-Digest: U7/1AvOpeic3I6dJaQg/DUUPrkmTyo/zEFPdBMq2BAU=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/BlackbodyScale.cla
+ ss
+SHA-256-Digest: XuMa5lhxpkFIOnarvdkXldjCJSwh0W3SzjOcke5DTdQ=
+
+Name: battery-resistor-circuit/images/ron/particle-blue-sml.gif
+SHA-256-Digest: /kJIqVcyQ8As5dm0RdkyJfbI3oaXX8YHorlIljoHPKo=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/ImageLoader.class
+SHA-256-Digest: fYdj+1n1wOmy//iarLGQ2joAtUgOxY0SdlaibOvaW3Q=
+
+Name: edu/colorado/phet/common/phetcommon/application/JARLauncher$JARL
+ auncherGUI.class
+SHA-256-Digest: fJBuAMSTUVIc2TG40PNwA9i1nNr9rqWwebn/OqQaA6c=
+
+Name: com/thinktankmaths/logging/CustomFormatter.class
+SHA-256-Digest: 61mKHyQHMSUHMmwb9YimQLWapnoGQ2iuuAYzQ/9DARI=
+
+Name: edu/colorado/phet/common/phetcommon/view/menu/ControlPanelProper
+ tiesMenuItem$2.class
+SHA-256-Digest: ZDtt2kHM2WAOqBQIXhYletl3pc7IRYSP1MNq08MRa5o=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/wire1d/propagato
+ rs/NullPropagator.class
+SHA-256-Digest: P03wjuuKi06mi47iXXN5wW/eyuoXvMmgUlxCzI2i0Hg=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings.properties
+SHA-256-Digest: QvAKUuNe6nszkw4+l+8m+tzdHzWWV9g+mLGgPJZD36o=
+
+Name: phetcommon/localization/phetcommon-strings_vi.properties
+SHA-256-Digest: a6viXTBjQLEl57mPDGnpfChtZe2kKme2K0uVHtu9UeA=
+
+Name: phetcommon/localization/phetcommon-strings_mk.properties
+SHA-256-Digest: Sz7ibBwqmmEPMNYcV44Dlx/otGXovikdN6bHcP207mw=
+
+Name: edu/colorado/phet/common/phetcommon/application/JARLauncher$JARL
+ auncherGUI$1.class
+SHA-256-Digest: QC/2b2p8YuXTTz8bvrcvgprLtwISTQgEoPTV8/aY51I=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/Turnstile.class
+SHA-256-Digest: 68hExd0a2ROb5GTWr26zJLsHAJjRL61hxlP/A7g626U=
+
+Name: phetcommon/localization/phetcommon-strings_sk.properties
+SHA-256-Digest: AW1fKo6uSIQlNWiWKWStbteZ/PBA8I5u6hSKH0gtRxY=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/InstallerAbs
+ tractUpdateDialog$MoreButton$1.class
+SHA-256-Digest: jBf0cwzdXU7jnU6RNkTjKqIUHiE4ZkoMuophRpCuh2w=
+
+Name: edu/colorado/phet/common/phetcommon/util/FileUtils.class
+SHA-256-Digest: C0Ih4uePJijZ/qImGwrwi6AOWRiR2Et5GVLTMoOf6JA=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_zh_CN.properties
+SHA-256-Digest: fcwZl3oHBuUAM19e6G3fEYnfI95fGMoDErR8vOrN36I=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/SwingUtils.class
+SHA-256-Digest: uuOlWJsAPDgPiiJaFuQHhyzJHAZ251Ud8oL64ALE4Es=
+
+Name: edu/colorado/phet/common/phetcommon/model/clock/ClockEvent.class
+SHA-256-Digest: ugK/yM99DamF7efspVNBTPN3vx/5yv+9XolGIz+lyag=
+
+Name: edu/colorado/phet/common/phetcommon/view/menu/PhetFileMenu$2.cla
+ ss
+SHA-256-Digest: PS7Sw1b93QxFHvTEdSAzxBOTebxGK2KPXM1q8JUNhbg=
+
+Name: edu/colorado/phet/common/phetcommon/resources/IResourceLoader.cl
+ ass
+SHA-256-Digest: aEFTqHV/p8XHAHQF+UhLxsLemw1csEaRYDV7xnopFis=
+
+Name: edu/colorado/phet/common/phetcommon/util/AnnotationParser.class
+SHA-256-Digest: 1Uwd7wzCqpPzkWaSJDQswG5GnV5c7moxtHpz/NNE2XA=
+
+Name: edu/colorado/phet/batteryresistorcircuit/collisions/DefaultColli
+ sionEvent.class
+SHA-256-Digest: u768c1f8qPzX0td9xwW39rIdQxQXBXAVCQED8CcuVgY=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/Batt.class
+SHA-256-Digest: UkL19Pf95agbU4Z3MZ0JiQPSi87odrX39zXVbwaj/w4=
+
+Name: edu/colorado/phet/common/phetcommon/resources/PhetInstallerVersi
+ on.class
+SHA-256-Digest: Gtiw5q2nt5Gm4Q4vG0xGrkrVM9BbU007St2cFi4MO9w=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/SimAbstractU
+ pdateDialog$1.class
+SHA-256-Digest: OCcJAuUSKWlwuuCZ3dPXXTHVLadPDyclH81lz70YajM=
+
+Name: phetcommon/localization/phetcommon-strings_tk.properties
+SHA-256-Digest: 4GPBHYeTf+2b0Mw5A7niRzR/hwHLH2AtkwwBZcPADpo=
+
+Name: edu/colorado/phet/common/phetcommon/view/ControlPanel$ContentPan
+ el.class
+SHA-256-Digest: JD53EQSJwuIJu/xwvTdQEtEHf3Udj+2+goAvyhnLKNo=
+
+Name: edu/colorado/phet/common/phetcommon/statistics/StatisticsMessage
+ Sender.class
+SHA-256-Digest: OF1BpHCKUgD7t/W/oILsLg0Asp9rVOQ/fKS3vvbKwTA=
+
+Name: javax/jnlp/FileContents.class
+SHA-256-Digest: hP57r96pRo4zyYM5DfHPZntQH7jG+Ewo1ftuns+hZgw=
+
+Name: edu/colorado/phet/common/phetcommon/view/TimeControlPanel$3.clas
+ s
+SHA-256-Digest: KKuDv6FKkRHe0NPY9e9poHKFHOfq+N6rdHsUJ1XCMa0=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/DownloadProgressDial
+ og$2.class
+SHA-256-Digest: OSDW3ljyeJqxFI3yIPdLKkHexgIVmPmbFTkiGovUZ8U=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/gauges/Sca
+ ling.class
+SHA-256-Digest: o/6v2Y02GT6yyiXOXvLCGj478XZiR42Ee6+5zWYZ91c=
+
+Name: edu/colorado/phet/common/phetcommon/application/SoftwareAgreemen
+ tManager$AcceptanceDialog$3.class
+SHA-256-Digest: hsLHHa1qsrYXY3tSaRwsuS4aF6+/NFHc4K1BoOOVlBk=
+
+Name: edu/colorado/phet/common/phetcommon/resources/AbstractResourceLo
+ ader.class
+SHA-256-Digest: pFVK/gyEOFkASc1gtlxomNLIrt6hObr6pqBlILP1mig=
+
+Name: edu/colorado/phet/javaversionchecker/JavaVersionChecker$1.class
+SHA-256-Digest: TuUbG1guw+Y3JvdrOO6n6USqkUYIdRYpGEfqU02we50=
+
+Name: edu/colorado/phet/common/phetcommon/statistics/StatisticsMessage
+ Field$SystemProperty.class
+SHA-256-Digest: uuMbrakbM/tWATiSAwoQijI1frcskmDt9gtXShQkpCg=
+
+Name: edu/colorado/phet/batteryresistorcircuit/BatteryResistorCircuitA
+ pplication$1.class
+SHA-256-Digest: HfxF7EZ0+/h3hgPAA8A3fB5v+H11TR4F6dNqwosSL2c=
+
+Name: edu/colorado/phet/common/phetcommon/preferences/PrivacyPreferenc
+ esPanel.class
+SHA-256-Digest: FQSBYR5v2rcRyF/GrNVdixbblLgvaE/oOl5M7WMbF/Y=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/SmoothBatt.class
+SHA-256-Digest: C5pWqc9joBsgGVNKq0y06mxEu0g9zctBUXkmlt0O57U=
+
+Name: phetcommon/localization/phetcommon-strings_fr.properties
+SHA-256-Digest: Me3KR9Xn2R6qc1EsMdfNId0GIEyaD/ZITBL8luoFou8=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/wire1d/Propagato
+ r1d.class
+SHA-256-Digest: ZP0MHFSEjat8Pqw7lGnHGdg19EyNp62MMefCaB5xGe4=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/ColorChooserFactory$
+ 2.class
+SHA-256-Digest: FK/DNLhRWqbmjzfRpOIr3YRWW7KKLO0Zcopd4BceHhI=
+
+Name: edu/colorado/phet/batteryresistorcircuit/BatteryResistorCircuitA
+ pplication$BatteryResistorCircuitModule.class
+SHA-256-Digest: tb/+tCNGs/A8oboxbZlSs8ymtACVPjzvmmtYRU0smyQ=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/ImageLoader$LoadSt
+ rategy.class
+SHA-256-Digest: qrd19fpDUqSYcpGfHPtIipYvFKxet56xl8Wfch8e0c8=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/NoUpdateDial
+ og$InstallerNoUpdateDialog.class
+SHA-256-Digest: xzi4giZt36dWjTu3W+cASmCBupn6TCPZOCoGlhpVlIc=
+
+Name: phetcommon/localization/phetcommon-strings_hr.properties
+SHA-256-Digest: ra/rY98FPjl+SMz2tOM0KBOZ24EQWoMT69tp2WC2QbM=
+
+Name: battery-resistor-circuit/images/components/gauges/vdo_samp_srr_e
+ dit3.gif
+SHA-256-Digest: 4UDHvB+39QYHB6JoWRP7iJLkMO4s4m51dGR4jk+oiiM=
+
+Name: phetcommon/localization/phetcommon-strings_eu.properties
+SHA-256-Digest: Q/qU/jCIDJ9npuJrM7HGQh/DTj1fXrScF3uyb2KUvbQ=
+
+Name: edu/colorado/phet/common/phetcommon/application/PhetApplicationL
+ auncher$2.class
+SHA-256-Digest: Sv4z7GgY0rvFf9be4453OBCw4IP0w70g2feNc+zrh/k=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_gl.properties
+SHA-256-Digest: KArNFICfX6YLtcON4ZU2ShV9QFK79B8cqAtuBrqBt7g=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_ru.properties
+SHA-256-Digest: 4kW1TAFyGmDnjrxEATrbJGCqnS8HaZPe+f2UQV2IYS8=
+
+Name: battery-resistor-circuit/contrib-licenses/junit-cpl-v10.html
+SHA-256-Digest: wguiaxG0TsRYm1NQEpPSxmtxW9PGNuDyk7aaPiaQaqw=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/Accel.class
+SHA-256-Digest: Lu+/9EPiYmuvC0Y+cKfjZxtOJ54K3TiKcxejQ/Ot+Ug=
+
+Name: edu/colorado/phet/batteryresistorcircuit/BatteryResistorCircuitS
+ imulationPanel.class
+SHA-256-Digest: QZvMxjMb1oM7xGP3W9kdaxT5j5Wf2woei42TBTBc4i0=
+
+Name: phetcommon/localization/phetcommon-strings_tr.properties
+SHA-256-Digest: SXdVrQ42CIr3RmOZy5efoMlHlmUd7Jj+SbW0/hxdx6E=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_el.properties
+SHA-256-Digest: 2Lx+Ut36+VqS4npV/vMtJDjD5oDpFBuUk7tTOFrUips=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/ErrorDialog$2.class
+SHA-256-Digest: 7GJIRxCvh4UrI0rFfgEF7JubCg6LgBO9zoXkQPQ4Kcw=
+
+Name: phetcommon/localization/phetcommon-strings.properties
+SHA-256-Digest: CQQp4lY9boJpJDxiW1lShtomIxXhb82ECoYGihUTMEc=
+
+Name: edu/colorado/phet/common/phetcommon/view/PhetFrame$4.class
+SHA-256-Digest: 5Vk/iKi/NV4GuFyB9AZCxDSMgeP5/kxp2ts2i6T/Cx4=
+
+Name: edu/colorado/phet/common/phetcommon/tests/TestPhetFrameWorkaroun
+ d$TestModule$3.class
+SHA-256-Digest: sFi/v1mtwJ6MoOXmsa149CUfCL8gId/DCksKlb+4Jd4=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/vector/Vec
+ torPainterAdapter.class
+SHA-256-Digest: V2zrbxKjSBDVOvNdWi2z34JnfLsTDdbb+/dCAlzXAos=
+
+Name: javax/jnlp/DownloadServiceListener.class
+SHA-256-Digest: pqGOM3GvfUJhaVzwjGMWIZxqqvZOk2eR4GzcKTPnXCw=
+
+Name: edu/colorado/phet/common/phetcommon/application/SoftwareAgreemen
+ tDialog$2.class
+SHA-256-Digest: +MD26s+9tmN8X3K5e7K2KeKiKvSt1tkg6w2HbAVwLks=
+
+Name: edu/colorado/phet/common/phetcommon/updates/ManualUpdatesManager
+ $2$1.class
+SHA-256-Digest: 6xLm3WVYaCOs1ASy4s/51qLAnB8XUyBi7S1CcqGg3wM=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_sl.properties
+SHA-256-Digest: BtM9g3DqB0LK1ttnTXtIf5K93duU158mjL2FL/AwP2w=
+
+Name: edu/colorado/phet/common/phetcommon/application/Module$1.class
+SHA-256-Digest: 4W8fSEh3qlq9RkvSqcibFpdyjRGUyeoYOIMR1olczIs=
+
+Name: phetcommon/images/clock/Rewind24.gif
+SHA-256-Digest: k8i74GaWz43q5MBnWmO7QigfupHLcupAYw6pF7PXJp4=
+
+Name: edu/colorado/phet/common/phetcommon/application/VersionInfoQuery
+ .class
+SHA-256-Digest: fjA2bscioZETQ9aNJc08CGGWAh0sZBxhxEU/fxUDQg0=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/RangedPropagator$R
+ angeProp.class
+SHA-256-Digest: RVcgoG+2Q1I13D0Pi/d1SZkbpO1jfO27BMUZ8LPg21g=
+
+Name: phetcommon/images/logos/phet-logo-120x50.jpg
+SHA-256-Digest: l2pNJvEdoGY/TkNy/Im6o9RXS5rb2i2p9yglXxuS0e4=
+
+Name: edu/colorado/phet/common/phetcommon/application/Module$Listener.
+ class
+SHA-256-Digest: wavMPsScib1c9bQFInv7Iyby8lrXMTaDxVvQAGYWND4=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_hu.properties
+SHA-256-Digest: i256ybDdZkvo26+dOBCNDE4AMXLCBgGLyhSkJ+7KCdY=
+
+Name: edu/colorado/phet/common/phetcommon/resources/DummyConstantStrin
+ gTester.class
+SHA-256-Digest: UMT6/iE2MeqULN9LrIF6sBmv2NcbKjjsJkubQmEFkzI=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/CachingImageLoader
+ .class
+SHA-256-Digest: MnnAgG43SaFT8PsKmwcvGSEZI2UKz5L9C/Aa2CHA08c=
+
+Name: battery-resistor-circuit/images/components/gauges/license.txt
+SHA-256-Digest: t5r18vq8dZDbLWIm9oslb8UZA+PyOoQ17oGmgyLV2Hk=
+
+Name: edu/colorado/phet/common/phetcommon/updates/AutomaticUpdatesMana
+ ger$1$1.class
+SHA-256-Digest: RgGuPOCiOuHTPgKJoxfnII2CIVzTf+TTKA1IDMnYUtA=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_mn.properties
+SHA-256-Digest: GbqgYYsOLn9MFiH7hRxPTg/fEVxZUKa9QIdlJ0+6Zvk=
+
+Name: battery-resistor-circuit/credits.txt
+SHA-256-Digest: oyi8ejKMmf6dhdWvJmhnLqZJUxXYvz7sgL30pcSfOBY=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_kn.properties
+SHA-256-Digest: mwo0vZiYjeToG63ijMsEowPPJh7c9EiSP7e+4SzmgNk=
+
+Name: javax/jnlp/FileSaveService.class
+SHA-256-Digest: 3htfgn0hf91e3AGSDaRyNw1QqldHgtc+AtQ4j5aS/OU=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_in.properties
+SHA-256-Digest: hIR3/19mUGkgjjk0FHPITLV8Za+DB3G6DeTJFQMqEcs=
+
+Name: edu/colorado/phet/common/phetcommon/application/VersionInfoQuery
+ $Response.class
+SHA-256-Digest: xdMvrk0mrx0Xr6hohDQfaqvYfsvhhGbdoKqjbuTrDkk=
+
+Name: edu/colorado/phet/common/phetcommon/application/SoftwareAgreemen
+ tManager$AcceptanceDialog$1.class
+SHA-256-Digest: Y0lCy7uiBJcHi+TkSJyX2p9rPvjO47Ml/GFcJk4/tGQ=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/gauges/IGa
+ uge.class
+SHA-256-Digest: Jarq0qgAiT0eEC/XYPlAHjv/VO27HfLPy7IQX8sKagA=
+
+Name: junit/runner/logo.gif
+SHA-256-Digest: NFteIgelJOABl3nRPw+K5RNZ+JSiMEeUZ3YTMePRyhY=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/FrameSetup.class
+SHA-256-Digest: 73G5GrL1dUIkgrSObODoCNpO+I+iotcBOFtkmTW7Pd4=
+
+Name: edu/colorado/phet/common/phetcommon/tests/TestPhetFrameWorkaroun
+ d$TestModule$1.class
+SHA-256-Digest: lkWa62j8f69bs0dLsC8P9zYrNgraAFppVUoK4Zgz0N8=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_pt_BR.properties
+SHA-256-Digest: 292ZYxjBjVlUcunEy9BomHGgeoeV/PnA+9//CNCFtkU=
+
+Name: edu/colorado/phet/common/phetcommon/view/LogoPanel.class
+SHA-256-Digest: J+8QP7LdGGDw+rEN7Ls7lwx04ZR6wZZYIpfUXvBo7/w=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/particle/P
+ articlePainterAdapter.class
+SHA-256-Digest: E94IWTEv6mBcHOZfdROKokNTv4YVM4aKQJvJSFezc7s=
+
+Name: phetcommon/localization/phetcommon-strings_sw.properties
+SHA-256-Digest: zbqdWfn5+VfdtVbajsqOeLYqqT5azfliX/ssz/PTyJk=
+
+Name: edu/colorado/phet/common/phetcommon/application/VersionInfoQuery
+ $SimResponse.class
+SHA-256-Digest: MhqpdMvHtvBelcezmno1iMPGgKf4fDpz+6JKQI9VGQI=
+
+Name: junit/swingui/icons/error.gif
+SHA-256-Digest: TzI68bltAB4MFoTri9mDvAwmevuEULWrHrrp0Jzi8EE=
+
+Name: edu/colorado/phet/batteryresistorcircuit/gui/ShowPainters.class
+SHA-256-Digest: bPy7IHIqaTtHLvbvqjCxECsw+hXQFKUw3i8rqkXVGYs=
+
+Name: edu/colorado/phet/common/phetcommon/util/JavaVersion$JREVersion.
+ class
+SHA-256-Digest: ofPEjX4dxfI2MsFdDUSDMu3kgGrO6wfI5TPXT71221Y=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/TextPainte
+ r.class
+SHA-256-Digest: l+Jw0NB5lTYIiDFHNBZvivKhuvQ20+bj/zh84yDzJ1Q=
+
+Name: edu/colorado/phet/common/phetcommon/application/PhetTestApplicat
+ ion$1$1.class
+SHA-256-Digest: e5hcoM6JWKzYjkngs5JzLW6gf0vjSWurswO8xFDBl/E=
+
+Name: edu/colorado/phet/common/phetcommon/model/CommandQueue.class
+SHA-256-Digest: EyXqi0rEyTb6ftGihfkzgH+ajXLb+Oof2S/YFgiKZzk=
+
+Name: edu/colorado/phet/common/phetcommon/resources/PhetCommonResource
+ s.class
+SHA-256-Digest: roRABDTEtY/XDZmKhflqgXyQ86qPMNM+7OGOq0salbY=
+
+Name: phetcommon/images/buttons/closeButton.png
+SHA-256-Digest: OIfkYQRnzm90m4Q0lzq3pBYmeaqwEml51s8w6qEwqbI=
+
+Name: software-agreement.properties
+SHA-256-Digest: fNGCIOeebjnBUVezlOqAL8sDO1UGjpnRqrqDpQKmyOc=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/CreditsDialog$Develo
+ pmentTeamCredits.class
+SHA-256-Digest: ZKl/zAzPadFt8TAOxZplFGEefvHeofERlghUL6x2w3w=
+
+Name: phetcommon/localization/phetcommon-strings_iw.properties
+SHA-256-Digest: k0C64mvBNDJ5WYcIdMzjJ6BuddXMjWcm5bOilceS+5Y=
+
+Name: battery-resistor-circuit/images/pushers/PushRight.gif
+SHA-256-Digest: rt1ocv7jD7EUxiJiM7yWLADgb99WX4OP0Rdb1WXjXOQ=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/DownloadProgressDial
+ og$ThisDownloadThreadListener.class
+SHA-256-Digest: TsVL5hSJCOycNOAMaTRnB9WTbkF3xdUSO1ZoagwB2Bc=
+
+Name: battery-resistor-circuit/images/icons/Play16.gif
+SHA-256-Digest: mOnOGEc0SC/uNSct4SA7ghJ93nNpBjzfrdMq30OFRD4=
+
+Name: phetcommon/localization/phetcommon-strings_fi.properties
+SHA-256-Digest: RNSjkzflmYEZzlbur7fQ9KqmEJ25gMI0mDMFi+jJcEs=
+
+Name: edu/colorado/phet/common/phetcommon/model/BaseModel.class
+SHA-256-Digest: rU3iosBSZGf1TWzmJVYpNFuxOpCZA+DqBdInk06APF8=
+
+Name: phetcommon/images/logos/ECSME-KSU-logos.jpg
+SHA-256-Digest: ufnYaFElRdOh55/ZZ0lk6IYeZanUmljci8kwzfcunK8=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/CreditsDialog$ThirdP
+ artySoftwareCredits.class
+SHA-256-Digest: TZzln4wfcmPtB8mQeUH6aiYntEsBPI8ggS28leaTh9E=
+
+Name: edu/colorado/phet/common/phetcommon/preferences/PreferencesDialo
+ g.class
+SHA-256-Digest: WrZbqBOupj4nVRiuEg3QZDfoKRmswjn7KNY1UBVgmtw=
+
+Name: edu/colorado/phet/common/phetcommon/statistics/StatisticsMessage
+ Field.class
+SHA-256-Digest: 6aZvMB4jKtrVgGBDlFWDAMxr+NK3rC34KRsEJHCPzuQ=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/vector/Def
+ aultVectorPainter.class
+SHA-256-Digest: hOOD1+WnvuDTXKASjFDIvUDRLBtuK+FfvBF9JZy5U+M=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/NoUpdateDial
+ og$SimNoUpdateDialog.class
+SHA-256-Digest: kUyt/tPT9AbRMh5gVa5UjowuuEkFNhubPeHgLplmFcg=
+
+Name: edu/colorado/phet/common/phetcommon/statistics/StatisticsMessage
+ .class
+SHA-256-Digest: RlF/Vn/QTUj4t/iXzq1Be2a96xHyuT6Eb36oH0G83KI=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/VoltageOnBattery.c
+ lass
+SHA-256-Digest: hjkdXeKLD760DZhpFSaLoCBZNMZBrwdanLoJnitZJp8=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/CreditsDialog$Intera
+ ctiveHTMLPane.class
+SHA-256-Digest: FjOMGUfk9oZ+I2VgMQBVaIwKCIntb9JEXX7TczTvDN0=
+
+Name: edu/colorado/phet/common/phetcommon/application/SoftwareAgreemen
+ t.class
+SHA-256-Digest: stacfcJE4NDrlO7/UOhoOAZjF/3OyRtx5/LFTy9tOl8=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_bs.properties
+SHA-256-Digest: gsGxdGFPHJ2yLtTtVDmCF/bdYOplhaVLrQEpGfGk5A4=
+
+Name: edu/colorado/phet/common/phetcommon/preferences/UpdatesPreferenc
+ esPanel$1.class
+SHA-256-Digest: II1LpCctkfclE2wxCaOFZyPYjFRx/ZFABh1KVgCrgsA=
+
+Name: edu/colorado/phet/common/phetcommon/updates/IVersionSkipper.clas
+ s
+SHA-256-Digest: om6elLi3NrPOvnQFPoJU89aXXEOz2dns9m42e6hAauY=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/PhetOptionPane$1.c
+ lass
+SHA-256-Digest: DGQp3aJEoQCiQ2/n11Jn08hpY/NCulFwFNkFGeWNslU=
+
+Name: edu/colorado/phet/common/phetcommon/tests/TestPhetFrameWorkaroun
+ d$TestModule$3$1.class
+SHA-256-Digest: IaynE7ULyTa0vRlSvgRWCX4fiP0imvk3Zw9PH1DvLqg=
+
+Name: edu/colorado/phet/common/phetcommon/resources/PhetResources.clas
+ s
+SHA-256-Digest: jB2jIA5AudLqGicekwoywxBu1SXNCl3+UJruxwyW+iY=
+
+Name: edu/colorado/phet/common/phetcommon/view/ClockControlPanel.class
+SHA-256-Digest: ueoYbD73eJ7Jm9dXsWJ5J1mzqw3CIFGLfLPL7cVujnI=
+
+Name: edu/colorado/phet/common/phetcommon/application/AWTSplashWindow$
+ AnimationComponent.class
+SHA-256-Digest: KpBak6orE4xw4OvPVHvIuCq6KHAm4VmVePTQ5y7Wutw=
+
+Name: edu/colorado/phet/batteryresistorcircuit/gui/CoreCountSlider.cla
+ ss
+SHA-256-Digest: 4HSZ3MB6LyFfd9sW5ee8wQku0h72gSX++eZygLJd7y8=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/BufferedIm
+ agePainter.class
+SHA-256-Digest: fcgYG9Z2A1lp6dg87t+/gavej0XfD3qbMnzLCKUgXrw=
+
+Name: edu/colorado/phet/common/phetcommon/view/JTabbedModulePane.class
+SHA-256-Digest: daXFTtU1w4YtcRT+pw28RoRK5h1eCJt+5SHviNycg+U=
+
+Name: edu/colorado/phet/common/phetcommon/application/AWTSplashWindow.
+ class
+SHA-256-Digest: LzBn6IlaaCQqkJSXJv4qH6rezQRYqkeIiIlCJRKJa5E=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/ImageLoader$PhetRe
+ sourceLoader.class
+SHA-256-Digest: JGU+zuq/uFyf1696dKh7eb8iR4wcrYn57cek0AwBir4=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/wire1d/forces/Co
+ ulombForceParameters.class
+SHA-256-Digest: cPckThXr0PFgAq5pfGpXYVsELNW+YuIInbRJeTDMtwM=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/OvalPainte
+ r.class
+SHA-256-Digest: cqO+CIXf7zQdR6E8impQotSNkPfpJYp7CgzsCOUxF4A=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/SimAbstractU
+ pdateDialog$CancelButton$1.class
+SHA-256-Digest: /pdotJOsQHCjbVmkCGotR7DddxoJJKAy6PaQMpgFjKQ=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/ImageLoader$PhetRe
+ sourceLoader$ResourceLoader.class
+SHA-256-Digest: 3KaCEKm+N0qvKvsoOImqSLAHDv1RpCAUoH2DKMPl6/U=
+
+Name: edu/colorado/phet/common/phetcommon/preferences/PhetPreferences$
+ PhetPreferencesFile.class
+SHA-256-Digest: uIYhAbiUmeBIP4qE46YmYFPxbnPcN2CHdW5YBO3Y1Tw=
+
+Name: edu/colorado/phet/common/phetcommon/application/PaintImmediateDi
+ alog$PaintImmediateTimer$1.class
+SHA-256-Digest: G+bWtEtjwxyrgEACj7zzAYxGPwVWhE7l4VcNIk8OOvg=
+
+Name: phetcommon/localization/phetcommon-strings_ka.properties
+SHA-256-Digest: t8qW+UiXrcAJlBNLxZ3VW38z8Dbcoh4oDlyivmyzSVs=
+
+Name: edu/colorado/phet/batteryresistorcircuit/BatteryResistorCircuitA
+ pplication$BatteryResistorCircuitApplicationConfig.class
+SHA-256-Digest: eIXdTi+pxoyzk/gUp5RrthlQuO0woyjcRaQdFxfgt4c=
+
+Name: edu/colorado/phet/common/phetcommon/updates/SimVersionSkipper.cl
+ ass
+SHA-256-Digest: i7i80XVZUzevz1M2jDuFEj5mAwdQZDpCBcaBTqRvz+0=
+
+Name: edu/colorado/phet/common/phetcommon/model/clock/ClockAdapter.cla
+ ss
+SHA-256-Digest: S9NpOHPx7HX+F6eIY0sghs/ig6GFw6f0u64U88KGf3k=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/wire1d/WireSyste
+ m.class
+SHA-256-Digest: kYT/SvVa7x0W0ZpULwacBp6StMNIlzTRJXnsdobdRMg=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/math/functions/T
+ ransform.class
+SHA-256-Digest: fUu1yfcU3S15k4bTfl+mrcWDiFqtLPRdUFAEGwJfBH0=
+
+Name: edu/colorado/phet/batteryresistorcircuit/AngelPaint.class
+SHA-256-Digest: RF9Q6qz1vUv9i2daRONiITewzi1/JA/T/vJwd9M/EgQ=
+
+Name: edu/colorado/phet/common/phetcommon/view/ControlPanel.class
+SHA-256-Digest: zD84E4osLhaSBpvHhvmEhzeiZ2UjYK4Ls/g8SlaZLoY=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/ResetScatterabilit
+ y.class
+SHA-256-Digest: 1bb/GQfEPI4fEBcsKW3lHuf95R+jdm38ebgK6Wsm9e4=
+
+Name: phetcommon/localization/phetcommon-strings_ht.properties
+SHA-256-Digest: xjNpeU58sn9PZz7Tt6STqmhqbaLbDrmZzMoSIOigN2I=
+
+Name: edu/colorado/phet/javaversionchecker/JavaVersionChecker.class
+SHA-256-Digest: /quvXdhkxlXVpZ6siv5HqCFO+xGvPZbWUMe9mWkI/hg=
+
+Name: phetcommon/localization/phetcommon-strings_es.properties
+SHA-256-Digest: eh+6v6XHdBWee8YG/qgOt/JaQndt7XZ/5ab0gNV7ENU=
+
+Name: javax/jnlp/ExtensionInstallerService.class
+SHA-256-Digest: E+PsUuY67qLZ//HUTDzoolOCfWDhYboemevCzf78Y8E=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_kk.properties
+SHA-256-Digest: geAZTKyjXN4g3R926Hr3vhH/khk/Nrh5QZHmYXrnc4g=
+
+Name: phetcommon/localization/phetcommon-strings_in.properties
+SHA-256-Digest: iF/P4KC1t/kymAPuDbs0dAqpy37UZvjvrVRNClfatjo=
+
+Name: battery-resistor-circuit/images/ron/particle-green-med.png
+SHA-256-Digest: K9WDJ9K2AWMyG211GYSoopcutvY6ytWh6IN4x6zZOtw=
+
+Name: edu/colorado/phet/common/phetcommon/application/AWTSplashWindow$
+ 2.class
+SHA-256-Digest: Q17gvZtaiUBL+rvknj1l11Xcn5/XrpSr3DfNjMpwnpo=
+
+Name: edu/colorado/phet/common/phetcommon/view/ModulePanel$2.class
+SHA-256-Digest: 3/WT4rhR+QYXZnODtvLx+O0Dw0UeWwNp1MD/7F7RCR8=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/Spectrum.class
+SHA-256-Digest: 9EuM9uoNPARHjIABmQeUPnZ+Zd2eTQqGeyQUeLNgatQ=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_vi.properties
+SHA-256-Digest: nb0OKDg7I21PBBP10GRyOow7S/9pZrgv5cNj0ZuTcok=
+
+Name: edu/colorado/phet/common/phetcommon/model/clock/SwingClock.class
+SHA-256-Digest: xfvCMW5R6umge1tgWZJEuMtg54hQFMasMDuhS6BU1JQ=
+
+Name: edu/colorado/phet/common/phetcommon/updates/SimAskMeLaterStrateg
+ y.class
+SHA-256-Digest: l0ns7Omw5YX1soLR7IJ4Xc84BIdSrN+6vEOgtwqlz0Y=
+
+Name: edu/colorado/phet/common/phetcommon/util/AnnotationParser$Annota
+ tion.class
+SHA-256-Digest: b71fXyMIJoxM8JIOaMBwMZKEaPPguwE6lA3F5maFaTI=
+
+Name: edu/colorado/phet/common/phetcommon/view/HelpPanel.class
+SHA-256-Digest: t6oBAdx21Q4JYo8TqyU9yxJepCB2sk1Hp4wrn+TGYa0=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/ContribLicenseDialog
+ $1.class
+SHA-256-Digest: s7phxHJ4wV8wT7dPunoqiKUZG/H+n0O6k3qhm+JdI6Q=
+
+Name: edu/colorado/phet/common/phetcommon/view/HorizontalLayoutPanel.c
+ lass
+SHA-256-Digest: EY+XhxsiNknV6qeRbKdG8JhLMV+oEULploCl0i8+BoE=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_lv.properties
+SHA-256-Digest: F/bwkGSRk7Jei8kpcS/+1AijZPNCnOIqmTXyswNJ7EU=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/particle/P
+ articlePainter.class
+SHA-256-Digest: Ow2oKHCxYkMcbg+E/B/V1MfyZb3bxwK+j5avA8o5Awo=
+
+Name: phetcommon/localization/phetcommon-strings_pl.properties
+SHA-256-Digest: k7BnB2XmdEAxbIRC2Esc3uHQlk8mfC6IWx0E8m9cB5I=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_mi.properties
+SHA-256-Digest: hYD2nO7R8ch6AKm6ITkA5zTzfli32mdtUdmVPx47Mis=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_sv.properties
+SHA-256-Digest: anHdB8272eMsjA3s5Ze23tRxSGJsa5yrQQ7Nh/VJS0k=
+
+Name: battery-resistor-circuit/images/ron/particle-green-medxx.gif
+SHA-256-Digest: t2jDY/eHE/CSgwXXy1epySNAS+raTF12ise3/3mmnAE=
+
+Name: battery-resistor-circuit/images/pushers/license.txt
+SHA-256-Digest: zNM5/HX9WZ2RJrDv5L/M0hnG/iV9q3508lT7r9zB194=
+
+Name: phetcommon/localization/phetcommon-strings_sl.properties
+SHA-256-Digest: x8Lrw6mmf5bxhWk1uL6TyWoSLfGI13MDTgdT7P4WnTE=
+
+Name: edu/colorado/phet/common/phetcommon/application/AWTSplashWindow$
+ 3.class
+SHA-256-Digest: BTyRxin7cMECWsltY8VDDPpUEpUdp2LjVq4gDklN3HE=
+
+Name: edu/colorado/phet/common/phetcommon/application/PaintImmediateDi
+ alog$1.class
+SHA-256-Digest: Of8QslI+/yjmX0Y4D52vhy0FC5J1kM/dRe3qNsXI4i4=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/wire1d/Force1d.c
+ lass
+SHA-256-Digest: zmQVY7iY5QVV1NOs3PnKiLZLsKomrYjCLcNLBdHwPVU=
+
+Name: edu/colorado/phet/common/phetcommon/view/ModulePanel$1.class
+SHA-256-Digest: 52Q489VKRDTLpxdoAM90KZ4c2iMSVOWwVf80uQ1TNps=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/InstallerAut
+ omaticUpdateDialog.class
+SHA-256-Digest: ivgwJlPGEh2kcKaCLFXgo2vEVbd8fohG5u93b4bM174=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_fi.properties
+SHA-256-Digest: GWmZjKYcGIHyWVlI/IVTFR6RDpMlxwHEiCTjxtWQmug=
+
+Name: edu/colorado/phet/common/phetcommon/util/logging/LoggingUtils$1.
+ class
+SHA-256-Digest: JN3V9hIwXmPu65S5aZ4C6LGJCSARi8xwV2iQ5vSv+Js=
+
+Name: edu/colorado/phet/common/phetcommon/util/DownloadThread$Download
+ Request.class
+SHA-256-Digest: +ZqrDQNMbpeBvU2cwEH56c10zI/rzgd0u12nIgWcm7I=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/StackTraceDialog.cla
+ ss
+SHA-256-Digest: x3preE8lIL7TD0hiBg5M5EikFoGLs98juzEYaMxdX2Q=
+
+Name: edu/colorado/phet/common/phetcommon/updates/ManualUpdatesManager
+ $1.class
+SHA-256-Digest: 7Ty0qA4PqfTeENkYatz6VXdSvZ3nNEOD4qXSfYAkUwc=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/CurrentListener.cl
+ ass
+SHA-256-Digest: EbwI8JY5EB8oKB5voFyVQxHe35MmwqoxVjsJHkUKRDY=
+
+Name: edu/colorado/phet/common/phetcommon/view/menu/PhetFileMenu$1.cla
+ ss
+SHA-256-Digest: RBQkSW8jDhm7PGwdNV1RVs3zao085SZedRhXm5KnlQY=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/wire1d/forces/Fr
+ iction1d.class
+SHA-256-Digest: i1K8+/beOCaw0ZE2HfoUfiX8R/39L11o+c8PaV9bKmM=
+
+Name: edu/colorado/phet/common/phetcommon/preferences/PreferencesDialo
+ g$2.class
+SHA-256-Digest: i7p9lMQWkhelg+6CswXHUhhg4RwO/aU57+9/iXinoHY=
+
+Name: edu/colorado/phet/common/phetcommon/view/controls/ColorControl.c
+ lass
+SHA-256-Digest: am1kZwOsit/9ebpMMJZcl+u5yx+SmGo4gG3/x3x9w00=
+
+Name: phetcommon/localization/phetcommon-strings_ca.properties
+SHA-256-Digest: FkxJ3b+BQbRCbBQKvsNnLBih6LCVL8ORbXwBf2vP3yI=
+
+Name: edu/colorado/phet/common/phetcommon/view/menu/HelpMenu$4.class
+SHA-256-Digest: bOuVFEVWQIBgL5dkYq2KXJJuXi/8h8o/7VALkSAvCzA=
+
+Name: phetcommon/localization/phetcommon-strings_da.properties
+SHA-256-Digest: 5WD7uL+HoQTZgTeL0NYCRd7/2UsaRptKPR4KrtcZ6S0=
+
+Name: edu/colorado/phet/common/phetcommon/view/menu/HelpMenu$CheckForS
+ imUpdateMenuItem$1.class
+SHA-256-Digest: pLDjU/MY57RvL1cXMfdMJ2AmZTuifra7iMqVeY2wrWg=
+
+Name: edu/colorado/phet/common/phetcommon/application/VersionInfoQuery
+ $VersionInfoQueryListener.class
+SHA-256-Digest: yTsqgxix2tHKAuzOxUMM1hq65zMI+AO3anSBPIc2LmI=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_zh_TW.properties
+SHA-256-Digest: J6idLvxaK8YVLlTVnMkunpsqJ+RJFcwKwiQde8v5t44=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_hr.properties
+SHA-256-Digest: PKTLfAucZE9uFI55dn+2E8E8q+X+3uDJFEevRTJYpOU=
+
+Name: battery-resistor-circuit/images/ron/AA-battery-555.png
+SHA-256-Digest: db/7Z7gmlN+JweIZonleBoHPzvCwooXsvLOlOsgUrxU=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/PowerListener.clas
+ s
+SHA-256-Digest: TdhfCLrWjypc1LiLWi9HyWdoMUDsD29UspHMUPbo5zI=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/wire1d/paint/Wir
+ ePatchPainter.class
+SHA-256-Digest: mMaaVIxl4M+ib6KD1AUeIBmOERUQCv8mWrPxI1zXhYk=
+
+Name: battery-resistor-circuit/images/wheels/Pinwheel2.gif
+SHA-256-Digest: yn2ixOGCDtPRmNOm2djw93u52sl73uDuyYqllb+PRxQ=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/FrameSetup$Centere
+ dWithSize.class
+SHA-256-Digest: VDi7IQo0hEQa3YEwWpvnTLD9UAn7UdyHoKeOmRgLVvk=
+
+Name: battery-resistor-circuit/images/components/license.txt
+SHA-256-Digest: 277GLBDsLnkqLCdpn4DWTMwKzs6ww4pkEPGdz/+Mo0Y=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/EasyGridBagLayout.
+ class
+SHA-256-Digest: 1v1tRfW54JRpFXG4Dy/MisS0TP/bEp1tGa00QZMVvMU=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/wire1d/Circuit.c
+ lass
+SHA-256-Digest: 7vYMrc4w50iHKZ0PlIUxnp0dXuWoNeVI1sGJ9smxYCw=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/phys2d/ParticleL
+ aw.class
+SHA-256-Digest: kWjjvKBRmxKjAZU3xWXWf0XhXFZATODBLF/tc+3oYm8=
+
+Name: edu/colorado/phet/common/phetcommon/statistics/StatisticsManager
+ $StatisticsManagerListener.class
+SHA-256-Digest: NRrg5WTACI14JKwhHRQDNybJT/Y+4yofzcVIE1mORbk=
+
+Name: phetcommon/localization/phetcommon-strings_ar.properties
+SHA-256-Digest: +HIcOtvHoQujdf6nJvEcmMtYVFCStfA93OaaEHYRYH8=
+
+Name: edu/colorado/phet/common/phetcommon/view/menu/HelpMenu$3.class
+SHA-256-Digest: YSyXgigRTSzgD2j+3YnefUqgXqTmriCqPHhTzRVe+HU=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_ko.properties
+SHA-256-Digest: M2H0+2WPjHNQh6O8v4M3LkGYpqwMzj7vIBgkIEK9I6s=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/HTMLUtils$HTMLEdit
+ orPane.class
+SHA-256-Digest: iNP6FIuDRsOURdbZ1kS7y0FbzBnFPrTgk1SWr589Qmw=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/ImageLoader$1.clas
+ s
+SHA-256-Digest: 6fwAd0QnCEoToGOPYqxoD4Rv1cgw4prQYR0OeuDrKnQ=
+
+Name: edu/colorado/phet/common/phetcommon/view/PhetExit.class
+SHA-256-Digest: ZdlJ+Atx30VPnQAujn8mV4QcvAXHVWXYtVE3YI1I5ZA=
+
+Name: edu/colorado/phet/common/phetcommon/servicemanager/PhetServiceMa
+ nager.class
+SHA-256-Digest: bFfhDx0I0WF1jY2ZVfEKBBmSWQsJUeO+/h9bdC9Wl+s=
+
+Name: phetcommon/localization/phetcommon-strings_zh_TW.properties
+SHA-256-Digest: PYWHCijXDLX1jr+ww+XEJQHvXXrjMIqJiNxyFhEdx7o=
+
+Name: javax/jnlp/UnavailableServiceException.class
+SHA-256-Digest: Fujuo0IzxpYODzGvQDXTBQmhSc4wcHW4dqMQF0aMZXE=
+
+Name: phetcommon/localization/phetcommon-strings_nb.properties
+SHA-256-Digest: PyrZVZNmODGreBlr216amFeYYHtFtUbwxfi4SzVKNpY=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/ColorChooserFactory$
+ Listener.class
+SHA-256-Digest: ohfmwQ3b2Kl5cBzJw7onqVM6yXFj5tlMB9OV51EGo1s=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/InstallerAbs
+ tractUpdateDialog$AskMeLaterButton.class
+SHA-256-Digest: Z2yhzV6yKdoS+ptiqZ8nqzbP3yf6+Fh9bWzDahgN5Pw=
+
+Name: edu/colorado/phet/common/phetcommon/application/VersionInfoQuery
+ $InstallerResponse.class
+SHA-256-Digest: oSZ3bJrf8cFBHMlZ1ZXXCPBaBSZX4eg51/vDOgM3jys=
+
+Name: edu/colorado/phet/common/phetcommon/view/VerticalLayoutPanel.cla
+ ss
+SHA-256-Digest: 22xoxxxMPC93SP8DMIchuDI2f0Cq0lWAhIidh1hZCZA=
+
+Name: edu/colorado/phet/common/phetcommon/application/SoftwareAgreemen
+ tManager$MessagePane$1.class
+SHA-256-Digest: UbOe2ZQHiyIiG0WPZ7T6+W4+ymA86hiTvvcLXV6O5pY=
+
+Name: edu/colorado/phet/common/phetcommon/view/TimeControlPanel$1.clas
+ s
+SHA-256-Digest: VurEXrw5rxCoaOFfM1YvWilJl4uCvaQMa3q+kr/y8LI=
+
+Name: edu/colorado/phet/batteryresistorcircuit/BatteryResistorCircuitS
+ imulationPanel$MediaHandler$PauseListener.class
+SHA-256-Digest: 9fBt4/A8paxXq6TYM5F7o4TgO7URd134SuUnZ7m20yQ=
+
+Name: battery-resistor-circuit/images/icons/sun-license.txt
+SHA-256-Digest: XgXRrclslHoemrUsNnkOZty9UaHjXjdjaUTIM1FEEns=
+
+Name: edu/colorado/phet/batteryresistorcircuit/regions/PatchRegion.cla
+ ss
+SHA-256-Digest: 1PkF6L5v/7RvAv8D9z1oJUbaCbwpIh41sW0hr9LYCuc=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/StringUtil.class
+SHA-256-Digest: sfMjObXAHE57V6Iqu5vUDfYtA7FPiVN0ZuqW26RQG1E=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/SimAbstractU
+ pdateDialog$SkipVersionButton.class
+SHA-256-Digest: D0YEVieDAdrl39Pqk4PKYVLobCWbgNWnW4SMa5rJBmE=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_eu.properties
+SHA-256-Digest: VWX6Xw7wWEQGFmGL1/oQvX+The88j2yeOzEsQeL7jZo=
+
+Name: phetcommon/images/clock/Pause24.gif
+SHA-256-Digest: wmsfNcpz9EGgIh+NQdVeFT0ZNrrKc+arp+pa80ef6W4=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_sk.properties
+SHA-256-Digest: eUlQieAsqFokdOGzi7RAnDiPjiBKF2iXEQ67WDG4peQ=
+
+Name: edu/colorado/phet/common/phetcommon/statistics/StatisticsManager
+ $StatisticsThread.class
+SHA-256-Digest: QD1ThffTYHuBdO40JZwFY7DHaZjNeJl3fqeN3VOnc1w=
+
+Name: edu/colorado/phet/common/phetcommon/view/util/BufferedImageUtils
+ .class
+SHA-256-Digest: 7OJGLpb1kpVEpkV6OyH/W5+1yNZYvAPH01Vy1EGTQ6Q=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_tr.properties
+SHA-256-Digest: A6pbEkO/zuoQmpM4hH7zpGKmarQZpP9MmGFlY/G+NrU=
+
+Name: battery-resistor-circuit/contrib-licenses/javaws-license.txt
+SHA-256-Digest: FmNCPJ4oVsqUgrs2/EtCneFpSO3CWzuKeHSnHNv2ycI=
+
+Name: battery-resistor-circuit/images/icons/Pause24.gif
+SHA-256-Digest: wmsfNcpz9EGgIh+NQdVeFT0ZNrrKc+arp+pa80ef6W4=
+
+Name: edu/colorado/phet/javaversionchecker/JavaVersionChecker$LocalBas
+ icService$BrowserControl.class
+SHA-256-Digest: fVj+fZWvXqEG3wh0OJ4mz06ZlzcoY2Dei5p4g0YqCj0=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_nl.properties
+SHA-256-Digest: oF6gC0/VkOrvmv3AaV0IoMTRoRFax4heKPGuzy0dVBQ=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/Painter.cl
+ ass
+SHA-256-Digest: K1zfb8XWcDbiySmYM3fiWSj1OoWJtLqBOEH0cWs7I+A=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/wire1d/propagato
+ rs/CompositePropagator1d.class
+SHA-256-Digest: Hc36jciJ5zozh9vnOlgeYAByZjnXFrkA0Fhd8eu6oYI=
+
+Name: edu/colorado/phet/common/phetcommon/application/AWTSplashWindow$
+ 4.class
+SHA-256-Digest: QYDhnTzIsJtX7OPwSAykgRzTXvJK+0bf4pPzkNkA39o=
+
+Name: edu/colorado/phet/common/phetcommon/application/SoftwareAgreemen
+ tDialog$HTMLTagImageView.class
+SHA-256-Digest: kVvYOoDQxQfAd9Qf6yL1Qkw+LEaGgBURHMQYJESG2W8=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_be.properties
+SHA-256-Digest: ZH+L3SacOm5EUewgAbo7p/cvk1+mcoPxAMhLGarF4Kk=
+
+Name: edu/colorado/phet/common/phetcommon/model/clock/TimingStrategy$C
+ onstant.class
+SHA-256-Digest: ai/s0oPBzEb12n5tsMBAkdKV+KxrsjDMShH9kasGlag=
+
+Name: edu/colorado/phet/common/phetcommon/application/ApplicationConst
+ ructor.class
+SHA-256-Digest: pDXRYtpfSCtJPAB9XmQsDgtkMP7ou0tvFLCzdM8Gspk=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/PainterPan
+ el.class
+SHA-256-Digest: wxr7LMt+4imn97WcX2rq/GKyPEeY2cnf8+YyNZaVl6g=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_cs.properties
+SHA-256-Digest: k/L6rj6CzxyXSiTPZXzd1g7Uo93nleA4LuwoyqtxM2A=
+
+Name: edu/colorado/phet/common/phetcommon/updates/IAskMeLaterStrategy.
+ class
+SHA-256-Digest: bf9GFhUVwRdk+l7ZDpIReX3BEW77m/eHlSDYwPOr8cw=
+
+Name: junit/runner/smalllogo.gif
+SHA-256-Digest: tIGQCPGBvz4LRyVPchScYqVWpW/ANY0xQ+QFsZHeIIE=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/paint/Switchable
+ Painter.class
+SHA-256-Digest: pNs3nKwRZBqKv06Snc8GPDt5fP1JbPe1j5xtFV5Elm4=
+
+Name: edu/colorado/phet/common/phetcommon/dialogs/ContribLicenseDialog
+ .class
+SHA-256-Digest: MBXbKVExCu0Kel+5FabcKDYPBVRKZPq88ys64UxRFwc=
+
+Name: edu/colorado/phet/common/phetcommon/model/ModelElement.class
+SHA-256-Digest: 8vRodVah0P36RL05C02WhAMqIbTqbnpsNV0LKbjqUoo=
+
+Name: battery-resistor-circuit/images/ron/CoreCountImage.gif
+SHA-256-Digest: x6LEVdQgEmMFLvTc1M+assbnp/CNKkIstxqTGEwuedI=
+
+Name: battery-resistor-circuit/contrib-licenses/think-tank-maths-licen
+ se-LGPL-3.txt
+SHA-256-Digest: 2n6rt7r999OuXp8iOqW9we7ORaxWncIbOwN1ILRGR2g=
+
+Name: edu/colorado/phet/common/phetcommon/model/clock/ClockListener.cl
+ ass
+SHA-256-Digest: xL2TAcXCzZRQdbHfZQww893CEUZxBj5SKYt1lke9Pbo=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/BatteryPainter.cla
+ ss
+SHA-256-Digest: 2Lsie/F+0vzCUwgF0co96c2C41BbmZzGViyCdDYe0+A=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/phys2d/Particle.
+ class
+SHA-256-Digest: CqeoBJXa/BClavkz8rtCealRCiW0Y1YTl0ZhDGHQr9Q=
+
+Name: edu/colorado/phet/batteryresistorcircuit/common/wire1d/forces/Ad
+ jacentPatchCoulombForce2.class
+SHA-256-Digest: /znxVYENjyF2eXAjgkGN+KEF92BvCdQdfCbsc5zJLks=
+
+Name: battery-resistor-circuit/images/ron/AA-battery-100.gif
+SHA-256-Digest: 1Dgx2nxNTudl2spAg3jDKHf35pXxiP/jpKyR4j4cuUY=
+
+Name: edu/colorado/phet/common/phetcommon/view/menu/HelpMenu$1.class
+SHA-256-Digest: OVpl1CCXGse023BGG0wJOp/9TLZ3B6LqFrjM62+VZWo=
+
+Name: phetcommon/localization/phetcommon-strings_ru.properties
+SHA-256-Digest: NiiHA1Vy/OnUlCkK/p7q7n5XmBU13gMmOw/mEYi5mag=
+
+Name: javax/jnlp/ServiceManagerStub.class
+SHA-256-Digest: LkXlK7uLno5gdbuvJPPZ9Kh53oIaf3kB8NU2lbF2iIE=
+
+Name: edu/colorado/phet/common/phetcommon/updates/dialogs/NoUpdateDial
+ og.class
+SHA-256-Digest: VKcioCLJBHYsB3kpwKMb02T8nbEOoBBqwhBiO/oT2Qk=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_ja.properties
+SHA-256-Digest: MwQfHgStuHoYHZAYVYuIHs+Qcg0lV7TfMcX9NdjT4cE=
+
+Name: edu/colorado/phet/common/phetcommon/tests/TestPhetFrameWorkaroun
+ d$TestApplication.class
+SHA-256-Digest: hhB3bdEuCjXbk9OSc9pqqYUbmbl8HD3HDj4F2h2l83k=
+
+Name: battery-resistor-circuit/localization/battery-resistor-circuit-s
+ trings_ku_TR.properties
+SHA-256-Digest: evr2dx+EQSSPE0BKNDIFnJr0HWMp5+L/EuC1s8qK1xw=
+
+Name: edu/colorado/phet/batteryresistorcircuit/volt/ResetElectron.clas
+ s
+SHA-256-Digest: CIvrl1/VWAtWVqT3NOJQMbsJiJ5VGN4WF4gyuB37Omo=
+
