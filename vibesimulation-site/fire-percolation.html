@@ -539,7 +539,26 @@
             <div class="controls-section">
                 <div class="control-group">
                     <h3>Advanced Settings</h3>
-                    <!-- Probability slider moved to canvas toolbar -->
+                    <div class="control-row">
+                        <label>Tree Density:</label>
+                        <input type="range" id="tree-density" min="0.1" max="0.9" step="0.1" value="0.6">
+                        <span id="tree-density-value">0.6</span>
+                    </div>
+                    <div class="control-row">
+                        <label>Wind Direction:</label>
+                        <input type="range" id="wind-direction" min="0" max="360" step="45" value="0">
+                        <span id="wind-direction-value">0°</span>
+                    </div>
+                    <div class="control-row">
+                        <label>Wind Strength:</label>
+                        <input type="range" id="wind-strength" min="0" max="1" step="0.1" value="0">
+                        <span id="wind-strength-value">0.0</span>
+                    </div>
+                    <div class="control-row">
+                        <label>Fire Spread Delay:</label>
+                        <input type="range" id="spread-delay" min="0" max="500" step="50" value="100">
+                        <span id="spread-delay-value">100ms</span>
+                    </div>
                 </div>
             </div>
 
@@ -1066,6 +1085,36 @@
                 spreadProb = parseFloat(e.target.value);
                 document.getElementById('spread-value').textContent = spreadProb.toFixed(2);
                 ledger.record('parameter_change', { parameter: 'spreadProb', value: spreadProb });
+            });
+
+            // Advanced Settings Controls
+            let treeDensity = 0.6;
+            let windDirection = 0;
+            let windStrength = 0;
+            let spreadDelay = 100;
+
+            document.getElementById('tree-density').addEventListener('input', (e) => {
+                treeDensity = parseFloat(e.target.value);
+                document.getElementById('tree-density-value').textContent = treeDensity.toFixed(1);
+                ledger.record('parameter_change', { parameter: 'treeDensity', value: treeDensity });
+            });
+
+            document.getElementById('wind-direction').addEventListener('input', (e) => {
+                windDirection = parseInt(e.target.value);
+                document.getElementById('wind-direction-value').textContent = windDirection + '°';
+                ledger.record('parameter_change', { parameter: 'windDirection', value: windDirection });
+            });
+
+            document.getElementById('wind-strength').addEventListener('input', (e) => {
+                windStrength = parseFloat(e.target.value);
+                document.getElementById('wind-strength-value').textContent = windStrength.toFixed(1);
+                ledger.record('parameter_change', { parameter: 'windStrength', value: windStrength });
+            });
+
+            document.getElementById('spread-delay').addEventListener('input', (e) => {
+                spreadDelay = parseInt(e.target.value);
+                document.getElementById('spread-delay-value').textContent = spreadDelay + 'ms';
+                ledger.record('parameter_change', { parameter: 'spreadDelay', value: spreadDelay });
             });
 
             // Accreditation system
