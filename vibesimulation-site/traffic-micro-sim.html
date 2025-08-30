@@ -799,6 +799,12 @@
                 // Set initial interaction mode
                 this.interactionMode = 'car';
                 this.updateBrushIndicator();
+                this.hasRendered = false;
+
+                // Initial render to show roads (with small delay to ensure canvas is ready)
+                setTimeout(() => {
+                    this.render();
+                }, 100);
             }
 
             initializeRoadNetwork() {
@@ -1189,6 +1195,14 @@
 
                 // Draw vehicles
                 this.renderVehicles();
+
+                // Debug: Log if this is the first render
+                if (!this.hasRendered) {
+                    console.log('Traffic simulation render initialized');
+                    console.log('Grid size:', this.GRID_WIDTH, 'x', this.GRID_HEIGHT);
+                    console.log('Canvas size:', this.CANVAS_WIDTH, 'x', this.CANVAS_HEIGHT);
+                    this.hasRendered = true;
+                }
             }
 
             renderRoads() {
@@ -1290,7 +1304,7 @@
             }
 
             // Animation loop
-            animate = (currentTime) => {
+            animate(currentTime) {
                 const dt = Math.min((currentTime - this.lastTime) / 1000, 1/30);
 
                 if (this.isRunning) {
@@ -1300,7 +1314,7 @@
                 this.render();
                 this.lastTime = currentTime;
 
-                requestAnimationFrame(this.animate);
+                requestAnimationFrame(this.animate.bind(this));
             }
         }
 
@@ -1440,7 +1454,8 @@
         window.ledger = ledger;
 
         // Start animation loop
-        simulation.animate(0);
+        simulation.lastTime = performance.now();
+        requestAnimationFrame(simulation.animate);
 
         // Record page load
         ledger.recordEvent('page_loaded', {
