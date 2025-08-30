@@ -9,15 +9,84 @@
 		<title>VibeSimulation - Physics Gallery</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+
+		<!-- Performance Optimization -->
+		<link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+		<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+		<!-- Resource Hints for Critical Assets -->
+		<link rel="preload" href="assets/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+		<link rel="preload" href="assets/js/jquery.min.js" as="script">
+		<link rel="preload" href="favicon.ico" as="image">
 		<meta name="description" content="Experience four domains of physics through interactive simulations: fluid dynamics, electrostatics, wave physics, and shallow water dynamics. Real-time, beautiful, educational.">
     	<meta name="keywords" content="physics simulations, fluid dynamics, electrostatics, wave physics, shallow water, interactive science, computational physics">
 		<meta name="google-adsense-account" content="ca-pub-1357596091010556">
-		<!-- Google AdSense Auto ads -->
-		<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1357596091010556"
-		     crossorigin="anonymous"></script>
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<link rel="stylesheet" href="assets/css/video.css" />
-		<link rel="stylesheet" href="assets/css/cookie-consent.css" />
+		<!-- Google AdSense - Deferred Loading for Performance -->
+		<script>
+			// Defer AdSense loading until page is interactive
+			window.addEventListener('load', function() {
+				setTimeout(function() {
+					var script = document.createElement('script');
+					script.async = true;
+					script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1357596091010556';
+					script.crossOrigin = 'anonymous';
+					document.head.appendChild(script);
+				}, 2000); // 2 second delay after page load
+			});
+		</script>
+		<!-- Critical CSS - Above the fold only -->
+		<style>
+			/* Critical rendering path - Hero section only */
+			body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+			.physics-hero {
+				min-height: 100vh;
+				background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 100%);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				text-align: center;
+				padding: 2rem;
+			}
+			.physics-hero h1 {
+				font-size: 3rem;
+				font-weight: 700;
+				color: #ffffff;
+				margin: 0 0 1rem 0;
+				text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+			}
+			.physics-hero p {
+				font-size: 1.2rem;
+				color: #b8c5d6;
+				margin: 0 0 2rem 0;
+				max-width: 600px;
+			}
+			.hero-cta {
+				display: inline-block;
+				padding: 1rem 2rem;
+				background: linear-gradient(45deg, #667eea, #764ba2);
+				color: white;
+				text-decoration: none;
+				border-radius: 50px;
+				font-weight: 600;
+				transition: transform 0.2s;
+			}
+			.hero-cta:hover { transform: translateY(-2px); }
+
+			/* Font loading optimization */
+			@font-face {
+				font-family: 'FontAwesome';
+				src: url('assets/webfonts/fa-solid-900.woff2') format('woff2');
+				font-display: swap;
+				unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+			}
+		</style>
+
+		<!-- Non-critical CSS - Load after hero renders -->
+		<link rel="preload" href="assets/css/main.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+		<link rel="preload" href="assets/css/video.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+		<link rel="preload" href="assets/css/cookie-consent.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+		<noscript><link rel="stylesheet" href="assets/css/main.css"><link rel="stylesheet" href="assets/css/video.css"><link rel="stylesheet" href="assets/css/cookie-consent.css"></noscript>
 		<!-- Physics Gallery Styles -->
 		<style>
 			/* ===== HERO SECTION ===== */
@@ -1104,9 +1173,6 @@
 							<a href="fire-percolation.html" class="dropdown-item">
 								<span class="dropdown-icon">🔥</span>
 								<span class="dropdown-text">Fire Percolation</span>
-							</a>
-								<span class="dropdown-icon">🚗</span>
-								<span class="dropdown-text">Traffic Micro-sim</span>
 							</a>
 						</div>
 					</div>
@@ -2346,18 +2412,101 @@
 			});
 		</script>
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/jquery.dropotron.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
-			<script src="assets/js/video.js"></script>
-					<script src="assets/js/cookie-consent.js"></script>
-					<script src="code-access-demo.js"></script>
+		<!-- Critical Scripts - Load immediately -->
+		<script>
+			// Performance monitoring and critical rendering
+			window.performanceMetrics = {
+				startTime: performance.now(),
+				domContentLoaded: 0,
+				loadComplete: 0,
+				firstPaint: 0,
+				firstContentfulPaint: 0
+			};
+
+			// Monitor performance
+			document.addEventListener('DOMContentLoaded', function() {
+				window.performanceMetrics.domContentLoaded = performance.now() - window.performanceMetrics.startTime;
+
+				// Initialize hero animations immediately
+				const hero = document.querySelector('.physics-hero');
+				if (hero) {
+					hero.style.opacity = '1';
+					hero.style.transform = 'translateY(0)';
+				}
+
+				console.log(`DOMContentLoaded: ${window.performanceMetrics.domContentLoaded.toFixed(2)}ms`);
+			});
+
+			window.addEventListener('load', function() {
+				window.performanceMetrics.loadComplete = performance.now() - window.performanceMetrics.startTime;
+				console.log(`Page Load Complete: ${window.performanceMetrics.loadComplete.toFixed(2)}ms`);
+
+				// Performance observer for paint metrics
+				if ('PerformanceObserver' in window) {
+					const observer = new PerformanceObserver((list) => {
+						for (const entry of list.getEntries()) {
+							if (entry.name === 'first-paint') {
+								window.performanceMetrics.firstPaint = entry.startTime;
+								console.log(`First Paint: ${entry.startTime.toFixed(2)}ms`);
+							}
+							if (entry.name === 'first-contentful-paint') {
+								window.performanceMetrics.firstContentfulPaint = entry.startTime;
+								console.log(`First Contentful Paint: ${entry.startTime.toFixed(2)}ms`);
+							}
+						}
+					});
+					observer.observe({ entryTypes: ['paint'] });
+				}
+			});
+		</script>
+
+		<!-- Non-critical Scripts - Defer loading -->
+		<script>
+			// Defer jQuery and plugins
+			function loadDeferredScripts() {
+				const scripts = [
+					'assets/js/jquery.min.js',
+					'assets/js/jquery.scrolly.min.js',
+					'assets/js/jquery.dropotron.min.js',
+					'assets/js/jquery.scrollex.min.js',
+					'assets/js/browser.min.js',
+					'assets/js/breakpoints.min.js',
+					'assets/js/util.js',
+					'assets/js/main.js',
+					'assets/js/video.js',
+					'assets/js/cookie-consent.js',
+					'code-access-demo.js'
+				];
+
+				let loaded = 0;
+				scripts.forEach(src => {
+					const script = document.createElement('script');
+					script.src = src;
+					script.defer = true;
+					script.onload = () => {
+						loaded++;
+						if (loaded === scripts.length) {
+							console.log('All deferred scripts loaded');
+							// Initialize interactive features after scripts load
+							if (window.jQuery) {
+								$(document).ready(function() {
+									// Re-initialize dropdowns and interactions
+									$('.dropotron').dropotron();
+								});
+							}
+						}
+					};
+					document.head.appendChild(script);
+				});
+			}
+
+			// Load deferred scripts after page becomes interactive
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', loadDeferredScripts);
+			} else {
+				loadDeferredScripts();
+			}
+		</script>
 
 		<!-- Newsletter Signup Script -->
 		<script>
