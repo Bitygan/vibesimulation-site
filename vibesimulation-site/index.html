@@ -1606,13 +1606,28 @@
 		<script>
 			class PaintedSkySimulation {
 				constructor() {
-					this.W = 1400;
-					this.H = 700;
-					this.NX = 192;
-					this.NY = 108;
+					// Device-aware resolution scaling
+					const deviceSettings = window.DeviceCapabilities ?
+						window.DeviceCapabilities.getRecommendedSettings() :
+						{ canvasResolution: 1.0, animationFPS: 60, maxParticles: 1000 };
+
+					this.baseW = 1400;
+					this.baseH = 700;
+					this.baseNX = 192;
+					this.baseNY = 108;
+
+					// Scale based on device capabilities
+					const scale = deviceSettings.canvasResolution;
+					this.W = Math.floor(this.baseW * scale);
+					this.H = Math.floor(this.baseH * scale);
+					this.NX = Math.max(64, Math.floor(this.baseNX * scale));
+					this.NY = Math.max(36, Math.floor(this.baseNY * scale));
+
 					this.dx = 1.0;
-					this.dt = 0.85;
-					this.VISC = 0.00006;
+					this.dt = deviceSettings.animationFPS < 30 ? 1.2 : 0.85; // Slower on low-end
+					this.VISC = deviceSettings.animationFPS < 30 ? 0.00003 : 0.00006; // Less viscous on low-end
+
+					console.log(`Canvas optimized: ${this.baseW}x${this.baseH} → ${this.W}x${this.H} (${scale * 100}%)`);
 
 					// Initialize deterministic RNG with seed
 					this.seed = 20250827; // Default seed
@@ -1621,6 +1636,10 @@
 					this.canvas = document.getElementById('painted-sky-canvas');
 					this.ctx = this.canvas.getContext('2d');
 					this.size = this.NX * this.NY;
+
+					// Throttling for low-end devices
+					this.frameSkip = deviceSettings.animationFPS < 30 ? 2 : 1; // Skip frames on low-end
+					this.frameCount = 0;
 
 					// Simulation arrays
 					this.u = new Float32Array(this.size);
@@ -1914,14 +1933,20 @@
 				}
 
 				step() {
-					this.addShear();
-					this.advect(this.u, this.u0);
-					this.advect(this.v, this.v0);
-					this.diffuse(this.u0, this.u);
-					this.diffuse(this.v0, this.v);
-					this.project();
-					this.advect(this.d, this.d0);
-					this.diffuse(this.d0, this.d);
+					this.frameCount++;
+
+					// Frame skipping for low-end devices
+					if (this.frameCount % this.frameSkip === 0) {
+						this.addShear();
+						this.advect(this.u, this.u0);
+						this.advect(this.v, this.v0);
+						this.diffuse(this.u0, this.u);
+						this.diffuse(this.v0, this.v);
+						this.project();
+						this.advect(this.d, this.d0);
+						this.diffuse(this.d0, this.d);
+					}
+
 					this.draw();
 					this.raf = requestAnimationFrame(() => this.step());
 				}
@@ -1962,16 +1987,34 @@
 		<script>
 			class ChargePainterSimulation {
 				constructor() {
-					this.W = 1400;
-					this.H = 700;
-					this.NX = 160;
-					this.NY = 90;
+					// Device-aware resolution scaling
+					const deviceSettings = window.DeviceCapabilities ?
+						window.DeviceCapabilities.getRecommendedSettings() :
+						{ canvasResolution: 1.0, animationFPS: 60, maxParticles: 400 };
+
+					this.baseW = 1400;
+					this.baseH = 700;
+					this.baseNX = 160;
+					this.baseNY = 90;
+
+					// Scale based on device capabilities
+					const scale = deviceSettings.canvasResolution;
+					this.W = Math.floor(this.baseW * scale);
+					this.H = Math.floor(this.baseH * scale);
+					this.NX = Math.max(80, Math.floor(this.baseNX * scale));
+					this.NY = Math.max(45, Math.floor(this.baseNY * scale));
+
 					this.canvas = document.getElementById('charge-painter-canvas');
 					this.ctx = this.canvas.getContext('2d');
 					this.sparkCanvas = document.getElementById('cp-sparkline-canvas');
 					this.sparkCtx = this.sparkCanvas?.getContext('2d');
 
 					this.size = this.NX * this.NY;
+
+					// Reduce particle count on low-end devices
+					this.NP = Math.min(deviceSettings.maxParticles, 400);
+
+					console.log(`ChargePainter optimized: ${this.baseW}x${this.baseH} → ${this.W}x${this.H} (${scale * 100}%), Particles: ${this.NP}`);
 					this.phi = new Float32Array(this.size).fill(0);
 					this.fixed = new Uint8Array(this.size).fill(0);
 					this.fval = new Float32Array(this.size).fill(0);
@@ -2460,52 +2503,210 @@
 			});
 		</script>
 
-		<!-- Non-critical Scripts - Defer loading -->
+		<!-- Device Capabilities Detection - Critical First -->
+		<script src="assets/js/device-capabilities.js"></script>
+		<script src="assets/js/optimized-loader.js"></script>
+
+		<!-- Progressive Enhancement Loading System -->
 		<script>
-			// Defer jQuery and plugins
-			function loadDeferredScripts() {
-				const scripts = [
-					'assets/js/jquery.min.js',
-					'assets/js/jquery.scrolly.min.js',
-					'assets/js/jquery.dropotron.min.js',
-					'assets/js/jquery.scrollex.min.js',
-					'assets/js/browser.min.js',
-					'assets/js/breakpoints.min.js',
-					'assets/js/util.js',
-					'assets/js/main.js',
-					'assets/js/video.js',
-					'assets/js/cookie-consent.js',
-					'code-access-demo.js'
-				];
+			// Ultra-optimized loading for low-memory devices
+			(function() {
+				'use strict';
 
-				let loaded = 0;
-				scripts.forEach(src => {
-					const script = document.createElement('script');
-					script.src = src;
-					script.defer = true;
-					script.onload = () => {
-						loaded++;
-						if (loaded === scripts.length) {
-							console.log('All deferred scripts loaded');
-							// Initialize interactive features after scripts load
-							if (window.jQuery) {
-								$(document).ready(function() {
-									// Re-initialize dropdowns and interactions
-									$('.dropotron').dropotron();
-								});
+				let loadStarted = false;
+				let userInteracted = false;
+
+				// Ultra-low memory device: Wait for user interaction
+				function handleUserInteraction() {
+					if (userInteracted) return;
+					userInteracted = true;
+
+					console.log('User interaction detected - starting progressive load');
+
+					// Remove interaction listeners
+					document.removeEventListener('click', handleUserInteraction);
+					document.removeEventListener('touchstart', handleUserInteraction);
+					document.removeEventListener('scroll', handleUserInteraction);
+
+					// Start progressive loading
+					setTimeout(() => {
+						window.OptimizedLoader.loadProgressive()
+							.then(() => {
+								console.log('Progressive loading complete');
+								console.log('Device class:', window.DeviceCapabilities.classifyDevice());
+								console.log('Recommended settings:', window.DeviceCapabilities.getRecommendedSettings());
+							})
+							.catch(error => {
+								console.error('Progressive loading failed:', error);
+								// Fallback to minimal loading
+								loadMinimal();
+							});
+					}, 100);
+				}
+
+				// Minimal fallback loading
+				function loadMinimal() {
+					console.log('Loading minimal fallback');
+					const scripts = [
+						'assets/js/vanilla-browser.js',
+						'assets/js/main.js'
+					];
+
+					let loaded = 0;
+					scripts.forEach(src => {
+						const script = document.createElement('script');
+						script.src = src;
+						script.onload = () => {
+							loaded++;
+							if (loaded === scripts.length) {
+								console.log('Minimal loading complete');
 							}
-						}
-					};
-					document.head.appendChild(script);
-				});
-			}
+						};
+						document.head.appendChild(script);
+					});
+				}
 
-			// Load deferred scripts after page becomes interactive
-			if (document.readyState === 'loading') {
-				document.addEventListener('DOMContentLoaded', loadDeferredScripts);
-			} else {
-				loadDeferredScripts();
-			}
+				// Check device capabilities and decide loading strategy
+				function checkDeviceAndLoad() {
+					const capabilities = window.DeviceCapabilities;
+					if (!capabilities) {
+						console.warn('DeviceCapabilities not available, using fallback loading');
+						loadMinimal();
+						return;
+					}
+
+					const deviceClass = capabilities.classifyDevice();
+					const isLowMemory = capabilities.isLowMemory();
+					const shouldThrottle = capabilities.shouldThrottle();
+
+					console.log('Device analysis:', {
+						class: deviceClass,
+						lowMemory: isLowMemory,
+						throttle: shouldThrottle,
+						settings: capabilities.getRecommendedSettings()
+					});
+
+					if (deviceClass === 'ultra-low' || shouldThrottle) {
+						// Ultra-low memory: Require user interaction
+						console.log('Ultra-low memory device detected - waiting for user interaction');
+
+						// Show loading indicator
+						showLoadingIndicator();
+
+						// Wait for user interaction
+						document.addEventListener('click', handleUserInteraction, { passive: true });
+						document.addEventListener('touchstart', handleUserInteraction, { passive: true });
+						document.addEventListener('scroll', handleUserInteraction, { passive: true });
+
+						// Timeout fallback (30 seconds)
+						setTimeout(() => {
+							if (!userInteracted) {
+								console.log('Timeout reached - starting minimal load');
+								handleUserInteraction();
+							}
+						}, 30000);
+
+					} else {
+						// Standard/high-end: Load progressively immediately
+						console.log('Standard/high-end device - starting immediate progressive load');
+						window.OptimizedLoader.loadProgressive();
+					}
+				}
+
+				// Show loading indicator for ultra-low devices
+				function showLoadingIndicator() {
+					const indicator = document.createElement('div');
+					indicator.id = 'loading-indicator';
+					indicator.innerHTML = `
+						<div style="
+							position: fixed;
+							top: 50%;
+							left: 50%;
+							transform: translate(-50%, -50%);
+							background: rgba(0,0,0,0.9);
+							color: white;
+							padding: 2rem;
+							border-radius: 1rem;
+							text-align: center;
+							font-family: system-ui, sans-serif;
+							z-index: 10000;
+							max-width: 300px;
+						">
+							<div style="font-size: 2rem; margin-bottom: 1rem;">🌊</div>
+							<h3 style="margin: 0 0 1rem 0; font-size: 1.2rem;">VibeSimulation</h3>
+							<p style="margin: 0 0 1rem 0; opacity: 0.8; font-size: 0.9rem;">
+								Optimizing for your device...<br>
+								Tap anywhere to continue
+							</p>
+							<div style="
+								width: 40px;
+								height: 4px;
+								background: rgba(255,255,255,0.2);
+								border-radius: 2px;
+								margin: 0 auto;
+								position: relative;
+								overflow: hidden;
+							">
+								<div style="
+									position: absolute;
+									top: 0;
+									left: -40px;
+									width: 40px;
+									height: 100%;
+									background: linear-gradient(90deg, transparent, #60a5fa, transparent);
+									animation: loading-bar 2s infinite;
+								"></div>
+							</div>
+						</div>
+						<style>
+							@keyframes loading-bar {
+								0% { left: -40px; }
+								100% { left: 40px; }
+							}
+						</style>
+					`;
+					document.body.appendChild(indicator);
+				}
+
+				// Start the loading process
+				if (document.readyState === 'loading') {
+					document.addEventListener('DOMContentLoaded', checkDeviceAndLoad);
+				} else {
+					checkDeviceAndLoad();
+				}
+
+				// Memory monitoring
+				setInterval(() => {
+					if (window.DeviceCapabilities && window.DeviceCapabilities.shouldThrottle()) {
+						console.warn('Memory pressure detected - triggering cleanup');
+						if (window.OptimizedLoader) {
+							window.OptimizedLoader.cleanup();
+						}
+					}
+				}, 15000);
+
+				// Register service worker for caching
+				if ('serviceWorker' in navigator) {
+					window.addEventListener('load', () => {
+						navigator.serviceWorker.register('/sw.js')
+							.then(registration => {
+								console.log('Service Worker registered:', registration);
+
+								// Send device capabilities to service worker
+								if (window.DeviceCapabilities) {
+									navigator.serviceWorker.controller?.postMessage({
+										type: 'DEVICE_CAPABILITIES',
+										capabilities: window.DeviceCapabilities.getCapabilities()
+									});
+								}
+							})
+							.catch(error => {
+								console.log('Service Worker registration failed:', error);
+							});
+					});
+				}
+
+			})();
 		</script>
 
 		<!-- Newsletter Signup Script -->
@@ -2564,35 +2765,54 @@
 
 			<!-- Resonant Canvas Simulation Script -->
 			<script>
-				class ResonantCanvasSimulation {
-					constructor() {
-						this.W = 1400;
-						this.H = 700;
-						this.canvas = document.getElementById('resonant-canvas-canvas');
-						this.ctx = this.canvas.getContext('2d');
-						this.spectrogramCanvas = document.getElementById('rc-spectrogram-canvas');
-						this.spectrogramCtx = this.spectrogramCanvas?.getContext('2d');
+							class ResonantCanvasSimulation {
+				constructor() {
+					// Device-aware resolution scaling
+					const deviceSettings = window.DeviceCapabilities ?
+						window.DeviceCapabilities.getRecommendedSettings() :
+						{ canvasResolution: 1.0, animationFPS: 60, maxParticles: 1000 };
 
-						// Parameters
-						this.seed = 20250827;
-						this.geometry = "String1D";
-						this.scheme = "Leapfrog2";
-						this.tension = 1.0;
-						this.density = 1.0;
-						this.sigmaTarget = 0.9;
-						this.damping = 0.0005;
-						this.enableBow = false;
-						this.bowFrequency = 3.0;
+					this.baseW = 1400;
+					this.baseH = 700;
+					this.baseNX = this.geometry === "String1D" ? 256 : 160;
+					this.baseNY = this.geometry === "String1D" ? 1 : 90;
 
-						// Computed values
-						this.waveSpeed = 1.0;
-						this.sigmaLive = 0.9;
-						this.energyDrift = 0;
+					// Scale based on device capabilities
+					const scale = deviceSettings.canvasResolution;
+					this.W = Math.floor(this.baseW * scale);
+					this.H = Math.floor(this.baseH * scale);
+					this.NX = Math.max(64, Math.floor(this.baseNX * scale));
+					this.NY = this.geometry === "String1D" ? 1 : Math.max(45, Math.floor(this.baseNY * scale));
 
-						// Grid sizes based on geometry
-						this.NX = this.geometry === "String1D" ? 256 : 160;
-						this.NY = this.geometry === "String1D" ? 1 : 90;
-						this.size = this.NX * this.NY;
+					this.canvas = document.getElementById('resonant-canvas-canvas');
+					this.ctx = this.canvas.getContext('2d');
+					this.spectrogramCanvas = document.getElementById('rc-spectrogram-canvas');
+					this.spectrogramCtx = this.spectrogramCanvas?.getContext('2d');
+
+					// Parameters
+					this.seed = 20250827;
+					this.geometry = "String1D";
+					this.scheme = "Leapfrog2";
+					this.tension = 1.0;
+					this.density = 1.0;
+					this.sigmaTarget = deviceSettings.animationFPS < 30 ? 0.7 : 0.9; // Lower stability target on low-end
+					this.damping = deviceSettings.animationFPS < 30 ? 0.001 : 0.0005; // More damping on low-end
+					this.enableBow = false;
+					this.bowFrequency = 3.0;
+
+					// Computed values
+					this.waveSpeed = 1.0;
+					this.sigmaLive = this.sigmaTarget;
+					this.energyDrift = 0;
+
+					// Grid sizes based on geometry (already scaled above)
+					this.size = this.NX * this.NY;
+
+					// Frame skipping for low-end devices
+					this.frameSkip = deviceSettings.animationFPS < 30 ? 2 : 1;
+					this.frameCount = 0;
+
+					console.log(`ResonantCanvas optimized: ${this.baseW}x${this.baseH} → ${this.W}x${this.H} (${scale * 100}%), Frame skip: ${this.frameSkip}`);
 
 						// Simulation arrays
 						this.u_now = new Float32Array(this.size);
@@ -2815,55 +3035,60 @@
 					}
 
 					step() {
-						// Update wave speed and time step
-						this.updateWaveSpeed();
-						this.dt = Math.min(0.5, Math.max(0.0005, (this.sigmaTarget * 1.0) / (this.waveSpeed * (this.geometry === "String1D" ? 1 : Math.SQRT2))));
-						this.sigmaLive = this.waveSpeed * this.dt / 1.0;
+						this.frameCount++;
 
-						// Apply bowing force if enabled
-						if (this.enableBow) {
-							if (this.geometry === "String1D") {
-								const i = Math.floor(this.NX / 2);
-								this.u_now[this.idx(i, 0)] += 0.0015 * Math.sin(2 * Math.PI * this.bowFrequency * this.t);
-							} else {
-								const i = Math.floor(this.NX / 2), j = Math.floor(this.NY / 2);
-								this.u_now[this.idx(i, j)] += 0.0015 * Math.sin(2 * Math.PI * this.bowFrequency * this.t);
-							}
-						}
+						// Frame skipping for low-end devices
+						if (this.frameCount % this.frameSkip === 0) {
+							// Update wave speed and time step
+							this.updateWaveSpeed();
+							this.dt = Math.min(0.5, Math.max(0.0005, (this.sigmaTarget * 1.0) / (this.waveSpeed * (this.geometry === "String1D" ? 1 : Math.SQRT2))));
+							this.sigmaLive = this.waveSpeed * this.dt / 1.0;
 
-						// Choose Laplacian function based on scheme
-						const useLaplacian = this.scheme === "Leapfrog2" ? this.laplacian2.bind(this) : this.laplacian4.bind(this);
-
-						// Update simulation
-						const dampingFactor = (1 - this.damping);
-						for (let j = 0; j < this.NY; j++) {
-							for (let i = 0; i < this.NX; i++) {
-								const k = this.idx(i, j);
-								if (!this.mask[k]) {
-									this.u_nxt[k] = 0;
-									continue;
+							// Apply bowing force if enabled
+							if (this.enableBow) {
+								if (this.geometry === "String1D") {
+									const i = Math.floor(this.NX / 2);
+									this.u_now[this.idx(i, 0)] += 0.0015 * Math.sin(2 * Math.PI * this.bowFrequency * this.t);
+								} else {
+									const i = Math.floor(this.NX / 2), j = Math.floor(this.NY / 2);
+									this.u_now[this.idx(i, j)] += 0.0015 * Math.sin(2 * Math.PI * this.bowFrequency * this.t);
 								}
-								const lap = useLaplacian(i, j);
-								const u = this.u_now[k], um = this.u_prv[k];
-								this.u_nxt[k] = dampingFactor * (2 * u - um) + (this.waveSpeed * this.waveSpeed) * (this.dt * this.dt) * lap;
 							}
+
+							// Choose Laplacian function based on scheme
+							const useLaplacian = this.scheme === "Leapfrog2" ? this.laplacian2.bind(this) : this.laplacian4.bind(this);
+
+							// Update simulation
+							const dampingFactor = (1 - this.damping);
+							for (let j = 0; j < this.NY; j++) {
+								for (let i = 0; i < this.NX; i++) {
+									const k = this.idx(i, j);
+									if (!this.mask[k]) {
+										this.u_nxt[k] = 0;
+										continue;
+									}
+									const lap = useLaplacian(i, j);
+									const u = this.u_now[k], um = this.u_prv[k];
+									this.u_nxt[k] = dampingFactor * (2 * u - um) + (this.waveSpeed * this.waveSpeed) * (this.dt * this.dt) * lap;
+								}
+							}
+
+							// Swap buffers
+							const tmp = this.u_prv;
+							this.u_prv = this.u_now;
+							this.u_now = this.u_nxt;
+							this.u_nxt = tmp;
+
+							this.t += this.dt;
+
+							// Sample for spectrogram
+							this.pushSample();
+
+							// Update UI
+							this.updateUI();
 						}
 
-						// Swap buffers
-						const tmp = this.u_prv;
-						this.u_prv = this.u_now;
-						this.u_now = this.u_nxt;
-						this.u_nxt = tmp;
-
-						this.t += this.dt;
-
-						// Sample for spectrogram
-						this.pushSample();
-
-						// Update UI
-						this.updateUI();
-
-						// Render
+						// Always render (but throttled)
 						this.render();
 					}
 

@@ -1,66 +1,62 @@
-// Service Worker for VibeSimulation PWA
-// Implements caching strategies for offline physics simulations
+/**
+ * Service Worker for VibeSimulation
+ * Aggressive caching for low-memory devices
+ */
 
 const CACHE_NAME = 'vibesimulation-v1.0.0';
 const STATIC_CACHE = 'vibesimulation-static-v1.0.0';
-const SIMULATION_CACHE = 'vibesimulation-simulations-v1.0.0';
-const IMAGE_CACHE = 'vibesimulation-images-v1.0.0';
+const DYNAMIC_CACHE = 'vibesimulation-dynamic-v1.0.0';
 
-// Files to cache immediately on install
-const STATIC_FILES = [
+// Resources to cache immediately (critical path)
+const CRITICAL_RESOURCES = [
     '/',
     '/index.html',
-    '/fire-percolation.html',
-    '/drag-rangefinder.html',
-    '/memristor-pathfinder.html',
-    '/morphogenetic.html',
     '/assets/css/main.css',
-    '/assets/css/simulation.css',
-    '/manifest.json',
+    '/assets/css/video.css',
+    '/assets/css/cookie-consent.css',
+    '/assets/js/device-capabilities.js',
+    '/assets/js/optimized-loader.js',
+    '/assets/js/vanilla-browser.js',
+    '/assets/js/vanilla-breakpoints.js',
+    '/assets/webfonts/fa-solid-900.woff2',
     '/favicon.ico'
 ];
 
-// Simulation-specific files to cache
-const SIMULATION_FILES = [
-    '/vibe_sim_fire_percolation_sax_v_2.jsx'
+// Resources to cache on demand (progressive loading)
+const PROGRESSIVE_RESOURCES = [
+    '/assets/js/vanilla-scrolly.js',
+    '/assets/js/vanilla-dropotron.js',
+    '/assets/js/vanilla-scrollex.js',
+    '/assets/js/vanilla-utilities.js',
+    '/assets/js/main.js',
+    '/assets/js/video.js',
+    '/assets/js/cookie-consent.js'
 ];
 
-// External libraries to cache
-const EXTERNAL_LIBRARIES = [
-    'https://unpkg.com/react@18/umd/react.production.min.js',
-    'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js',
-    'https://unpkg.com/@babel/standalone/babel.min.js',
-    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
-    'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
-];
+// Cache strategies based on device capabilities
+let deviceCapabilities = null;
 
-self.addEventListener('install', (event) => {
-    console.log('Service Worker: Installing...');
+// Install event - cache critical resources
+self.addEventListener('install', event => {
+    console.log('[SW] Installing service worker');
 
     event.waitUntil(
         Promise.all([
-            // Cache static files
+            // Cache critical resources
             caches.open(STATIC_CACHE).then(cache => {
-                console.log('Service Worker: Caching static files');
-                return cache.addAll(STATIC_FILES);
+                console.log('[SW] Caching critical resources');
+                return cache.addAll(CRITICAL_RESOURCES);
             }),
 
-            // Cache simulation files
-            caches.open(SIMULATION_CACHE).then(cache => {
-                console.log('Service Worker: Caching simulation files');
-                return cache.addAll(SIMULATION_FILES);
-            })
-        ]).then(() => {
-            console.log('Service Worker: All files cached successfully');
-            return self.skipWaiting();
-        }).catch(error => {
-            console.error('Service Worker: Cache installation failed:', error);
-        })
+            // Skip waiting to activate immediately
+            self.skipWaiting()
+        ])
     );
 });
 
-self.addEventListener('activate', (event) => {
-    console.log('Service Worker: Activating...');
+// Activate event - clean up old caches
+self.addEventListener('activate', event => {
+    console.log('[SW] Activating service worker');
 
     event.waitUntil(
         Promise.all([
@@ -68,10 +64,8 @@ self.addEventListener('activate', (event) => {
             caches.keys().then(cacheNames => {
                 return Promise.all(
                     cacheNames.map(cacheName => {
-                        if (cacheName !== STATIC_CACHE &&
-                            cacheName !== SIMULATION_CACHE &&
-                            cacheName !== IMAGE_CACHE) {
-                            console.log('Service Worker: Deleting old cache:', cacheName);
+                        if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
+                            console.log('[SW] Deleting old cache:', cacheName);
                             return caches.delete(cacheName);
                         }
                     })
@@ -80,243 +74,162 @@ self.addEventListener('activate', (event) => {
 
             // Take control of all clients
             self.clients.claim()
-        ]).then(() => {
-            console.log('Service Worker: Activation complete');
-        })
+        ])
     );
 });
 
-self.addEventListener('fetch', (event) => {
+// Fetch event - intelligent caching strategy
+self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
 
-    // Handle different types of requests with appropriate caching strategies
-    if (event.request.method !== 'GET') {
-        return; // Don't cache non-GET requests
-    }
-
-    // Handle external libraries - Cache First strategy
-    if (EXTERNAL_LIBRARIES.some(lib => url.href.includes(lib))) {
-        event.respondWith(
-            caches.match(event.request)
-                .then(response => {
-                    if (response) {
-                        return response;
-                    }
-
-                    return fetch(event.request).then(response => {
-                        if (response.status === 200) {
-                            const responseClone = response.clone();
-                            caches.open(STATIC_CACHE).then(cache => {
-                                cache.put(event.request, responseClone);
-                            });
-                        }
-                        return response;
-                    });
-                })
-                .catch(() => {
-                    // Return offline fallback for critical libraries
-                    return caches.match('/offline.html');
-                })
-        );
+    // Only handle same-origin requests
+    if (url.origin !== location.origin) {
         return;
     }
 
-    // Handle images - Cache First with fallback
-    if (event.request.destination === 'image' ||
-        url.pathname.match(/\.(png|jpg|jpeg|gif|svg|webp)$/)) {
-        event.respondWith(
-            caches.match(event.request)
-                .then(response => {
-                    if (response) {
-                        return response;
-                    }
-
-                    return fetch(event.request).then(response => {
-                        if (response.status === 200) {
-                            const responseClone = response.clone();
-                            caches.open(IMAGE_CACHE).then(cache => {
-                                cache.put(event.request, responseClone);
-                            });
-                        }
-                        return response;
-                    });
-                })
-        );
-        return;
-    }
-
-    // Handle simulation pages - Network First for updates
-    if (url.pathname.includes('percolation') ||
-        url.pathname.includes('drag') ||
-        url.pathname.includes('memristor') ||
-        url.pathname.includes('morphogenetic')) {
+    // Handle different request types
+    if (event.request.destination === 'document') {
+        // HTML documents - Network first, cache fallback
         event.respondWith(
             fetch(event.request)
                 .then(response => {
                     // Cache successful responses
                     if (response.status === 200) {
                         const responseClone = response.clone();
-                        caches.open(SIMULATION_CACHE).then(cache => {
+                        caches.open(DYNAMIC_CACHE).then(cache => {
                             cache.put(event.request, responseClone);
                         });
                     }
                     return response;
                 })
                 .catch(() => {
-                    // Return cached version if network fails
-                    return caches.match(event.request)
-                        .then(response => {
-                            if (response) {
-                                return response;
-                            }
-                            // Return offline simulation page
-                            return caches.match('/fire-percolation.html');
-                        });
+                    // Fallback to cache
+                    return caches.match(event.request);
                 })
         );
-        return;
-    }
-
-    // Handle API requests - Network Only with timeout
-    if (url.pathname.includes('/api/')) {
+    } else if (event.request.destination === 'script' ||
+               event.request.destination === 'style' ||
+               event.request.destination === 'font') {
+        // Static assets - Cache first, network fallback
         event.respondWith(
-            Promise.race([
-                fetch(event.request),
-                new Promise((_, reject) =>
-                    setTimeout(() => reject(new Error('Network timeout')), 5000)
-                )
-            ])
-            .catch(() => {
-                return new Response(JSON.stringify({
-                    error: 'Network unavailable',
-                    offline: true
-                }), {
-                    status: 503,
-                    headers: { 'Content-Type': 'application/json' }
-                });
+            caches.match(event.request)
+                .then(response => {
+                    if (response) {
+                        // Return cached version and update in background
+                        fetch(event.request).then(networkResponse => {
+                            if (networkResponse.status === 200) {
+                                caches.open(STATIC_CACHE).then(cache => {
+                                    cache.put(event.request, networkResponse);
+                                });
+                            }
+                        }).catch(() => {
+                            // Network failed, keep cached version
+                        });
+
+                        return response;
+                    }
+
+                    // Not in cache, fetch from network
+                    return fetch(event.request).then(networkResponse => {
+                        if (networkResponse.status === 200) {
+                            const responseClone = networkResponse.clone();
+                            caches.open(STATIC_CACHE).then(cache => {
+                                cache.put(event.request, responseClone);
+                            });
+                        }
+                        return networkResponse;
+                    });
+                })
+        );
+    } else if (event.request.destination === 'image') {
+        // Images - Cache first with memory-aware strategy
+        event.respondWith(
+            caches.match(event.request)
+                .then(response => {
+                    if (response) {
+                        return response;
+                    }
+
+                    return fetch(event.request).then(networkResponse => {
+                        // Only cache if response is small (< 500KB) to save memory
+                        if (networkResponse.status === 200 &&
+                            networkResponse.headers.get('content-length') &&
+                            parseInt(networkResponse.headers.get('content-length')) < 500000) {
+
+                            const responseClone = networkResponse.clone();
+                            caches.open(DYNAMIC_CACHE).then(cache => {
+                                cache.put(event.request, responseClone);
+                            });
+                        }
+                        return networkResponse;
+                    });
+                })
+        );
+    } else {
+        // Other requests - Network first
+        event.respondWith(
+            fetch(event.request).catch(() => {
+                return caches.match(event.request);
             })
         );
-        return;
-    }
-
-    // Default: Stale While Revalidate for HTML, CSS, JS
-    event.respondWith(
-        caches.match(event.request)
-            .then(response => {
-                const fetchPromise = fetch(event.request).then(networkResponse => {
-                    if (networkResponse.status === 200) {
-                        const responseClone = networkResponse.clone();
-                        caches.open(STATIC_CACHE).then(cache => {
-                            cache.put(event.request, responseClone);
-                        });
-                    }
-                    return networkResponse;
-                });
-
-                return response || fetchPromise;
-            })
-            .catch(() => {
-                // Return offline fallback
-                if (event.request.destination === 'document') {
-                    return caches.match('/offline.html') || new Response(
-                        '<html><body><h1>Offline</h1><p>The simulation is not available offline.</p></body></html>',
-                        { headers: { 'Content-Type': 'text/html' } }
-                    );
-                }
-            })
-    );
-});
-
-// Handle background sync for simulation data
-self.addEventListener('sync', (event) => {
-    console.log('Service Worker: Background sync triggered');
-
-    if (event.tag === 'simulation-data-sync') {
-        event.waitUntil(syncSimulationData());
     }
 });
 
-async function syncSimulationData() {
-    try {
-        // Sync any queued simulation results or user progress
-        const clients = await self.clients.matchAll();
-        clients.forEach(client => {
-            client.postMessage({
-                type: 'SYNC_COMPLETE',
-                timestamp: Date.now()
+// Message event - handle device capability updates
+self.addEventListener('message', event => {
+    if (event.data && event.data.type === 'DEVICE_CAPABILITIES') {
+        deviceCapabilities = event.data.capabilities;
+        console.log('[SW] Received device capabilities:', deviceCapabilities);
+
+        // Adjust caching strategy based on device capabilities
+        if (deviceCapabilities && deviceCapabilities.memory) {
+            const memoryPressure = deviceCapabilities.memory.pressure;
+
+            if (memoryPressure === 'high') {
+                // Aggressive cleanup for low-memory devices
+                cleanupMemory();
+            }
+        }
+    }
+});
+
+// Memory cleanup function for low-memory devices
+function cleanupMemory() {
+    console.log('[SW] Running memory cleanup');
+
+    // Remove non-critical cached items
+    caches.open(DYNAMIC_CACHE).then(cache => {
+        cache.keys().then(requests => {
+            const toDelete = requests.filter(request => {
+                const url = request.url;
+                // Keep only critical resources in dynamic cache for low-memory devices
+                return !CRITICAL_RESOURCES.some(critical => url.includes(critical));
+            });
+
+            console.log('[SW] Deleting', toDelete.length, 'non-critical cached items');
+            toDelete.forEach(request => {
+                cache.delete(request);
             });
         });
-    } catch (error) {
-        console.error('Service Worker: Sync failed:', error);
-    }
+    });
 }
 
-// Handle push notifications for simulation updates
-self.addEventListener('push', (event) => {
-    console.log('Service Worker: Push notification received');
+// Periodic cleanup (every 5 minutes)
+setInterval(() => {
+    cleanupMemory();
+}, 5 * 60 * 1000);
 
-    const options = {
-        body: event.data ? event.data.text() : 'New simulation content available!',
-        icon: '/icon-192x192.png',
-        badge: '/icon-72x72.png',
-        vibrate: [100, 50, 100],
-        data: {
-            dateOfArrival: Date.now(),
-            primaryKey: 1
-        },
-        actions: [
-            {
-                action: 'explore',
-                title: 'Explore Now',
-                icon: '/icon-72x72.png'
-            },
-            {
-                action: 'dismiss',
-                title: 'Dismiss'
-            }
-        ]
-    };
-
-    event.waitUntil(
-        self.registration.showNotification('VibeSimulation', options)
-    );
-});
-
-// Handle notification clicks
-self.addEventListener('notificationclick', (event) => {
-    console.log('Service Worker: Notification clicked');
-
-    event.notification.close();
-
-    if (event.action === 'explore') {
-        event.waitUntil(
-            clients.openWindow('/fire-percolation.html')
-        );
+// Handle background sync for low-memory devices
+self.addEventListener('sync', event => {
+    if (event.tag === 'memory-cleanup') {
+        cleanupMemory();
     }
 });
 
-// Performance monitoring
-self.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'PERFORMANCE_METRIC') {
-        // Store performance metrics for analysis
-        console.log('Service Worker: Performance metric received:', event.data);
-
-        // Could send to analytics service
-        // sendToAnalytics(event.data);
+// Handle push notifications (if needed in future)
+self.addEventListener('push', event => {
+    if (event.data) {
+        const data = event.data.json();
+        console.log('[SW] Push received:', data);
     }
-});
-
-// Error handling and reporting
-self.addEventListener('error', (event) => {
-    console.error('Service Worker: Error occurred:', event.error);
-
-    // Report errors to monitoring service
-    // reportError(event.error);
-});
-
-self.addEventListener('unhandledrejection', (event) => {
-    console.error('Service Worker: Unhandled promise rejection:', event.reason);
-
-    // Report unhandled rejections
-    // reportError(event.reason);
 });
