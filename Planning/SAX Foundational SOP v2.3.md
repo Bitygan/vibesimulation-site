@@ -1,7 +1,7 @@
 ### **Standard Operating Procedure: Generative Cinematics (SAX Protocol)**
 
-**Document ID:** SAX-SOP-2.2  
-**Version:** 2.2 (Cognitive + Statistical Assurance)  
+**Document ID:** SAX-SOP-2.3  
+**Version:** 2.3 (Cognitive + Statistical Assurance)  
 **Effective Date:** 2025-08-26  
 **Status:** Active, Canonical  
 **Classification:** Level 5 - Founder/Board Confidential - DO NOT DISTRIBUTE  
@@ -10,6 +10,15 @@
 
 
 ***
+
+# v2.3 — Changelog summary (for the header)
+
+* **Added**: FieldAgent(2D); SDFSense; Hybrid Rendering §6.28; Domain Warping (tileable + curl) spec.
+* **Changed**: §6.29 linear composition + ACES + cosine palettes; VF-10 gate inverted (difference must exist).
+* **Validated**: VF-8 (smin), VF-9 (FieldAgent 2D), **VF-11′** (periodic/curl), VF-12 (backend).
+* **Backends**: CPU reference remains canonical; quantified equivalence requirements for accelerators.
+* **Ledger**: expanded fields for color math, palettes, domain warp, and backends.
+
 
 ### **Part 1: Foundational Doctrine & Core Ontology (Version 2.0)**
 
@@ -145,6 +154,35 @@ These are the core agents for stories about discrete actors and systems.
         *   **Multi-Modal State:** The agent's `nodes` must support a multi-modal state vector (e.g., `omega`, `temp`, `stress`). The agent's visual representation must map these distinct state channels to orthogonal visual properties (e.g., rotation, fill color, stroke width).
         *   **Relaxation Dynamics:** The `step()` method must implement the canonical relaxation pattern: `x_new = decay * x_old + relax * (x_target - x_old)`.
 
+## §5.2.4  FieldAgent (2D, SDF-backed)
+
+**Purpose:** deterministic vector output from 2D signed distance fields.
+
+* **State**
+
+  * `field(p: ℝ²) → d ∈ ℝ` (iso = 0 contour is the shape).
+  * Kernel: `min` (hard union) or **smooth-min** (Quílez polynomial or exponential).
+  * Parameters: `k ∈ {0.05, 0.10, 0.20, 0.35}` (validated range).
+* **View**
+
+  * Contour extraction via **marching squares** (iso = 0) → **segments→polylines** stitched.
+  * Optional **Ramer–Douglas–Peucker** (RDP) simplification (default ε ≈ 0.003 in world units).
+  * Output is a single `VMobject` (polyline paths), updated in-place per frame (deterministic).
+* **Verbs**
+
+  * `set_kernel(hard|min|smin_poly|smin_exp)`
+  * `set_k(float)` for smin
+  * `anim_smooth_morph(params, k)`
+  * `as_mask()` for compositing
+* **Determinism**
+
+  * Fixed sampling grid; fixed iso; fixed RDP ε; no stochastic ordering.
+* **Constraints**
+
+  * Smooth-min is **not** distance-preserving; use only when visual C¹ continuity is desired.
+
+
+
 **5.3 Simulation-First Primitives (NEW)**
 
 These are the core agents for stories about continuous fields and natural phenomena.
@@ -173,6 +211,28 @@ These are the core agents for stories about continuous fields and natural phenom
             *   A **Probabilistic Belief State:** A data structure that represents the agent's uncertainty over the state of the world (e.g., a `SparseBelief` map, a Particle Filter).
             *   A **Generative Causal Model:** The agent's internal, simplified "physics engine." This is the model it uses to run counterfactual simulations.
         *   **iii. The Planning & Action Engine (The "Will"):** The agent's executive function. This subsystem implements a **counterfactual planning algorithm** (e.g., MCTS) that operates on the agent's Belief State and Causal Model to select the optimal action according to its dual-objective utility function.
+
+## §5.4.2(i)  CognitiveAgent — SDFSense (Optional)
+
+**Purpose:** make SDF worlds interrogable by agents.
+
+* `query_sdf(p: ℝ² or ℝ³) → d, ∇d`
+* Must respect observability (only registered fields).
+* Log latency per batch and sampler identity.
+* Deterministic under fixed seed and scene state.
+
+## §5.6  Backends & Equivalence
+
+* **CPU reference** (sphere-trace-style) is canonical.
+* Any accelerated backend (GPU / vectorized) **must** match the CPU reference over a scene sweep with:
+
+  * **PSNR ≥ 40 dB** (linear depth or radiance as applicable)
+  * **median |Δ| ≤ 1e-3**
+* **Ledger**: backend id, max steps, early-outs, sampler family, PSNR/Δ summary for validation frames.
+
+
+---
+
 
 ***
 
@@ -211,6 +271,20 @@ The five-phase protocol remains the mandatory lifecycle for all SAX productions.
     *   **Computational Alliance Mandate:** If the simulation requires a `Computational Alliance`, the blueprint must define the precise API for the external library. The development of this interface and a simple, pure-Python placeholder version is a mandatory part of this phase.
     *   **Cognitive Architecture Specification:** For a `CognitiveAgent`, the blueprint must formally define its three subsystems: the Perceptual Engine, the Belief & World Model (including the specific probability distributions to be used), and the Planning & Action Engine (including the specific search algorithm).
 *   **6.2.3 Exit Criteria:** An approved Architectural Blueprint. All new, reusable agent classes and headless simulators are implemented, unit-tested, and merged into the core framework.
+
+## §6.28  Hybrid Rendering Pipeline (Raster + Vector)
+
+**Purpose:** make overlays/readouts auditably correct.
+
+* Two-pass pipeline:
+
+  1. Raster from SimulatorAgent (`to_rgb()` in **linear** radiance).
+  2. Vector overlays (text/glyphs/arrows) on transparent.
+* **Composition**: Porter–Duff **over in linear light**; **then** tone-map (default **ACES/filmic**).
+* **Forbidden**: compositing in gamma-encoded sRGB.
+* **Ledger**: `overlay.color_math="linear"`, `tonemap="ACES_filmic"`, overlay opacity, z-order.
+
+
 
 **6.3 Phase 3: Choreographic Sequencing**
 
@@ -439,11 +513,13 @@ Acceptance: **VF-7** reports average generation time per frame; values ≥ budge
 - **VF-3** shows Shallow-Water ≈≥3× faster while preserving silhouette IoU within the shot’s tolerance.
 
 
-**6.29 Color Composition Standards for Overlays (Linear/Spectral)**
+## §6.29  Color Composition Standards (Linear/Spectral)
 
-**Rule.** Perform multiplicative overlay math in a **linear-radiance** or spectral proxy domain, then convert to display RGB. If an RGB-space multiply is unavoidable, annotate `overlay.color_math = "srgb_multiply"` in the ledger and justify.
+* **Compose exclusively in linear** radiance space; tone-map afterward (default **ACES/filmic**).
+* **Default palette**: **cosine palette** (Quílez) with deterministic params `(a,b,c,d)` **hashed by RUN\_ID**.
+  Record `(a,b,c,d)` in the ledger for reproducibility.
+* sRGB inputs must be converted to linear before any math; outputs tone-mapped and encoded only at the end.
 
-**Acceptance.** **VF-6** compares sRGB-space vs linear-space multiplication and logs Δ in linear space.
 
 
 
@@ -823,7 +899,8 @@ These are the most advanced patterns in the SAX framework, used to visualize the
                 p_wall = self.world.wall_belief.get(r, c)
                 
                 # Map entropy to opacity: high uncertainty (p~0.5) is dim,
-                # high certainty (p~0 or p~1) is bright.
+
+
                 entropy = -p_wall * np.log2(p_wall) - (1-p_wall) * np.log2(1-p_wall)
                 opacity = 1.0 - entropy
                 
@@ -1189,6 +1266,19 @@ if __name__ == "__main__":
 **1D wave (fixed ends).** Courant bound `σ = c·dt/Δx ≤ 1`; initialize with mode `sin(nπx/L)`; verify period at x=L/2 vs theory. (VN-6.) :contentReference[oaicite:10]{index=10}
 
 **2D Laplace (Dirichlet).** Gauss–Seidel (or SOR) update with RMS residual logging each sweep; convergence until tolerance met; produce heatmap plate. (VN-7.) :contentReference[oaicite:11]{index=11}
+
+## §A.11  Domain Warping (Tileable, Curl-Driven)  — **replaces prior A.11**
+
+**Purpose:** organic structure without seams or shimmer.
+
+* **Base field must be periodic** in X and Y.
+
+  * Recommended: **4D torus mapping** (sin/cos pairs) into 4D noise/fBm; same period per octave × frequency.
+* **Warp field**: **curl of a smoothed scalar potential**
+  $v = (∂φ/∂y, -∂φ/∂x)$, with φ low-pass filtered (e.g., Gaussian σ≈1 px).
+* **Warp amplitude**: small (default 0.2–0.3 world units) to avoid fold-overs.
+* **Sampling**: downsample warped images with prefiltering or stratified multi-sampling; **never** single-point pick.
+* **Wrap semantics**: modulo at domain boundaries to preserve periodicity.
 
 
 ### A.12 Golden Validation — Physics Numerics Core (SAFE)
@@ -1854,6 +1944,7 @@ class Fluid2D:
         img = img[::-1,:,:]  # flip Y for display
         return Image.fromarray(img, "RGBA").resize((img.shape[1]*scale, img.shape[0]*scale), Image.NEAREST)
 
+
 # ==========================================================
 # VF-1: MAC vs Collocated — divergence & checkerboard
 # ==========================================================
@@ -2186,6 +2277,87 @@ class VF7_ProcessingMode_UI(Scene):
         rec=[{"avg_ms_per_frame": float(np.mean(gen_times)*1000.0), "frames":frames}]
         write_ledger("VF7_ProcessingUI.saxlg", meta, rec)
 
+ v2.3 — Validation & acceptance (gates you enforce in CI)
+
+> All metrics and JSON outputs must be written to the ledger artifacts. The following thresholds are authoritative.
+
+### VF-8  Smooth-min vs Hard Union (SDF unions)
+
+* **Setup**: two disks varying separation; compare hard `min` vs **smooth-min** (k∈{0.35, 0.20, 0.10, 0.05}).
+* **Pass if**
+
+  * **Median** silhouette **Hausdorff ≤ 1.5 px** (smooth-min vs hard-min).
+  * **Normal-band variance** at the junction shows **≥ 20% reduction** vs hard-min baseline.
+* **Notes**: smooth-min is adopted with the explicit caveat it is not distance-preserving.
+
+### VF-9  FieldAgent(2D) — Contour fidelity & determinism
+
+* **Pass if**
+
+  * IoU ≥ **0.995** vs analytic circle on reference grid.
+  * Determinism: byte-identical segment/polyline hash under fixed seed.
+* **Implementation**: marching squares → **polylines** (stitched), optional **RDP** simplification.
+
+### VF-10  Hybrid Composite (linear-light proof)
+
+* **Test**: compare **linear-over + tone-map** vs **naive sRGB-over** on the same content.
+* **Pass if**
+
+  * Mean `L2_linear_vs_naive` across frames **≥ l2\_norm\_thresh** (default **1e-3**).
+    *(This asserts a significant, non-zero difference; i.e., we are actually doing linear-over.)*
+* **Forbidden**: passing by lowering the threshold until noise-level — the delta must be visibly non-zero on the reference scene.
+
+### VF-11′  Periodic Domain Warping (seams + anti-alias)
+
+* **Base**: periodic fBm (torus mapping); **Warp**: curl-noise (smoothed φ).
+* **Pass if**
+
+  * Mean **seam gradient jump ≤ 0.005** (x=0 vs x=T, y=0 vs y=T).
+  * Mean **anti-alias improvement ≥ 0.15** (MSE reduction of stratified vs naïve downsample against 2× supersampled ground truth).
+
+### VF-12  Backend Equivalence
+
+* **Pass if** (for each candidate backend vs CPU reference)
+
+  * **PSNR ≥ 40 dB**
+  * **median |Δ| ≤ 1e-3**
+* Log max steps, early-out counts, sampler identity.
+
+---
+
+# v2.3 — Ledger & reproducibility (add/clarify)
+
+Record the following **per render**:
+
+* **Global**: `RUN_ID`, `USER_SEED`, scene hash, resolution, frame range, fps.
+* **Color**: `overlay.color_math="linear"`, `tonemap`, cosine-palette `(a,b,c,d)`, transfer functions used (sRGB↔linear).
+* **FieldAgent(2D)**: kernel type (`min`/`smin_poly`/`smin_exp`), `k`, iso value, grid, RDP ε, contour stitcher hash.
+* **Domain Warp**: base periodicity (period X/Y), warp amplitude, φ smoothing σ, wrap mode.
+* **Backend**: id, precision, max steps, early-outs, sampler; equivalence metrics if VF-12 run.
+* **Determinism**: any stochastic sampler seeds; confirm “byte-identical overlays” when applicable.
+
+---
+
+# v2.3 — Cookbook & engineering guidance (appendices)
+
+## A.4.3  Multi-channel compositor
+
+* Normalize channels (EMA or specified), **compose in linear**, tone-map (ACES/filmic), apply display transfer last.
+* Provide a canonical **cosine-palette** fixture with deterministic params and example “belief→color” mapping (informational overlay), optional.
+
+## A.11 (new text reflects §A.11 above)
+
+* Include example code for **4D torus mapping** periodic noise, **curl-warping** and **stratified downsample**.
+
+## A.15  Sampling guidance (clarify)
+
+* Prefer **stratified / multi-sample** when downscaling animated or warped content.
+* Document that single-point downsample is not acceptable for QA footage.
+
+## A.18  Manim performance note (non-normative but practical)
+
+* Avoid per-frame **VMobject churn** (e.g., thousands of `Line`s).
+  Use **polyline VMobjects updated in-place**; disable caching for long validations.
 
 ***
 
