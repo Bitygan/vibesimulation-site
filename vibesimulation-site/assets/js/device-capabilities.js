@@ -139,45 +139,72 @@ const DeviceCapabilities = (function() {
         return timeTaken;
     }
 
-    // Memory pressure monitoring
+    // Memory pressure monitoring (reduced frequency for performance)
     function monitorMemoryPressure() {
         if ('memory' in performance) {
-            setInterval(() => {
-                const memInfo = performance.memory;
-                const usedPercent = (memInfo.usedJSHeapSize / memInfo.totalJSHeapSize) * 100;
-                performanceMetrics.memoryPressure = usedPercent > 80;
+            let monitorCount = 0;
+            const monitorInterval = setInterval(() => {
+                monitorCount++;
 
-                // Trigger garbage collection if available
-                if (window.gc && usedPercent > 90) {
-                    window.gc();
+                // Only do full monitoring every 30 seconds, light monitoring every 10 seconds
+                if (monitorCount % 6 === 0) { // Every 30 seconds
+                    const memInfo = performance.memory;
+                    const usedPercent = (memInfo.usedJSHeapSize / memInfo.totalJSHeapSize) * 100;
+                    performanceMetrics.memoryPressure = usedPercent > 80;
+
+                    // Only trigger GC in extreme cases and with delay
+                    if (window.gc && usedPercent > 95 && monitorCount > 12) { // Only after 60 seconds
+                        setTimeout(() => window.gc(), 1000); // Delay to avoid blocking
+                    }
+                } else { // Light monitoring every 10 seconds
+                    // Just check if we're in a low-memory state
+                    performanceMetrics.memoryPressure = performanceMetrics.memoryPressure || false;
                 }
-            }, 5000);
+
+                // Stop monitoring after 5 minutes to reduce overhead
+                if (monitorCount > 300) { // 300 * 10 seconds = 50 minutes
+                    clearInterval(monitorInterval);
+                    console.log('[DeviceCapabilities] Memory monitoring disabled after 50 minutes');
+                }
+            }, 10000); // Reduced from 5 seconds to 10 seconds
         }
     }
 
-    // FPS monitoring
+    // FPS monitoring (more efficient)
     function monitorFPS() {
         let lastTime = performance.now();
         let frames = 0;
+        let monitoringActive = true;
 
         function updateFPS() {
+            if (!monitoringActive) return;
+
             const currentTime = performance.now();
             frames++;
 
-            if (currentTime - lastTime >= 1000) {
+            if (currentTime - lastTime >= 2000) { // Reduced frequency from 1s to 2s
                 performanceMetrics.fps = Math.round((frames * 1000) / (currentTime - lastTime));
                 frames = 0;
                 lastTime = currentTime;
 
-                // Throttle if FPS drops below 30
-                if (performanceMetrics.fps < 30) {
+                // Only flag memory pressure if consistently low FPS
+                if (performanceMetrics.fps < 20) { // Reduced threshold from 30 to 20
                     performanceMetrics.memoryPressure = true;
+                }
+
+                // Disable monitoring after 10 minutes to reduce overhead
+                if (currentTime - performanceMetrics.startTime > 600000) { // 10 minutes
+                    monitoringActive = false;
+                    console.log('[DeviceCapabilities] FPS monitoring disabled after 10 minutes');
                 }
             }
 
-            requestAnimationFrame(updateFPS);
+            if (monitoringActive) {
+                requestAnimationFrame(updateFPS);
+            }
         }
 
+        performanceMetrics.startTime = performance.now();
         requestAnimationFrame(updateFPS);
     }
 

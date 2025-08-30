@@ -214,10 +214,22 @@ function cleanupMemory() {
     });
 }
 
-// Periodic cleanup (every 5 minutes)
-setInterval(() => {
-    cleanupMemory();
-}, 5 * 60 * 1000);
+// Periodic cleanup (reduced frequency for performance)
+let cleanupCount = 0;
+const cleanupInterval = setInterval(() => {
+    cleanupCount++;
+
+    // Only do full cleanup every 15 minutes, light cleanup every 5 minutes
+    if (cleanupCount % 3 === 0) { // Every 15 minutes
+        cleanupMemory();
+    }
+
+    // Stop periodic cleanup after 2 hours to reduce overhead
+    if (cleanupCount > 24) { // 24 * 5 minutes = 2 hours
+        clearInterval(cleanupInterval);
+        console.log('[SW] Periodic cleanup disabled after 2 hours');
+    }
+}, 5 * 60 * 1000); // Every 5 minutes
 
 // Handle background sync for low-memory devices
 self.addEventListener('sync', event => {

@@ -202,20 +202,29 @@ const DOMOptimizer = (function() {
         }
     }
 
-    // Monitor DOM size and warn about memory usage
+    // Monitor DOM size and warn about memory usage (reduced frequency)
     function monitorDOMSize() {
-        function checkDOMSize() {
-            const elementCount = document.getElementsByTagName('*').length;
-            const memoryUsage = elementCount * 1000; // Rough estimate
+        let monitorCount = 0;
+        const monitorInterval = setInterval(() => {
+            monitorCount++;
 
-            if (elementCount > 2000 && isLowMemory) {
-                console.warn(`High DOM element count: ${elementCount} elements (~${Math.round(memoryUsage/1024)}KB)`);
-                suggestOptimization();
+            // Only check every 60 seconds for performance
+            if (monitorCount % 6 === 0) { // Every 60 seconds
+                const elementCount = document.getElementsByTagName('*').length;
+                const memoryUsage = elementCount * 1000; // Rough estimate
+
+                if (elementCount > 2000 && isLowMemory) {
+                    console.warn(`High DOM element count: ${elementCount} elements (~${Math.round(memoryUsage/1024)}KB)`);
+                    suggestOptimization();
+                }
             }
-        }
 
-        // Check every 10 seconds
-        setInterval(checkDOMSize, 10000);
+            // Stop monitoring after 30 minutes to reduce overhead
+            if (monitorCount > 180) { // 180 * 10 seconds = 30 minutes
+                clearInterval(monitorInterval);
+                console.log('[DOM Optimizer] DOM monitoring disabled after 30 minutes');
+            }
+        }, 10000);
     }
 
     // Suggest optimizations for high DOM usage

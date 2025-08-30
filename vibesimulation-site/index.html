@@ -2675,13 +2675,25 @@
 					checkDeviceAndLoad();
 				}
 
-				// Memory monitoring
-				setInterval(() => {
-					if (window.DeviceCapabilities && window.DeviceCapabilities.shouldThrottle()) {
-						console.warn('Memory pressure detected - triggering cleanup');
-						if (window.OptimizedLoader) {
-							window.OptimizedLoader.cleanup();
+				// Memory monitoring (reduced frequency for performance)
+				let monitorCount = 0;
+				const monitorInterval = setInterval(() => {
+					monitorCount++;
+
+					// Only check every 45 seconds for performance
+					if (monitorCount % 3 === 0) { // Every 45 seconds
+						if (window.DeviceCapabilities && window.DeviceCapabilities.shouldThrottle()) {
+							console.warn('Memory pressure detected - triggering cleanup');
+							if (window.OptimizedLoader) {
+								window.OptimizedLoader.cleanup();
+							}
 						}
+					}
+
+					// Stop monitoring after 20 minutes to reduce overhead
+					if (monitorCount > 80) { // 80 * 15 seconds = 20 minutes
+						clearInterval(monitorInterval);
+						console.log('[Progressive Loader] Memory monitoring disabled after 20 minutes');
 					}
 				}, 15000);
 

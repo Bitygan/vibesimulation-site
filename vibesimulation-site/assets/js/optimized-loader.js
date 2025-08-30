@@ -193,14 +193,20 @@ const OptimizedLoader = (function() {
         return Promise.all(scripts.map(src => loadScript(src)));
     }
 
-    // Memory-aware asset preloader
+    // Memory-aware asset preloader (performance optimized)
     function preloadAssets(assetList) {
         if (window.DeviceCapabilities && window.DeviceCapabilities.isLowMemory()) {
             console.log('Skipping asset preloading on low-memory device');
             return Promise.resolve();
         }
 
-        const promises = assetList.map(asset => {
+        // Limit preloading to prevent memory pressure
+        const maxPreload = window.DeviceCapabilities ?
+            (window.DeviceCapabilities.classifyDevice() === 'high-end' ? 10 : 5) : 3;
+
+        const limitedAssets = assetList.slice(0, maxPreload);
+
+        const promises = limitedAssets.map(asset => {
             return new Promise((resolve, reject) => {
                 const link = document.createElement('link');
                 link.rel = 'preload';
@@ -212,11 +218,17 @@ const OptimizedLoader = (function() {
                 link.onload = resolve;
                 link.onerror = reject;
 
-                document.head.appendChild(link);
+                // Add with delay to prevent overwhelming the network
+                setTimeout(() => {
+                    document.head.appendChild(link);
+                }, Math.random() * 100); // Random delay up to 100ms
+
+                // Timeout after 5 seconds
+                setTimeout(() => reject(new Error('Preload timeout')), 5000);
             });
         });
 
-        return Promise.all(promises);
+        return Promise.allSettled(promises); // Use allSettled to prevent one failure from blocking others
     }
 
     // Dynamic canvas resolution adjustment
