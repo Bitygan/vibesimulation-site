@@ -876,6 +876,8 @@
             }
 
             initializeRoadNetwork() {
+                console.log('Initializing road network...');
+
                 // Create horizontal roads
                 for (let y = 40; y < 50; y++) {
                     for (let x = 0; x < this.GRID_WIDTH; x++) {
@@ -899,6 +901,11 @@
                         this.setGridCell(x, y, 1); // Road
                     }
                 }
+
+                console.log('Road network initialization completed');
+
+                // Test a few grid cells
+                console.log(`Test grid cells: (${0},${45})=${this.getGridCell(0,45)}, (${65},${45})=${this.getGridCell(65,45)}, (${65},${0})=${this.getGridCell(65,0)}`);
             }
 
             setGridCell(x, y, value) {
@@ -1289,11 +1296,14 @@
             }
 
             renderRoads() {
+                console.log('Starting renderRoads...');
                 this.ctx.fillStyle = '#2a2a2a';
 
+                let roadCount = 0;
                 for (let y = 0; y < this.GRID_HEIGHT; y++) {
                     for (let x = 0; x < this.GRID_WIDTH; x++) {
                         if (this.getGridCell(x, y) === 1) { // Road
+                            roadCount++;
                             this.ctx.fillRect(
                                 x * this.CELL_SIZE,
                                 y * this.CELL_SIZE,
@@ -1301,6 +1311,16 @@
                                 this.CELL_SIZE
                             );
                         }
+                    }
+                }
+                console.log(`Found ${roadCount} road cells out of ${this.GRID_WIDTH * this.GRID_HEIGHT} total cells`);
+
+                // If no roads found, draw a test road
+                if (roadCount === 0) {
+                    console.log('No roads found! Drawing test road...');
+                    this.ctx.fillStyle = '#ff0000'; // Red test road
+                    for (let x = 0; x < 50; x++) {
+                        this.ctx.fillRect(x * this.CELL_SIZE, 45 * this.CELL_SIZE, this.CELL_SIZE, this.CELL_SIZE);
                     }
                 }
 
