@@ -784,6 +784,12 @@
                 }
             }
 
+            handlePointerUp(event) {
+                event.preventDefault();
+                // Handle pointer up events (end of interaction)
+                // Currently no specific logic needed, but method must exist for event binding
+            }
+
             handleTouchStart(event) {
                 event.preventDefault();
                 if (event.touches.length > 0) {
