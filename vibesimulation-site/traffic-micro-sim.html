@@ -401,7 +401,7 @@
         <div class="simulation-container">
             <!-- CANVAS ABOVE CONTROLS: High-density 1600x1200 canvas for maximum detail -->
             <div class="canvas-container">
-                <canvas id="traffic-canvas" width="1600" height="1200"></canvas>
+                <canvas id="traffic-canvas" width="1600" height="1200" style="border: 2px solid red; background: #ff0000;"></canvas>
 
                 <!-- OVERLAY TOOLBAR: Main interaction buttons on canvas -->
                 <div class="canvas-toolbar">
@@ -671,7 +671,7 @@
                 // Traffic simulation parameters
                 this.maxSpeed = 5;
                 this.safeDistance = 2;
-                this.generationRate = 0.3;
+                this.generationRate = 0.8; // Increased for better demo
                 this.lightCycle = 60; // seconds
 
                 // Simulation state
@@ -700,18 +700,41 @@
                     safeDistance: this.safeDistance
                 });
 
-                this.updateInfo('Traffic micro-simulation ready. Click and drag to add vehicles.');
+                this.updateInfo('Traffic simulation running! Vehicles appear automatically. Click "Start Traffic" to begin movement, or click roads to add vehicles manually.');
             }
 
             setupCanvas() {
+                console.log('Setting up canvas...');
+                console.log('Target dimensions:', this.CANVAS_WIDTH, 'x', this.CANVAS_HEIGHT);
+
+                // Set canvas internal dimensions
                 this.canvas.width = this.CANVAS_WIDTH;
                 this.canvas.height = this.CANVAS_HEIGHT;
 
-                // CSS scaling for responsiveness
-                this.canvas.style.width = '100%';
-                this.canvas.style.height = 'auto';
-                this.canvas.style.maxWidth = this.CANVAS_WIDTH + 'px';
-                this.canvas.style.maxHeight = this.CANVAS_HEIGHT + 'px';
+                // Check actual canvas size after setting
+                console.log('Canvas internal size:', this.canvas.width, 'x', this.canvas.height);
+
+                // CSS scaling for responsiveness - but keep it visible for debugging
+                this.canvas.style.width = '800px'; // Fixed size for debugging
+                this.canvas.style.height = '600px'; // Fixed size for debugging
+                this.canvas.style.border = '3px solid yellow';
+                this.canvas.style.background = '#0000ff';
+
+                console.log('Canvas CSS size set to:', this.canvas.style.width, 'x', this.canvas.style.height);
+
+                // Get canvas context
+                this.ctx = this.canvas.getContext('2d');
+                console.log('Canvas context obtained:', !!this.ctx);
+
+                // Test immediate draw
+                if (this.ctx) {
+                    this.ctx.fillStyle = '#ff00ff';
+                    this.ctx.fillRect(0, 0, 50, 50);
+                    this.ctx.fillStyle = '#ffffff';
+                    this.ctx.font = '16px Arial';
+                    this.ctx.fillText('SETUP OK', 10, 30);
+                    console.log('Test draw completed');
+                }
             }
 
             setupEventHandlers() {
@@ -799,12 +822,51 @@
                 // Set initial interaction mode
                 this.interactionMode = 'car';
                 this.updateBrushIndicator();
-                this.hasRendered = false;
 
-                // Initial render to show roads (with small delay to ensure canvas is ready)
+                // Add some initial vehicles to demonstrate the simulation
+                this.addInitialVehicles();
+
+                // Initial render to show roads immediately
                 setTimeout(() => {
+                    console.log('Performing initial render...');
                     this.render();
-                }, 100);
+                    console.log('Initial render completed');
+                }, 50);
+            }
+
+            addInitialVehicles() {
+                // Add a few vehicles at different positions to show the simulation working
+                const initialPositions = [
+                    { x: 10, y: 45, direction: 'east' },   // On horizontal road
+                    { x: 50, y: 45, direction: 'east' },   // On horizontal road
+                    { x: 90, y: 45, direction: 'east' },   // On horizontal road
+                    { x: 65, y: 50, direction: 'south' },  // Just below horizontal road intersection
+                    { x: 65, y: 100, direction: 'north' }, // Just above horizontal road intersection
+                    { x: 135, y: 50, direction: 'south' }, // Just below horizontal road intersection
+                    { x: 150, y: 105, direction: 'west' }, // On horizontal road
+                    { x: 30, y: 105, direction: 'east' }   // On horizontal road
+                ];
+
+                initialPositions.forEach(pos => {
+                    // Determine correct direction based on road position
+                    let correctDirection = pos.direction;
+                    if (pos.y >= 40 && pos.y < 50) {
+                        correctDirection = pos.x < this.GRID_WIDTH/2 ? 'east' : 'west';
+                    } else if (pos.y >= 100 && pos.y < 110) {
+                        correctDirection = pos.x < this.GRID_WIDTH/2 ? 'east' : 'west';
+                    } else if (pos.x >= 60 && pos.x < 70) {
+                        correctDirection = pos.y < this.GRID_HEIGHT/2 ? 'south' : 'north';
+                    } else if (pos.x >= 130 && pos.x < 140) {
+                        correctDirection = pos.y < this.GRID_HEIGHT/2 ? 'south' : 'north';
+                    }
+
+                    if (this.getGridCell(pos.x, pos.y) === 1) { // Only on roads
+                        this.addVehicle(pos.x, pos.y);
+                        // Override the direction if needed
+                        const vehicle = this.vehicles[this.vehicles.length - 1];
+                        vehicle.direction = correctDirection;
+                    }
+                });
             }
 
             initializeRoadNetwork() {
@@ -1150,18 +1212,23 @@
                 if (Math.random() < this.generationRate * dt * 60) {
                     // Generate vehicle at random road entrance
                     const entrances = [
-                        { x: 0, y: 45, direction: 'east' },
-                        { x: this.GRID_WIDTH - 1, y: 45, direction: 'west' },
-                        { x: 65, y: 0, direction: 'south' },
-                        { x: 65, y: this.GRID_HEIGHT - 1, direction: 'north' },
-                        { x: 0, y: 105, direction: 'east' },
-                        { x: this.GRID_WIDTH - 1, y: 105, direction: 'west' },
-                        { x: 135, y: 0, direction: 'south' },
-                        { x: 135, y: this.GRID_HEIGHT - 1, direction: 'north' }
+                        { x: 0, y: 45, direction: 'east' },                    // Left side of top horizontal road
+                        { x: this.GRID_WIDTH - 1, y: 45, direction: 'west' }, // Right side of top horizontal road
+                        { x: 65, y: 39, direction: 'south' },                 // Top of left vertical road
+                        { x: 65, y: 51, direction: 'north' },                 // Bottom of left vertical road intersection
+                        { x: 0, y: 105, direction: 'east' },                  // Left side of bottom horizontal road
+                        { x: this.GRID_WIDTH - 1, y: 105, direction: 'west' }, // Right side of bottom horizontal road
+                        { x: 135, y: 39, direction: 'south' },                // Top of right vertical road
+                        { x: 135, y: 111, direction: 'north' }                // Bottom of right vertical road
                     ];
 
                     const entrance = entrances[Math.floor(Math.random() * entrances.length)];
                     this.addVehicle(entrance.x, entrance.y);
+                    // Set the correct direction for the new vehicle
+                    if (this.vehicles.length > 0) {
+                        const newVehicle = this.vehicles[this.vehicles.length - 1];
+                        newVehicle.direction = entrance.direction;
+                    }
                 }
             }
 
@@ -1180,11 +1247,20 @@
             }
 
             render() {
+                console.log('Render called, canvas context:', !!this.ctx);
+
+                if (!this.ctx) {
+                    console.error('No canvas context available!');
+                    return;
+                }
+
                 // Clear canvas
                 this.ctx.fillStyle = '#0a0a0a';
                 this.ctx.fillRect(0, 0, this.CANVAS_WIDTH, this.CANVAS_HEIGHT);
+                console.log('Canvas cleared with background');
 
                 // Draw road network
+                console.log('Drawing roads...');
                 this.renderRoads();
 
                 // Draw traffic lights
@@ -1194,15 +1270,16 @@
                 this.renderObstacles();
 
                 // Draw vehicles
+                console.log('Drawing vehicles:', this.vehicles.length);
                 this.renderVehicles();
 
-                // Debug: Log if this is the first render
-                if (!this.hasRendered) {
-                    console.log('Traffic simulation render initialized');
-                    console.log('Grid size:', this.GRID_WIDTH, 'x', this.GRID_HEIGHT);
-                    console.log('Canvas size:', this.CANVAS_WIDTH, 'x', this.CANVAS_HEIGHT);
-                    this.hasRendered = true;
-                }
+                // Draw debug info
+                this.ctx.fillStyle = '#ffffff';
+                this.ctx.font = '16px Arial';
+                this.ctx.fillText(`Vehicles: ${this.vehicles.length}`, 10, this.CANVAS_HEIGHT - 30);
+                this.ctx.fillText(`Time: ${Math.floor(performance.now() / 1000)}s`, 10, this.CANVAS_HEIGHT - 10);
+
+                console.log('Render completed');
             }
 
             renderRoads() {
@@ -1272,12 +1349,37 @@
             renderVehicles() {
                 this.vehicles.forEach(vehicle => {
                     this.ctx.fillStyle = vehicle.color;
+                    // Use Math.round to ensure pixel-perfect rendering
+                    const renderX = Math.round(vehicle.x) * this.CELL_SIZE - this.CELL_SIZE / 2;
+                    const renderY = Math.round(vehicle.y) * this.CELL_SIZE - this.CELL_SIZE / 2;
+
                     this.ctx.fillRect(
-                        vehicle.x * this.CELL_SIZE - this.CELL_SIZE / 2,
-                        vehicle.y * this.CELL_SIZE - this.CELL_SIZE / 2,
+                        renderX,
+                        renderY,
                         this.CELL_SIZE,
                         this.CELL_SIZE
                     );
+
+                    // Add a small indicator for vehicle direction
+                    this.ctx.fillStyle = '#ffffff';
+                    const centerX = renderX + this.CELL_SIZE / 2;
+                    const centerY = renderY + this.CELL_SIZE / 2;
+                    const indicatorSize = 2;
+
+                    switch (vehicle.direction) {
+                        case 'east':
+                            this.ctx.fillRect(centerX + 2, centerY - 1, indicatorSize, 2);
+                            break;
+                        case 'west':
+                            this.ctx.fillRect(centerX - 4, centerY - 1, indicatorSize, 2);
+                            break;
+                        case 'south':
+                            this.ctx.fillRect(centerX - 1, centerY + 2, 2, indicatorSize);
+                            break;
+                        case 'north':
+                            this.ctx.fillRect(centerX - 1, centerY - 4, 2, indicatorSize);
+                            break;
+                    }
                 });
             }
 
@@ -1309,6 +1411,10 @@
 
                 if (this.isRunning) {
                     this.update(dt);
+                } else {
+                    // Even when not running, generate vehicles occasionally so users can see activity
+                    this.generateVehicles(dt);
+                    this.updateStats();
                 }
 
                 this.render();
@@ -1319,6 +1425,30 @@
         }
 
         // ========== INITIALIZATION ==========
+        console.log('Traffic simulation JavaScript loading...');
+
+        // Test if canvas exists and is accessible
+        const testCanvas = document.getElementById('traffic-canvas');
+        console.log('Canvas element:', testCanvas);
+
+        if (!testCanvas) {
+            console.error('Canvas element not found!');
+            document.body.innerHTML += '<div style="color: red; font-size: 24px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">CANVAS NOT FOUND!</div>';
+        } else {
+            console.log('Canvas found, testing context...');
+            const ctx = testCanvas.getContext('2d');
+            console.log('Canvas context:', ctx);
+
+            // Draw immediate test pattern
+            ctx.fillStyle = '#00ff00';
+            ctx.fillRect(10, 10, 100, 100);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '20px Arial';
+            ctx.fillText('CANVAS WORKS!', 20, 60);
+
+            console.log('Test pattern drawn');
+        }
+
         const ledger = new EpistemicLedger();
         const simulation = new TrafficSimulation('traffic-canvas');
 
