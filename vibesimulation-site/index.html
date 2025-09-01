@@ -1167,15 +1167,7 @@
 						</div>
 						<div class="physics-simulation">
 							<div class="physics-canvas">
-								<!-- TEMPORARILY DISABLED FOR FASTER LOADING -->
-								<div style="width: 100%; height: 400px; background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #b8c5d6; font-family: system-ui, sans-serif; text-align: center; padding: 2rem;">
-									<div>
-										<div style="font-size: 3rem; margin-bottom: 1rem;">🌊</div>
-										<h3 style="margin: 0 0 0.5rem 0; color: #ffffff;">Fluid Dynamics Simulation</h3>
-										<p style="margin: 0; opacity: 0.8;">Temporarily disabled for faster loading.<br>Try individual simulation pages for full experience.</p>
-									</div>
-								</div>
-								<!-- <canvas id="painted-sky-canvas" width="1400" height="700"></canvas> -->
+								<canvas id="painted-sky-canvas" width="1400" height="700"></canvas>
 							</div>
 							<div class="physics-controls">
 								<div class="control-group">
@@ -1236,15 +1228,7 @@
 						</div>
 						<div class="physics-simulation">
 							<div class="physics-canvas">
-								<!-- TEMPORARILY DISABLED FOR FASTER LOADING -->
-								<div style="width: 100%; height: 400px; background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #b8c5d6; font-family: system-ui, sans-serif; text-align: center; padding: 2rem;">
-									<div>
-										<div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
-										<h3 style="margin: 0 0 0.5rem 0; color: #ffffff;">Electrostatics Simulation</h3>
-										<p style="margin: 0; opacity: 0.8;">Temporarily disabled for faster loading.<br>Try individual simulation pages for full experience.</p>
-									</div>
-								</div>
-								<!-- <canvas id="charge-painter-canvas" width="1400" height="700"></canvas> -->
+								<canvas id="charge-painter-canvas" width="1400" height="700"></canvas>
 							</div>
 							<div class="physics-controls">
 								<div class="control-group">
@@ -1322,15 +1306,7 @@
 						</div>
 						<div class="physics-simulation">
 							<div class="physics-canvas">
-								<!-- TEMPORARILY DISABLED FOR FASTER LOADING -->
-								<div style="width: 100%; height: 400px; background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #b8c5d6; font-family: system-ui, sans-serif; text-align: center; padding: 2rem;">
-									<div>
-										<div style="font-size: 3rem; margin-bottom: 1rem;">🎵</div>
-										<h3 style="margin: 0 0 0.5rem 0; color: #ffffff;">Wave Physics Simulation</h3>
-										<p style="margin: 0; opacity: 0.8;">Temporarily disabled for faster loading.<br>Try individual simulation pages for full experience.</p>
-									</div>
-								</div>
-								<!-- <canvas id="resonant-canvas-canvas" width="1400" height="700"></canvas> -->
+								<canvas id="resonant-canvas-canvas" width="1400" height="700"></canvas>
 							</div>
 							<div class="physics-controls">
 								<div class="control-group">
@@ -1908,10 +1884,9 @@
 			}
 
 			// Initialize simulation when DOM is loaded
-			// TEMPORARILY DISABLED FOR FASTER LOADING
-			// document.addEventListener('DOMContentLoaded', () => {
-			// 	window.paintedSkySim = new PaintedSkySimulation();
-			// });
+			document.addEventListener('DOMContentLoaded', () => {
+				window.paintedSkySim = new PaintedSkySimulation();
+			});
 		</script>
 
 		<!-- Charge Painter Simulation Script -->
@@ -2363,10 +2338,9 @@
 			}
 
 			// Initialize ChargePainterSimulation when DOM is loaded
-			// TEMPORARILY DISABLED FOR FASTER LOADING
-			// document.addEventListener('DOMContentLoaded', () => {
-			// 	window.chargePainterSim = new ChargePainterSimulation();
-			// });
+			document.addEventListener('DOMContentLoaded', () => {
+				window.chargePainterSim = new ChargePainterSimulation();
+			});
 		</script>
 
 		<!-- Scripts -->
@@ -2980,10 +2954,9 @@
 				}
 
 				// Initialize simulation when DOM is loaded
-				// TEMPORARILY DISABLED FOR FASTER LOADING
-				// document.addEventListener('DOMContentLoaded', () => {
-				// 	window.resonantCanvasSim = new ResonantCanvasSimulation();
-				// });
+				document.addEventListener('DOMContentLoaded', () => {
+					window.resonantCanvasSim = new ResonantCanvasSimulation();
+				});
 			</script>
 
 
