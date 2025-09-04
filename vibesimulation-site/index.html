@@ -18,6 +18,9 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<link rel="stylesheet" href="assets/css/video.css" />
 		<link rel="stylesheet" href="assets/css/cookie-consent.css" />
+		<!-- Non-blocking Font Awesome load to keep icons without blocking render -->
+		<link rel="preload" href="assets/css/fontawesome-all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+		<noscript><link rel="stylesheet" href="assets/css/fontawesome-all.min.css" /></noscript>
 		<!-- Physics Gallery Styles -->
 		<style>
 			/* ===== HERO SECTION ===== */
@@ -1067,8 +1070,7 @@
 		  gtag('js', new Date());
 		  gtag('config', 'G-XXXXXX');
 		</script>
-		<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1357596091010556"
-		     crossorigin="anonymous"></script>
+
 	</head>
 	<body class="is-preload landing">
 		<!-- Navigation -->
@@ -2344,17 +2346,17 @@
 		</script>
 
 		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/jquery.dropotron.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
-			<script src="assets/js/video.js"></script>
-					<script src="assets/js/cookie-consent.js"></script>
-					<script src="code-access-demo.js"></script>
+			<script defer src="assets/js/jquery.min.js"></script>
+			<script defer src="assets/js/jquery.scrolly.min.js"></script>
+			<script defer src="assets/js/jquery.dropotron.min.js"></script>
+			<script defer src="assets/js/jquery.scrollex.min.js"></script>
+			<script defer src="assets/js/browser.min.js"></script>
+			<script defer src="assets/js/breakpoints.min.js"></script>
+			<script defer src="assets/js/util.js"></script>
+			<script defer src="assets/js/main.js"></script>
+			<script defer src="assets/js/video.js"></script>
+					<script defer src="assets/js/cookie-consent.js"></script>
+					<script defer src="code-access-demo.js"></script>
 
 		<!-- Newsletter Signup Script -->
 		<script>
