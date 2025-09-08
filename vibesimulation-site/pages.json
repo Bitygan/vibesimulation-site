@@ -14,7 +14,7 @@ pages_root_dir: "."
 env:
   production:
     CLOUDFLARE_ANALYTICS_TOKEN: ""
-    GOOGLE_ANALYTICS_ID: "UA-XXXXX-X"
+    GOOGLE_ANALYTICS_ID: "G-C3YQSJ8Q2H"
 
 # Custom domains
 custom_domains:

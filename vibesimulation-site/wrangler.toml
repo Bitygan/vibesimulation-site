@@ -17,7 +17,7 @@ routes = [
 
 # Environment variables (update these in Cloudflare dashboard)
 [vars]
-GOOGLE_ANALYTICS_ID = "UA-XXXXX-X"
+GOOGLE_ANALYTICS_ID = "G-C3YQSJ8Q2H"
 CLOUDFLARE_ANALYTICS_TOKEN = ""
 
 # Pages configuration
@@ -29,4 +29,4 @@ destination_dir = "."
 # Root directory
 root_dir = "."
 # Web analytics
-web_analytics_tag = "UA-XXXXX-X"
+web_analytics_tag = "G-C3YQSJ8Q2H"
