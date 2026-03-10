@@ -1,8 +1,5 @@
-# Cloudflare Pages Headers Configuration
-# This file configures custom HTTP headers for your Cloudflare Pages deployment
-
+# Security headers
 /*
-  # Security Headers
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   X-XSS-Protection: 1; mode=block
@@ -10,17 +7,13 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
 
-  # Cache Headers for Static Assets
-  Cache-Control: public, max-age=31536000, immutable
-
-# JavaScript and CSS files
+# Cache static assets aggressively
 /*.js
   Cache-Control: public, max-age=31536000, immutable
 
 /*.css
   Cache-Control: public, max-age=31536000, immutable
 
-# Image files
 /*.png
   Cache-Control: public, max-age=31536000, immutable
 
@@ -33,7 +26,6 @@
 /*.webp
   Cache-Control: public, max-age=31536000, immutable
 
-# Font files
 /*.woff
   Cache-Control: public, max-age=31536000, immutable
 
@@ -46,6 +38,49 @@
 /*.eot
   Cache-Control: public, max-age=31536000, immutable
 
-# HTML: short cache to ensure fresh content
-/*
+# HTML should stay reasonably fresh
+/*.html
   Cache-Control: public, max-age=300
+
+/index.html
+  Cache-Control: public, max-age=300
+
+/blog/
+  Cache-Control: public, max-age=300
+
+# Noindex for utility and archived surfaces
+/debug-*
+  X-Robots-Tag: noindex, nofollow
+
+/test-*
+  X-Robots-Tag: noindex, nofollow
+
+/verify.html
+  X-Robots-Tag: noindex, nofollow
+
+/deprecated/*
+  X-Robots-Tag: noindex, nofollow
+
+/videos/*
+  X-Robots-Tag: noindex, nofollow
+
+/basics.html
+  X-Robots-Tag: noindex, nofollow
+
+/intermediate.html
+  X-Robots-Tag: noindex, nofollow
+
+/advanced.html
+  X-Robots-Tag: noindex, nofollow
+
+/ai.html
+  X-Robots-Tag: noindex, nofollow
+
+/privacy-policy.html
+  X-Robots-Tag: noindex
+
+/terms.html
+  X-Robots-Tag: noindex
+
+/cookies.html
+  X-Robots-Tag: noindex

@@ -1,17 +1,21 @@
 User-agent: *
 Allow: /
 
-# Sitemaps
 Sitemap: https://vibesimulation.com/sitemap.xml
-# For local development, uncomment the line below:
-# Sitemap: https://localhost:8080/sitemap-local.xml
 
-# Block access to certain directories if needed
 Disallow: /assets/sass/
 Disallow: /simulation-assets/
 Disallow: /*.json$
+Disallow: /debug-
+Disallow: /test-
+Disallow: /deprecated/
+Disallow: /verify.html
+Disallow: /videos/
+Disallow: /basics.html
+Disallow: /intermediate.html
+Disallow: /advanced.html
+Disallow: /ai.html
 
-# Allow all major search engines
 User-agent: Googlebot
 Allow: /
 
@@ -24,5 +28,4 @@ Allow: /
 User-agent: DuckDuckBot
 Allow: /
 
-# Crawl delay for respectful crawling
 Crawl-delay: 1

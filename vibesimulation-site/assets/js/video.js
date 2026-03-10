@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to open the modal and play video
     function openModal(videoId) {
-        videoPlayerContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+        videoPlayerContainer.innerHTML = `<div class="video-player-placeholder"><p>This archived media surface no longer loads external video embeds.</p></div>`;
         modal.style.display = 'block';
     }
 
